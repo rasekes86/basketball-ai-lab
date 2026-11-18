@@ -6,6 +6,7 @@ from .provider import Client,SourceError
 from .transform import normalize_games,normalize_teams,time_utc
 from .model import forecast,settle_one
 from .advanced import parse_summary
+from .history import backfill_policy,historical_coverage
 from .odds import fetch_snapshot,choose_extra
 from .store import load,save
 from .teams import NBA_TEAMS
@@ -23,7 +24,6 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     output=Path(output);site=Path(site)
     env=os.environ if env is None else env
     now=(now or datetime.now(timezone.utc)).astimezone(timezone.utc)
-    client=client or Client(max_calls=65)
     games=load(output/"games.json",{})
     logos=load(output/"teams.json",{})
     picks=load(output/"picks.json",{})
@@ -32,6 +32,9 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     review_flags=load(output/"review_flags.json",{})
     boxscores=load(output/"boxscores.json",{})
     attempts=load(output/"boxscore_attempts.json",{})
+    history_policy=backfill_policy(games,boxscores)
+    client=client or Client(max_calls=history_policy["max_calls"],
+                             min_interval=history_policy["min_interval"])
     initial=not bool(games)
     successes=0
     provider_failures=[]
@@ -113,7 +116,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         # Recheck empty/incomplete responses after a week, not at every update.
         remaining=max(0,client.max_calls-client.calls-1)
         for g in finals:
-            if summary_ok+summary_failed>=min(35,remaining) or client.blocked_reason:break
+            if summary_ok+summary_failed>=min(history_policy["summary_limit"],remaining) or client.blocked_reason:break
             previous=time_utc(attempts.get(g["id"]))
             if previous and (now-previous)<timedelta(days=7):continue
             attempts[g["id"]]=now.isoformat()
@@ -130,7 +133,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     # at the actual creation time, and can never be recalculated in place.
     upcoming=sorted((g for g in games.values() if
           (start:=time_utc(g.get("start_utc"))) and start>now
-          and start<now+timedelta(days=7) and g.get("status")=="SCHEDULED"
+          and start<now+timedelta(hours=72) and g.get("status")=="SCHEDULED"
           and g["id"] not in review_flags),
           key=lambda g:g["start_utc"])
     exclusions={}
@@ -216,6 +219,9 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "logo_teams":len(logos.get("teams") or {}),"new_top3_picks":archived,
         "boxscores_archived":len(boxscores),"boxscores_new":summary_ok,
         "boxscores_unavailable":summary_failed,"advanced_stats_enabled":str(env.get("ENABLE_ADVANCED_STATS","")).lower() in ("1","true","yes"),
+        "historical_coverage":historical_coverage(games,boxscores,now),
+        "history_backfill_mode":history_policy["mode"],
+        "history_summary_budget":history_policy["summary_limit"],
         "top3_archived":len(picks),"top3_evaluated":len(checked),
         "top3_hits":sum(p["result"]==1 for p in checked),
         "top3_accuracy":round(sum(p["result"]==1 for p in checked)/len(checked),4) if checked else None,
