@@ -1,9 +1,9 @@
 {
   "advanced_stats_enabled": true,
-  "boxscores_archived": 155,
+  "boxscores_archived": 190,
   "boxscores_new": 35,
   "boxscores_unavailable": 0,
-  "extras_archived": 0,
+  "extras_archived": 12,
   "extras_evaluated": 0,
   "extras_unit_profit": 0,
   "extras_verified_priced": 0,
@@ -12,154 +12,154 @@
   "historical_coverage": {
     "by_team": {
       "ATL": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "BKN": {
-        "assists": 9,
-        "rebounds": 9,
-        "threes": 9
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "BOS": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "CHA": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "CHI": {
-        "assists": 9,
-        "rebounds": 9,
-        "threes": 9
+        "assists": 11,
+        "rebounds": 11,
+        "threes": 11
       },
       "CLE": {
-        "assists": 12,
-        "rebounds": 12,
-        "threes": 12
+        "assists": 14,
+        "rebounds": 14,
+        "threes": 14
       },
       "DAL": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "DEN": {
-        "assists": 9,
-        "rebounds": 9,
-        "threes": 9
+        "assists": 11,
+        "rebounds": 11,
+        "threes": 11
       },
       "DET": {
-        "assists": 9,
-        "rebounds": 9,
-        "threes": 9
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "GSW": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "HOU": {
-        "assists": 11,
-        "rebounds": 11,
-        "threes": 11
+        "assists": 14,
+        "rebounds": 14,
+        "threes": 14
       },
       "IND": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "LAC": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "LAL": {
-        "assists": 12,
-        "rebounds": 12,
-        "threes": 12
+        "assists": 14,
+        "rebounds": 14,
+        "threes": 14
       },
       "MEM": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "MIA": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "MIL": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "MIN": {
-        "assists": 11,
-        "rebounds": 11,
-        "threes": 11
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "NOP": {
-        "assists": 12,
-        "rebounds": 12,
-        "threes": 12
+        "assists": 14,
+        "rebounds": 14,
+        "threes": 14
       },
       "NYK": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       },
       "OKC": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
-      },
-      "ORL": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
-      },
-      "PHI": {
-        "assists": 11,
-        "rebounds": 11,
-        "threes": 11
-      },
-      "PHX": {
-        "assists": 10,
-        "rebounds": 10,
-        "threes": 10
-      },
-      "POR": {
         "assists": 12,
         "rebounds": 12,
         "threes": 12
       },
+      "ORL": {
+        "assists": 11,
+        "rebounds": 11,
+        "threes": 11
+      },
+      "PHI": {
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
+      },
+      "PHX": {
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
+      },
+      "POR": {
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
+      },
       "SAC": {
-        "assists": 9,
-        "rebounds": 9,
-        "threes": 9
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "SAS": {
-        "assists": 11,
-        "rebounds": 11,
-        "threes": 11
+        "assists": 14,
+        "rebounds": 14,
+        "threes": 14
       },
       "TOR": {
-        "assists": 11,
-        "rebounds": 11,
-        "threes": 11
+        "assists": 12,
+        "rebounds": 12,
+        "threes": 12
       },
       "UTA": {
-        "assists": 11,
-        "rebounds": 11,
-        "threes": 11
+        "assists": 14,
+        "rebounds": 14,
+        "threes": 14
       },
       "WAS": {
-        "assists": 11,
-        "rebounds": 11,
-        "threes": 11
+        "assists": 13,
+        "rebounds": 13,
+        "threes": 13
       }
     },
     "fully_ready_teams": 30,
@@ -169,7 +169,7 @@
       "rebounds": 30,
       "threes": 30
     },
-    "verified_games": 155
+    "verified_games": 190
   },
   "history_backfill_mode": "DAILY",
   "history_summary_budget": 35,
@@ -213,14 +213,14 @@
       "hits": 0
     }
   },
-  "new_extras": 0,
+  "new_extras": 12,
   "new_settlements": 0,
   "new_top3_picks": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "No son apuestas recomendadas; sin garantías. Los Top 3 usan líneas teóricas; ROI solo de cuotas prepartido ofrecidas y registradas.",
-  "odds_calls_month": 0,
-  "odds_status": "DESACTIVADO",
+  "odds_calls_month": 3,
+  "odds_status": "OK",
   "one_time_refresh_applied": false,
   "provider": "ESPN (public, undocumented)",
   "quality": "EXPERIMENTAL_NO_CALIBRADO",
@@ -240,5 +240,5 @@
   "top3_evaluated": 0,
   "top3_hits": 0,
   "upcoming": 52,
-  "updated_utc": "2026-11-18T23:26:25.512344+00:00"
+  "updated_utc": "2026-11-18T23:33:38.764289+00:00"
 }
