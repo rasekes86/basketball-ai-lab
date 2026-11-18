@@ -43,6 +43,41 @@ def surprises(games,picks):
             "tipo":"SORPRESA_SEGUN_MODELO_SIN_CUOTAS"})
     return result
 
+
+def theoretical_top3_balance(picks, stake=1.0):
+    """Hypothetical 1 EUR stake at the mathematical fair price 1/p.
+
+    This is NOT realised profit from any available bookmaker. Historical
+    selections with unknown results are excluded, never treated as losses.
+    """
+    settled=[row for row in picks.values() if row.get("result") in (0,1)
+             and row.get("status") in ("ACIERTO","FALLO")
+             and row.get("retrospective") is False]
+    summary={}
+    total=0.0
+    valid=0
+    for row in settled:
+        try:
+            p=float(row["probability"])
+        except (KeyError,ValueError,TypeError):
+            continue
+        if not 0<p<=1:continue
+        net=stake*(1/p-1) if row["result"]==1 else -stake
+        valid+=1
+        total+=net
+        market=row.get("market","desconocido")
+        group=summary.setdefault(market,{"settled":0,"hits":0,"net_eur":0.0})
+        group["settled"]+=1
+        group["hits"]+=int(row["result"]==1)
+        group["net_eur"]+=net
+    for group in summary.values():
+        group["roi_pct"]=round(group["net_eur"]/(group["settled"]*stake)*100,2)
+        group["net_eur"]=round(group["net_eur"],3)
+    return {"settled":valid,"stake_eur":stake,"total_staked_eur":round(valid*stake,2),
+            "net_eur":round(total,3),
+            "roi_pct":round(total/(valid*stake)*100,2) if valid else None,
+            "by_market":summary,"price_basis":"MATHEMATICAL_1_OVER_P_NOT_OFFERED"}
+
 def publish(base,site,games,picks,extras):
     """Export original Top3 and exactly one frozen extra per fixture."""
     ordered=lambda x:sorted(x.values(),key=lambda p:(p.get('start_utc',''),p.get('id','')))
