@@ -150,6 +150,34 @@ def forecast(game,games,at,boxscores=None):
     picks=_top_by_probability(candidates)
     return picks,("ARCHIVABLE" if picks else "SIN_MERCADOS_APTOS")
 
+
+def reference_forecast(game,games,at):
+    """The existing independent score model for pricing an optional extra.
+
+    The Top 3 selector may not contain winner/total/handicap; pricing the
+    fourth selection must not depend on which categories won that ranking.
+    This reference is never archived as an additional Top 3 candidate.
+    """
+    start=time_utc(game.get("start_utc"))
+    if not start or start<=at:return []
+    _,team=ratings(games,at)
+    h,a=team.get(game.get("home")),team.get(game.get("away"))
+    if not h or not a or min(h["games"],a["games"])<MIN_GAMES:return []
+    ph=.48*h["offense"]+.52*a["defense"]+2.0
+    pa=.48*a["offense"]+.52*h["defense"]-2.0
+    diff=ph-pa
+    combined=ph+pa
+    probability=normal_cdf(diff/15.5)
+    winner=game["home"] if probability>=.5 else game["away"]
+    result=[_pick(game,"winner",f"Gana {winner}",max(probability,1-probability),
+        {"type":"winner","team":winner},diff,at)]
+    total_line=5*round((combined-.5)/5)+.5
+    direction="over" if combined>total_line else "under"
+    p=normal_cdf((combined-total_line)/18.5)
+    result.append(_pick(game,"total",f"{direction.upper()} {total_line:g} puntos (referencia)",
+        max(p,1-p),{"type":"total","direction":direction,"line":total_line},combined,at))
+    return result
+
 def settle_one(pick,game,boxscore=None):
     if game.get("status")!="FINAL":return None
     h,a=game.get("home_score"),game.get("away_score")
