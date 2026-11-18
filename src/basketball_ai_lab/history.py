@@ -4,7 +4,7 @@ All summaries are from real *completed* fixtures. Fetching a historical
 box score today does not make an archived prediction historical: only future
 predictions may use it, based on their own creation timestamp.
 """
-from datetime import timedelta
+from datetime import timedelta, timezone
 from .teams import NBA_TEAMS
 from .transform import time_utc
 
@@ -36,7 +36,7 @@ def historical_coverage(games, boxscores, asof, min_sample=MIN_SAMPLE):
     Never counts games that started in the future, summaries captured after
     asof, team mismatches or statistics absent from the ESPN response.
     """
-    asof = asof if asof.tzinfo else asof.replace(tzinfo=__import__("datetime").timezone.utc)
+    asof = asof.astimezone(timezone.utc) if asof.tzinfo else asof.replace(tzinfo=timezone.utc)
     counts = {team: {metric: 0 for metric in MARKETS} for team in NBA_TEAMS}
     eligible_games = 0
     for fixture_id, record in boxscores.items():
