@@ -48,14 +48,14 @@
             <div class="hero-tag">● Sin recomendaciones de apuestas · Motor experimental</div>
           </div>
           <div class="stat-grid" id="stats" aria-live="polite"></div>
-          <div class="section-title"><div><small>01 · PRÓXIMOS</small><h2>En el radar</h2></div><button data-view="partidos">Ver calendario ›</button></div>
+          <div class="section-title"><div><small>01 · JORNADA COMPLETA</small><h2>Esta noche <span class="night-count" id="nightCount"></span></h2><p class="fineprint" id="nightLabel">Todos los encuentros, hora de Madrid</p></div><button data-view="partidos">Ver calendario ›</button></div>
           <div class="fixture-grid" id="featured" aria-live="polite"></div>
           <div class="section-title"><div><small>02 · AUDITORÍA</small><h2>Últimos verificados</h2></div><button data-view="resultados">Ver resultados ›</button></div>
           <div class="result-list" id="recent"></div>
         </section>
         <section class="page" id="view-partidos" hidden>
-          <div class="page-title"><span class="eyebrow">COMPETICIÓN · NBA</span><h1>Próximos <em>partidos.</em></h1><p>Selecciona un encuentro para consultar las predicciones congeladas y su situación.</p></div>
-          <div class="filters"><label>Buscar equipo<input type="search" id="teamFilter" placeholder="Lakers, Celtics…" autocomplete="off"></label><label>Mostrar<select id="periodFilter"><option value="future">Próximos</option><option value="all">Todos</option><option value="final">Finalizados</option></select></label></div>
+          <div class="page-title"><span class="eyebrow">COMPETICIÓN · NBA</span><h1>Próximos <em>partidos.</em></h1><p>Consulta los encuentros, el Top 3 original y sus estadísticas históricas prepartido. La adicional solo aparece con cuota real comprobada.</p></div>
+          <div class="filters"><label>Buscar equipo<input type="search" id="teamFilter" placeholder="Lakers, Celtics…" autocomplete="off"></label><label>Mostrar<select id="periodFilter"><option value="night">Esta noche</option><option value="future">Próximos</option><option value="all">Todos</option><option value="final">Finalizados</option></select></label></div>
           <div class="fixture-grid" id="allFixtures"></div>
         </section>
         <section class="page" id="view-resultados" hidden>
@@ -77,7 +77,7 @@
           <div class="page-title"><span class="eyebrow">REPRODUCIBLE · SIN CAJA NEGRA</span><h1>Cómo <em>calculamos.</em></h1></div>
           <div class="method-grid">
             <article><span>01</span><h2>Historial anterior al partido</h2><p>Solo utilizamos encuentros finalizados y conocidos antes de generar el pronóstico. No entrenamos con resultados futuros.</p></article>
-            <article><span>02</span><h2>Modelo experimental</h2><p>Estimaciones de anotación y defensa por equipo, ponderadas por antigüedad y regularizadas para muestras pequeñas. No está calibrado para apuestas.</p></article>
+            <article><span>02</span><h2>Modelo experimental</h2><p>El Top 3 actual utiliza anotación y puntos recibidos de encuentros anteriores, ponderados por antigüedad. Las fichas añaden una comparativa descriptiva de los últimos diez partidos, forma y descanso; esas cifras no son estadísticas avanzadas de posesiones, lesiones o jugadores. No está calibrado para apuestas.</p></article>
             <article><span>03</span><h2>Tres mercados archivados</h2><p>Ganador, total de puntos y margen teórico. Las líneas calculadas por el modelo NO equivalen a líneas ofrecidas por una casa de apuestas.</p></article>
             <article><span>04</span><h2>Adicional +1,50</h2><p>Solo podrá archivarse si existe una cuota real registrada, de un proveedor y casa identificados, antes de empezar el partido. Por defecto está desactivada.</p></article>
             <article><span>05</span><h2>Seguimiento postpartido</h2><p>Separación visual de acierto, fallo y pendiente. Ningún resultado ausente se contabiliza como fallo y el Top 3 no se recalcula retrospectivamente.</p></article>

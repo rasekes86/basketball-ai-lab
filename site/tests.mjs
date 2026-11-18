@@ -30,3 +30,11 @@ test('no unsafe external dependencies in page',()=>{
   assert.doesNotMatch(html,/<script[^>]+src="https?:/);
   assert.doesNotMatch(html,/https?:\/\/.*bootstrap/);
 });
+
+test('whole Madrid-night slate and archived stats are exposed',()=>{
+  assert.match(js,/tonight\.length\?tonight:upcoming\.slice\(0,12\)/);
+  assert.match(js,/matchupSnapshot/);
+  assert.match(html,/id="nightCount"/);
+  assert.match(html,/option value="night"/);
+  assert.match(css,/\.stats-table-row/);
+});

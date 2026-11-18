@@ -1,3 +1,4 @@
+import {nightKeyMadrid,matchupSnapshot} from './matchup-stats.mjs';
 /* Basketball AI Lab · zero-dependency static NBA dashboard */
 const $=id=>document.getElementById(id);
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -31,6 +32,8 @@ function stat(title,value,foot){return `<div class="stat"><span>${escape(title)}
 function pickLine(p){return `<div class="pick-row"><span>${escape(p.selection)}</span><div>${p.probability!==undefined?`<b>${probability(p.probability)}</b> `:''}${pill(p.status)}</div></div>`}
 function fixture(g){
   const picks=fixturePicks(g.id);const extra=extraPick(g.id);const done=g.status==='FINAL';
+  const sample=matchupSnapshot(g,state.games,state.picks);
+  const form=sample?.home&&sample?.away?`<div class="fixture-form"><span>Últimos 5: <b>${sample.home.wins5}-${sample.home.losses5}</b> / <b>${sample.away.wins5}-${sample.away.losses5}</b></span><span>Puntos a favor (10): <b>${sample.home.points_for}</b> / <b>${sample.away.points_for}</b></span></div>`:'';
   const value=extra?`<div><strong>${escape(extra.selection)}</strong><small>Oferta ${escape(extra.bookmaker||'')} · cuota prepartido registrada</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span>`:
     '<div><strong>Sin adicional +1,50 archivada</strong><small>No existe una oferta válida confirmada; no se inventa</small></div>';
   const review=state.status.review_required?.[g.id];
@@ -39,7 +42,7 @@ function fixture(g){
     <div class="teams"><div class="team">${crest(g.home)}<strong>${escape(names[g.home]||g.home)}</strong></div>
     <b class="team-versus ${done?'score':''}">${done?`${Number(g.home_score)} – ${Number(g.away_score)}`:'VS'}</b>
     <div class="team">${crest(g.away)}<strong>${escape(names[g.away]||g.away)}</strong></div></div>
-    <div class="extra-row">${value}</div>
+    ${form}<div class="extra-row">${value}</div>
     <details class="top3"><summary>Top 3 archivado (${picks.length})</summary>${picks.length?picks.map(pickLine).join(''):'<p class="fineprint">Pendiente de historial suficiente o de ejecución prepartido.</p>'}</details>
     <button class="open-match" data-open-id="${escape(g.id)}">Abrir ficha del partido ›</button></article>`;
 }
@@ -73,8 +76,16 @@ function render(){
   const syncLabel=!state.status.updated_utc?'Sin captura inicial':stale?'Datos antiguos':reviews?'Partidos por revisar':failed?'Fuentes parciales':'Datos publicados';
   indicator.innerHTML='<span class="connection-dot"></span>'+escape(syncLabel);
   $('updated').textContent=(stale?'⚠ Información antigua · ':reviews?'⚠ Revisar '+reviews+' partido(s) · ':'')+$('updated').textContent;
-  $('stats').innerHTML=stat('PRÓXIMOS EN AGENDA',number(upcoming.length),'NBA · calendario publicado')+stat('TOP 3 ARCHIVADO',number(picks.length),'Antes del salto inicial')+stat('ACIERTOS VERIFICADOS',checked.length?probability(wins/checked.length):'—',`${wins} de ${checked.length} selecciones`)+stat('ADICIONALES',`${extraDone.length}/${extras.length}`,'Evaluadas / archivadas');
-  $('featured').innerHTML=upcoming.length?upcoming.slice(0,4).map(fixture).join(''):alertBox('Aún no hay próximos encuentros comprobados','Una primera ejecución del motor descargará el calendario real; no mostramos partidos ficticios.');
+  // NBA tip-offs take place after midnight in Madrid. A single 'night'
+  // spans noon-to-noon local time, keeping the complete US slate together.
+  const key=nightKeyMadrid(new Date());
+  const tonight=all.filter(g=>nightKeyMadrid(g.start_utc)===key);
+  const focus=tonight.length?tonight:upcoming.slice(0,12);
+  const top3Tonight=tonight.reduce((n,g)=>n+fixturePicks(g.id).length,0);
+  $('nightCount').textContent=tonight.length?`· ${tonight.length} partidos`:'';
+  $('nightLabel').textContent=tonight.length?`Jornada NBA del ${key.split('-').reverse().join('/')} · ${top3Tonight} pronósticos Top 3 archivados · horarios de Madrid`:'Próximos encuentros NBA · horarios de Madrid';
+  $('stats').innerHTML=stat('PARTIDOS ESTA NOCHE',number(tonight.length),'Todos los de la jornada NBA')+stat('TOP 3 ESTA NOCHE',number(top3Tonight),'3 por partido, cuando hay muestra')+stat('ACIERTOS VERIFICADOS',checked.length?probability(wins/checked.length):'—',`${wins} de ${checked.length} selecciones`)+stat('ADICIONALES REALES',`${extras.length}`,'Cuota ofrecida superior a 1,50');
+  $('featured').innerHTML=focus.length?focus.map(fixture).join(''):alertBox('Aún no hay próximos encuentros comprobados','Una ejecución del motor descargará el calendario real; no mostramos partidos ficticios.');
   $('recent').innerHTML=recent.length?recent.slice(0,5).map(resultItem).join(''):alertBox('Pendiente de primeras liquidaciones','Los resultados solo aparecen aquí después de archivar pronósticos y verificar el partido.');
   $('resultStats').innerHTML=stat('TOP 3 EVALUADO',`${checked.length}/${picks.length}`,'Solo predicciones originales')+stat('ACIERTO TOP 3',checked.length?probability(wins/checked.length):'—','Sin retrospectivos')+stat('ADICIONALES +1,50',`${extraDone.length}/${extras.length}`,'Con cuotas identificadas')+stat('ACIERTO ADICIONAL',extraDone.length?probability(winExtra/extraDone.length):'—','Sin cuota real, no hay ROI');
   const marketNames={winner:'Ganador',total:'Puntos totales',handicap:'Hándicap'};
@@ -91,8 +102,10 @@ function render(){
     const g=state.games[p.event_id];return `<button class="result-item" data-open-id="${escape(g.id)}"><span><strong>${escape(names[g.home])} – ${escape(names[g.away])}</strong><small>Favorito del modelo: ${escape(names[p.contract.team])} · ${probability(p.probability)}</small></span><b class="status-chip lose">SORPRESA</b></button>`;
   }).join(''):alertBox('Sin sorpresas registradas','Se detectan cuando un favorito archivado por encima del 60 % pierde y el marcador está confirmado.');
   const q=$('teamFilter').value.trim().toLowerCase(),period=$('periodFilter').value;
-  const displayed=all.filter(g=>(!q||[names[g.home],names[g.away],g.home,g.away].some(x=>String(x||'').toLowerCase().includes(q)))&&(period==='all'||period==='final'&&g.status==='FINAL'||period==='future'&&g.status==='SCHEDULED'&&gameTime(g.start_utc)>now));
-  $('allFixtures').innerHTML=displayed.length?displayed.slice(0,90).map(fixture).join(''):alertBox('Sin partidos para estos filtros','Prueba con otro equipo o con el histórico.');
+  const displayed=all.filter(g=>(!q||[names[g.home],names[g.away],g.home,g.away].some(x=>String(x||'').toLowerCase().includes(q)))&&(period==='all'||period==='night'&&nightKeyMadrid(g.start_utc)===key||period==='final'&&g.status==='FINAL'||period==='future'&&g.status==='SCHEDULED'&&gameTime(g.start_utc)>now));
+  // Never bury upcoming events behind the first 90 completed fixtures.
+  const ordered=period==='all'?displayed.sort((a,b)=>{const af=gameTime(a.start_utc)>=now?0:1,bf=gameTime(b.start_utc)>=now?0:1;return af-bf||(af?gameTime(b.start_utc)-gameTime(a.start_utc):gameTime(a.start_utc)-gameTime(b.start_utc));}):displayed.sort((a,b)=>period==='final'?gameTime(b.start_utc)-gameTime(a.start_utc):gameTime(a.start_utc)-gameTime(b.start_utc));
+  $('allFixtures').innerHTML=ordered.length?ordered.slice(0,90).map(fixture).join(''):alertBox('Sin partidos para estos filtros','Prueba con otro equipo o con el histórico.');
   $('teamGrid').innerHTML=Object.keys(names).sort().map(code=>`<div class="team-card">${crest(code)}<strong>${escape(names[code])}</strong><small>${escape(code)}${state.teams[code]?.logo?' · escudo recuperado':' · pendiente de escudo'}</small></div>`).join('');
 }
 async function fetchJson(filename){
@@ -116,11 +129,18 @@ function navigate(view){
   if(location.hash!=='#'+view)history.replaceState(null,'','#'+view);
   window.scrollTo({top:0,behavior:'instant'});
 }
+function matchupStatsHTML(g){
+  const snap=matchupSnapshot(g,state.games,state.picks);
+  if(!snap)return '<p class="fineprint">Las estadísticas prepartido solo se muestran para encuentros con Top 3 completo y archivado antes del inicio.</p>';
+  if(!snap.home||!snap.away)return '<p class="fineprint">Muestra histórica insuficiente para comparar los dos equipos.</p>';
+  const rows=[['Partidos disponibles',snap.home.season_games,snap.away.season_games],['Últimos 5 (V-D)',`${snap.home.wins5}-${snap.home.losses5}`,`${snap.away.wins5}-${snap.away.losses5}`],['Últimos 10 (V-D)',`${snap.home.wins10}-${snap.home.losses10}`,`${snap.away.wins10}-${snap.away.losses10}`],['Puntos anotados / partido',snap.home.points_for,snap.away.points_for],['Puntos recibidos / partido',snap.home.points_against,snap.away.points_against],['Diferencia media',snap.home.differential,snap.away.differential],['Días de descanso estimados',snap.home.rest_days,snap.away.rest_days]];
+  return `<div class="stats-context"><p>Datos históricos disponibles antes de archivar el Top 3 · ${escape(date(snap.asof_utc))}</p><div class="stats-table" role="table" aria-label="Comparativa histórica"><div class="stats-table-head" role="row"><span>Indicador</span><b>${escape(g.home)}</b><b>${escape(g.away)}</b></div>${rows.map(([label,h,a])=>`<div class="stats-table-row" role="row"><span>${escape(label)}</span><b>${escape(h)}</b><b>${escape(a)}</b></div>`).join('')}</div><small>Fuente: marcadores finales ESPN. Últimos 10 partidos; descanso aproximado. Los datos estadísticos no incluyen lesiones, pace ni jugadores. Muestra conservadora: se excluyen partidos iniciados menos de 5 h antes de archivar.</small></div>`;
+}
 function openGame(id){
   const g=state.games[id];if(!g)return;
   const p=fixturePicks(id),extra=extraPick(id);
   const review=state.status.review_required?.[id];
-  $('dialogBody').innerHTML=`${review?`<p class="review-banner">⚠ Partido pendiente de revisión (${escape(review.code)}). No se liquidarán pronósticos hasta contrastar el cambio.</p>`:''}<div class="teams"><div class="team">${crest(g.home)}<strong>${escape(names[g.home])}</strong></div><span class="team-versus score">${g.status==='FINAL'?`${Number(g.home_score)} – ${Number(g.away_score)}`:'VS'}</span><div class="team">${crest(g.away)}<strong>${escape(names[g.away])}</strong></div></div><div class="dialog-stats"><div><span>Fecha en Madrid</span><strong>${escape(date(g.start_utc))}</strong></div><div><span>Estado fuente</span><strong>${escape(g.status)}</strong></div></div><h3>Top 3 original</h3><div class="dialog-picks">${p.length?p.map(pickLine).join(''):alertBox('Sin Top 3','Historial insuficiente o análisis todavía no ejecutado.')}</div><h3>Adicional +1,50</h3>${extra?`<div class="extra-row"><div><strong>${escape(extra.selection)}</strong><small>${escape(extra.provider)} · ${escape(extra.bookmaker)} · ${escape(date(extra.quote_updated_utc))}</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span></div><p>${pill(extra.status)}</p>`:'<p class="fineprint">No se archivó ninguna cuota real que superara los filtros antes del partido.</p>'}<p class="fineprint">Probabilidades de un modelo experimental sin calibración prospectiva demostrada. Los mercados Top 3 usan líneas teóricas, no cuotas ejecutables. No constituye consejo de apuestas.</p>`;
+  $('dialogBody').innerHTML=`${review?`<p class="review-banner">⚠ Partido pendiente de revisión (${escape(review.code)}). No se liquidarán pronósticos hasta contrastar el cambio.</p>`:''}<div class="teams"><div class="team">${crest(g.home)}<strong>${escape(names[g.home])}</strong></div><span class="team-versus score">${g.status==='FINAL'?`${Number(g.home_score)} – ${Number(g.away_score)}`:'VS'}</span><div class="team">${crest(g.away)}<strong>${escape(names[g.away])}</strong></div></div><div class="dialog-stats"><div><span>Fecha en Madrid</span><strong>${escape(date(g.start_utc))}</strong></div><div><span>Estado fuente</span><strong>${escape(g.status)}</strong></div></div><h3>Estadísticas previas del encuentro</h3>${matchupStatsHTML(g)}<h3>Top 3 original</h3><div class="dialog-picks">${p.length?p.map(pickLine).join(''):alertBox('Sin Top 3','Historial insuficiente o análisis todavía no ejecutado.')}</div><h3>Adicional +1,50</h3>${extra?`<div class="extra-row"><div><strong>${escape(extra.selection)}</strong><small>${escape(extra.provider)} · ${escape(extra.bookmaker)} · ${escape(date(extra.quote_updated_utc))}</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span></div><p>${pill(extra.status)}</p>`:'<p class="fineprint">No se archivó ninguna cuota real que superara los filtros antes del partido.</p>'}<p class="fineprint">Probabilidades de un modelo experimental sin calibración prospectiva demostrada. Los mercados Top 3 usan líneas teóricas, no cuotas ejecutables. No constituye consejo de apuestas.</p>`;
   $('matchDialog').showModal();
 }
 $('themeToggle').addEventListener('click',toggleTheme);
