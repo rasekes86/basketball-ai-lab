@@ -1,0 +1,7 @@
+{
+  "pending": true,
+  "requested_utc": "2026-11-18T23:07:03+00:00",
+  "reason": "User requested new Top 3 based on recovered historical stats",
+  "scope": "future_unstarted_only",
+  "replacement_version": "HISTORICAL_STATS_REFRESH_V1"
+}
