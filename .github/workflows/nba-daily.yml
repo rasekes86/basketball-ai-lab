@@ -1,6 +1,6 @@
 name: Basketball AI Lab · actualización NBA
 on:
-  # Captura puntual solicitada: cuotas reales para los partidos NBA de esta noche.
+  # Aplicar una vez la reasignación del Top3 de los partidos aún no comenzados de hoy.
   # Una actualización diaria, sin consumo del repositorio Football AI Lab.
   schedule:
     - cron: '17 9 * * *'

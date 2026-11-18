@@ -160,6 +160,10 @@ def choose_extra(game,picks,quotes,now,baseline=None):
             selection=f"{direction.upper()} {point:g} puntos totales"
         else:continue
         if not .0<p<1.0:continue
+        # A complete Top 3 +1 must not repeat the exact frozen outcome.
+        # In particular do not publish "Gana IND" twice as happened before.
+        if len(picks)>=3 and any(row.get("contract")==contract for row in picks):
+            continue
         ev=p*price-1
         if p>=.53 and ev>=.025:eligible.append((ev,p,q,selection,contract))
     if not eligible:return None
