@@ -39,7 +39,7 @@ class Client:
             raise SourceError("Acceso ESPN detenido por seguridad: "+self.blocked_reason)
         if self.calls >= self.max_calls:
             raise SourceError("Cupo interno ESPN agotado; detener consultas")
-        if resource not in ("scoreboard", "teams"):
+        if resource not in ("scoreboard", "teams", "summary"):
             raise ValueError("Ruta no autorizada")
         url=f"{BASE}/{resource}" + ("?"+urlencode(params) if params else "")
         self.calls += 1
@@ -69,3 +69,8 @@ class Client:
 
     def teams(self):
         return self.get("teams", {"limit":50})
+
+    def summary(self, event_id):
+        if not str(event_id).isdigit():
+            raise ValueError("ID de evento ESPN no válido")
+        return self.get("summary", {"event":str(event_id)})

@@ -16,8 +16,8 @@ from .store import load
 from .teams import NBA_TEAMS
 from .transform import logo_url,time_utc
 
-EXPECTED_MARKETS={'winner','total','handicap'}
-DATA_NAMES={'games','picks','extras','teams','status'}
+EXPECTED_MARKETS={'winner','total','handicap','team_threes','team_rebounds','team_assists'}
+DATA_NAMES={'games','picks','extras','teams','status','boxscores'}
 
 
 def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False):
@@ -29,6 +29,7 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
 
     docs={name:load(output/(name+'.json'),{}) for name in DATA_NAMES}
     games,picks,extras,teams,status=(docs[x] for x in ('games','picks','extras','teams','status'))
+    boxscores=docs['boxscores']
     flags=load(output/'review_flags.json',{})
     has_live_data=bool(status.get('source_successful_days')) and bool(games)
     if not has_live_data:
@@ -68,13 +69,13 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
                 fail('LIQUIDACION_INCONSISTENTE','Estado y resultado discordantes.');break
             event=games.get(p.get('event_id'))
             if event and p.get('event_id') not in flags:
-                expected=settle_one(p,event)
+                expected=settle_one(p,event,boxscores.get(p.get('event_id')))
                 if expected is not None and int(expected)!=int(p['result']):
                     fail('LIQUIDACION_ERRONEA','Un Top 3 no corresponde al resultado final archivado.');break
     for event_id in {p.get('event_id') for p in picks.values() if isinstance(p,dict)}:
-        present={x.get('market') for x in picks.values() if isinstance(x,dict) and x.get('event_id')==event_id}
-        if present!=EXPECTED_MARKETS:
-            warn('TOP3_INCOMPLETO',f'Existe un Top 3 parcial para un evento ({event_id}).')
+        present=[x.get('market') for x in picks.values() if isinstance(x,dict) and x.get('event_id')==event_id]
+        if len(present)!=3 or len(set(present))!=3:
+            warn('TOP3_INCOMPLETO',f'El archivo debe tener exactamente tres mercados distintos ({event_id}).')
 
     for key,p in extras.items():
         if not isinstance(p,dict) or key!=f'{p.get("event_id")}|extra' or p.get('id')!=key:
@@ -89,6 +90,15 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
             fail('ADICIONAL_NO_VALIDA','Precio u origen de la adicional no cumplen los filtros.');break
         if not (p.get('bookmaker') and p.get('provider') and p.get('quote_event_id')):
             fail('ADICIONAL_SIN_PROVEEDOR','Falta identificación de bookmaker o evento de la cuota.');break
+    # A new statistic must trace to a genuine finalized ESPN game.
+    for id_,record in boxscores.items():
+        fixture=games.get(id_)
+        if not fixture or fixture.get('status')!='FINAL' or record.get('id')!=id_:
+            fail('BOXSCORE_SIN_PARTIDO','Estadística avanzada sin partido final reconocido.');break
+        if record.get('start_utc')!=fixture.get('start_utc') or not time_utc(record.get('retrieved_utc')):
+            fail('BOXSCORE_FECHA','Estadística avanzada con fechas no verificables.');break
+        if set(record.get('teams') or {})!={fixture['home'],fixture['away']}:
+            fail('BOXSCORE_RIVALES','Los equipos de las estadísticas no coinciden con el calendario.');break
     source_teams=teams.get('teams') or {}
     for key,value in source_teams.items():
         if key not in NBA_TEAMS or not isinstance(value,dict) or key!=value.get('abbr'):
