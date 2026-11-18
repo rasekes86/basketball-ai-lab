@@ -1,10 +1,9 @@
 {
-  "new_picks_archived": 156,
-  "old_picks_excluded": 153,
-  "pending": false,
-  "processed_utc": "2026-11-18T23:11:36.715001+00:00",
-  "reason": "User requested new Top 3 based on recovered historical stats",
-  "replacement_version": "HISTORICAL_STATS_REFRESH_V1",
-  "requested_utc": "2026-11-18T23:07:03+00:00",
-  "scope": "future_unstarted_only"
+  "pending": true,
+  "scope": "specified_unstarted_window",
+  "start_utc": "2026-11-19T00:00:00+00:00",
+  "end_utc": "2026-11-19T04:00:00+00:00",
+  "reason": "User authorized today's NBA Top3 reselection with Football AI Lab rules; retain started games",
+  "replacement_version": "FOOTBALL_STYLE_TOP3_NBA_V2",
+  "requested_utc": "2026-11-18T23:55:00+00:00"
 }
