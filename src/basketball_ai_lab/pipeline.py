@@ -8,6 +8,7 @@ from .model import forecast,settle_one
 from .advanced import parse_summary
 from .history import backfill_policy,historical_coverage,supersede_unstarted_picks
 from .odds import fetch_snapshot,choose_extra
+from .scoreboard_odds import scoreboard_quotes
 from .store import load,save
 from .teams import NBA_TEAMS
 from .reports import publish
@@ -42,6 +43,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     provider_failures=[]
     fresh_game_ids=set()
     schedule_events=0
+    observed_espn_quotes=[]
     # Catalogue is refreshed once every 30d (or if absent).
     last=time_utc(logos.get("retrieved_utc"))
     if not logos.get("teams") or not last or (now-last).days>=30:
@@ -58,6 +60,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
                 client.blocked_reason="ESQUEMA_CALENDARIO_INESPERADO"
                 raise SourceError("calendario sin lista de eventos")
             current=normalize_games(payload)
+            observed_espn_quotes.extend(scoreboard_quotes(payload,current,now))
             successes+=1
             fresh_game_ids.update(current)
             schedule_events+=len(current)
@@ -173,13 +176,13 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
                          "old_picks_excluded":refresh_count,
                          "new_picks_archived":archived}
     # Optional real prices are explicitly off until the user sets one secret.
-    odds_status="DESACTIVADO"
-    quotes=[]
+    odds_status="ESPN_PREPARTIDO" if observed_espn_quotes else "ESPN_SIN_CUOTAS"
+    quotes=observed_espn_quotes
     if str(env.get("ENABLE_ODDS","")).lower() in ("1","true","yes"):
         feed=fetch_snapshot(str(env.get("ODDS_API_KEY","")).strip(),now,odds_state,
                             fetch=env.get("_ODDS_FETCH_TEST"))
-        odds_status=feed["status"]
-        quotes=feed["quotes"]
+        odds_status=feed["status"]+"+ESPN" if observed_espn_quotes else feed["status"]
+        quotes=[*observed_espn_quotes,*feed["quotes"]]
         odds_state=feed["state"]
     new_extras=0
     # If real offers arrive AFTER the main picks but BEFORE start, they may
@@ -249,6 +252,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "extras_unit_profit":round(unit_profit,3),"extras_verified_priced":len(verified_extra),
         "new_extras":new_extras,"new_settlements":settled,"odds_status":odds_status,
         "odds_calls_month":(odds_state.get("odds_budget") or {}).get("used",0),
+        "espn_bookmaker_quotes_seen":len(observed_espn_quotes),
         "no_historical_repricing":True,"quality":"EXPERIMENTAL_NO_CALIBRADO",
         "review_required_count":len(review_flags),
         "review_required":review_flags,
