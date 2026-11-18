@@ -136,8 +136,18 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     # completed/started matches and their historical results are untouched.
     refresh_count=0
     refresh_active=refresh_request.get("pending") is True
+    refresh_ids=None
     if refresh_active:
-        refresh_count=supersede_unstarted_picks(picks,now,superseded_picks)
+        if refresh_request.get("scope")=="specified_unstarted_window":
+            lower=time_utc(refresh_request.get("start_utc"))
+            upper=time_utc(refresh_request.get("end_utc"))
+            if not lower or not upper or upper<=lower:
+                raise ValueError("Rango de reasignación NBA inválido")
+            refresh_ids={g["id"] for g in games.values()
+                if (kick:=time_utc(g.get("start_utc")))
+                and lower<=kick<upper and now<kick
+                and g.get("status")=="SCHEDULED" and g["id"] not in review_flags}
+        refresh_count=supersede_unstarted_picks(picks,now,superseded_picks,refresh_ids)
     # A prospective forecast is generated only from already-final games,
     # at the actual creation time, and can never be recalculated in place.
     upcoming=sorted((g for g in games.values() if
@@ -148,7 +158,9 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     exclusions={}
     archived=0
     for game in upcoming:
-        if len([p for p in picks.values() if p.get("event_id")==game["id"]])>=3:
+        # A deliberately short football-style Top 3 is final too.
+        # Never add a new market later to an existing frozen snapshot.
+        if any(p.get("event_id")==game["id"] for p in picks.values()):
             continue
         # ESPN's `dates` uses US date buckets: a 01:00 UTC game can appear
         # under the PREVIOUS calendar day in America. Require the fixture ID
@@ -171,7 +183,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         refresh_request={**refresh_request,"pending":False,
                          "processed_utc":now.isoformat(),
                          "old_picks_excluded":refresh_count,
-                         "new_picks_archived":archived}
+                         "new_picks_archived":archived,
+                         "eligible_fixture_ids":sorted(refresh_ids) if refresh_ids is not None else None}
     # Optional real prices are explicitly off until the user sets one secret.
     odds_status="DESACTIVADO"
     quotes=[]
