@@ -25,9 +25,12 @@ function crest(team){
   const logo=safeLogo(state.teams[team]?.logo);
   return `<span class="crest" data-team="${escape(team)}" aria-label="${escape('Escudo de '+(names[team]||team))}">${logo?`<img src="${escape(logo)}" alt="" loading="lazy" decoding="async">`:escape(team)}</span>`;
 }
-function fixturePicks(id){const order=['winner','team_threes','team_rebounds','team_assists','total','handicap'];
+function fixturePicks(id){
+  // Football AI Lab policy: display the frozen Top 3 by descending
+  // archived probability, never by a preferred market category.
   return Object.values(state.picks).filter(p=>p&&p.event_id===id)
-    .sort((a,b)=>order.indexOf(a.market)-order.indexOf(b.market)).slice(0,3);}
+    .sort((a,b)=>(Number(b.probability)||0)-(Number(a.probability)||0)||String(a.market).localeCompare(String(b.market))).slice(0,3);
+}
 function extraPick(id){return state.extras[id+'|extra']||null}
 function pill(status){const cls=status==='ACIERTO'?'win':status==='FALLO'?'lose':'';return `<span class="status-chip ${cls}">${escape(status||'PENDIENTE')}</span>`}
 function stat(title,value,foot){return `<div class="stat"><span>${escape(title)}</span><strong>${escape(value)}</strong><small>${escape(foot)}</small></div>`}
