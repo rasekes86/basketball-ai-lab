@@ -2,7 +2,7 @@
 import unittest
 from datetime import datetime, timedelta, timezone
 
-from basketball_ai_lab.history import backfill_policy, historical_coverage
+from basketball_ai_lab.history import backfill_policy, historical_coverage, supersede_unstarted_picks
 
 NOW = datetime(2026, 11, 18, 22, tzinfo=timezone.utc)
 
@@ -64,6 +64,24 @@ class HistoryPolicyTests(unittest.TestCase):
         cov=historical_coverage({"0":g},{"0":record},NOW,min_sample=1)
         self.assertEqual(cov["ready_teams_by_market"],
                          {"threes":1,"rebounds":2,"assists":1})
+
+
+    def test_user_refresh_preserves_started_and_scored_predictions(self):
+        earlier=(NOW-timedelta(minutes=1)).isoformat()
+        later=(NOW+timedelta(hours=2)).isoformat()
+        picks={
+            "old|winner":{"start_utc":earlier,"status":"PENDIENTE","result":None,"created_utc":earlier},
+            "final|winner":{"start_utc":later,"status":"ACIERTO","result":1,"created_utc":earlier},
+            "next|winner":{"start_utc":later,"status":"PENDIENTE","result":None,"created_utc":earlier},
+        }
+        archive={}
+        self.assertEqual(supersede_unstarted_picks(picks,NOW,archive),1)
+        self.assertEqual(set(picks),{"old|winner","final|winner"})
+        self.assertEqual(len(archive),1)
+        self.assertEqual(next(iter(archive.values()))["superseded_reason"],
+                         "USER_REQUESTED_PREGAME_RESELECTION")
+        self.assertEqual(supersede_unstarted_picks(picks,NOW,archive),0)
+
 
 
 if __name__=="__main__":
