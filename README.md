@@ -60,18 +60,13 @@ py -m http.server 8000 --directory site
 
 Abrir `http://localhost:8000` en el navegador. La **primera ejecución real necesita conexión a internet** y que la fuente ESPN sea accesible. Si el endpoint devuelve errores o bloquea GitHub Actions, el proyecto debe conservar archivos e indicar la incidencia; no se engaña al usuario con datos inventados.
 
-## Publicar en GitHub: intervención futura del propietario
+## Proyecto publicado e instalación móvil
 
-Esta entrega contiene **todos los archivos**, pero no está conectada a un repositorio remoto nuevo porque la integración GitHub disponible en esta sesión **no tiene la operación de crear repositorios** y no se debe tocar `football-ai-lab`.
+El repositorio ya está publicado en [rasekes86/basketball-ai-lab](https://github.com/rasekes86/basketball-ai-lab) y su web/PWA está en **https://rasekes86.github.io/basketball-ai-lab/**.
 
-1. Crear un repositorio **público** vacío denominado `basketball-ai-lab` en tu cuenta de GitHub. No marcar README automático (ya existe).
-2. **Descomprimir el ZIP y subir sus archivos** al repositorio nuevo, conservando `.github/workflows` (por Git, GitHub Desktop o Codex). No subas el ZIP sin descomprimir. Tienes pasos detallados en [`docs/SOLO_SUBIR_GITHUB.md`](docs/SOLO_SUBIR_GITHUB.md).
-3. En GitHub: **Settings → Actions → General**, verificar que se permiten las acciones y que los workflows tienen permiso para escribir contenido si se requiere (el workflow declara `contents: write`).
-4. En **Settings → Pages → Build and deployment → Source**, seleccionar **GitHub Actions**.
-5. En **Actions**, ejecutar manualmente `Basketball AI Lab · actualización NBA` si la ejecución inicial no arranca con el primer push.
-6. Verificar `data/status.json`: `source_successful_days > 0`, `logo_coverage` y `top3_archived`. Una vez publicada, la web estará habitualmente en `https://TU-USUARIO.github.io/basketball-ai-lab/`.
+En Android, abre la web desde Chrome y toca **Instalar**. Si no aparece un aviso automático, pulsa el menú ⋮ → Instalar aplicación (o Añadir a pantalla de inicio). El icono quedará entre tus apps; la web se abre sin barra del navegador. El panel utiliza conexión para actualizar cuotas y resultados, aunque el interfaz básico queda cacheado.
 
-**No es necesario crear claves ni Google Sheets** para el calendario, historial y los Top 3. Véase [PLAN_DE_ACTIVACION](docs/PLAN_DE_ACTIVACION.md).
+GitHub Actions ejecuta actualización NBA diaria, pruebas y publicación Pages. El Top 3 conserva resultados verificables y los antiguos sustituidos a petición expresa se separan del balance. Los logos de las 30 franquicias se muestran desde la fuente ESPN o se sustituyen por las siglas si no cargan.
 
 ## Límites y honestidad
 
@@ -83,11 +78,15 @@ Esta entrega contiene **todos los archivos**, pero no está conectada a un repos
 
 Fuentes y límites verificados: [docs/FUENTES_Y_COSTES.md](docs/FUENTES_Y_COSTES.md).
 
-## Activar cuotas gratis (solo cuando tengas tu clave)
+## Activar The Odds API y consultar el 3+1
 
-1. Alta gratuita en https://the-odds-api.com/ (500 créditos mensuales según su plan vigente).
-2. En el repositorio Basketball AI Lab → Settings → Secrets and variables → Actions → New repository secret: `ODDS_API_KEY` (nunca en archivos ni chats).
-3. En Variables → New repository variable: `ENABLE_ODDS` = `true`.
-4. Ejecuta `Basketball AI Lab · actualización NBA` desde Actions. Un máximo de **una consulta diaria de 3 mercados / 1 región** consume aproximadamente 3 créditos, con freno interno de 100 créditos mensuales. La adicional **solo se archiva** si hay una cuota REAL >1,50 registrada antes del partido y el modelo experimental supera sus filtros. Puede no generarse ninguna.
+La captura se habilita **automáticamente** cuando existe el secreto de repositorio `ODDS_API_KEY` en GitHub Actions. No hace falta crear otra variable. Sin clave no se realizan solicitudes al proveedor, ni se muestran cuotas ficticias. Las capturas son de `basketball_nba`, mercados `h2h,spreads,totals` y región `us`; el consumo interno está limitado a una captura por día UTC y 100 créditos mensuales.
 
-El proveedor no asegura mercados de jugadores para todos los encuentros. No se consulta ninguno automáticamente; necesitaría una política de gasto por partido y modelado de jugadores específico. Todas las estadísticas avanzadas se obtienen desde endpoints ESPN no oficiales sujetos a límites y disponibilidad. Football AI Lab no comparte secretos ni Actions con este proyecto.
+1. Consigue la clave en https://the-odds-api.com/.
+2. Guarda `ODDS_API_KEY` en [Actions Secrets](https://github.com/rasekes86/basketball-ai-lab/settings/secrets/actions).
+3. Ejecuta `Basketball AI Lab · actualización NBA` desde la pestaña Actions y confirma `odds_status` en `data/status.json`.
+4. Consulta la **adicional +1,50** de cada ficha. Si no hay una oferta real que pase los filtros, el cuarto pronóstico queda vacío; no se inventa.
+
+Guía móvil y activación detallada: [docs/ACTIVAR_ODDS_API_PWA.md](docs/ACTIVAR_ODDS_API_PWA.md).
+
+Las probabilidades son experimentales, no calibradas para apostar dinero. Las cotizaciones de la región estadounidense pueden no corresponder a operadores disponibles en España. Football AI Lab permanece independiente.
