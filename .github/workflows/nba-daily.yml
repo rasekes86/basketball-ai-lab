@@ -32,7 +32,9 @@ jobs:
         env:
           PYTHONPATH: src
           ENABLE_ADVANCED_STATS: 'true'
-          ENABLE_ODDS: ${{ vars.ENABLE_ODDS || 'false' }}
+          # La integración se activa automáticamente al guardar ODDS_API_KEY.
+          # Sin secreto, ENABLE_ODDS=false y no se llama al proveedor.
+          ENABLE_ODDS: ${{ secrets.ODDS_API_KEY != '' && 'true' || 'false' }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python -m basketball_ai_lab update --output data --site site/data
       - name: Validar archivos, fechas, escudos y CSV antes de publicar
