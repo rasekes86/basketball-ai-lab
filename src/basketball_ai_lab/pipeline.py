@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 from .provider import Client,SourceError
 from .transform import normalize_games,normalize_teams,time_utc
-from .model import forecast,settle_one
+from .model import forecast,settle_one,reference_forecast
 from .advanced import parse_summary
 from .history import backfill_policy,historical_coverage,supersede_unstarted_picks
 from .odds import fetch_snapshot,choose_extra
@@ -204,7 +204,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         if len(game_picks)!=3:continue
         # The auxiliary model estimates price-specific probabilities using
         # only data available at this run; it does not rewrite the frozen Top 3.
-        baseline,_=forecast(game,games,now)
+        baseline=reference_forecast(game,games,now)
         candidate=choose_extra(game,game_picks,quotes,now,baseline=baseline)
         if candidate:
             extras[candidate["id"]]=candidate
