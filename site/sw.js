@@ -1,5 +1,5 @@
 /* Cache only the application shell, NOT live results or provider data. */
-const CURRENT='basketball-ai-lab-shell-v4';
+const CURRENT='basketball-ai-lab-shell-v5';
 const ROOT=new URL(self.registration.scope);
 const SHELL=['./','index.html','styles.css','app.js','matchup-stats.mjs','assets/icon.svg','assets/icon-192.png','assets/icon-512.png','manifest.webmanifest'];
 const URLS=SHELL.map(x=>new URL(x,ROOT).href);
