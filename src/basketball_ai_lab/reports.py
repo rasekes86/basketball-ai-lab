@@ -3,15 +3,24 @@ import csv
 from pathlib import Path
 
 FIELDS=("partido","fecha_utc","local","visitante","mercado","seleccion",
-        "probabilidad","cuota_justa_teorica","cuota_real_ofrecida","bookmaker",
+        "probabilidad","cuota_justa_teorica","balance_simulado_1_eur",
+        "cuota_real_ofrecida","bookmaker",
         "captura_cuota_utc","estado","acierto","nivel","fuente")
 
 def _one(row):
+    try:
+        p=float(row.get("probability"))
+    except (TypeError,ValueError):
+        p=0.0
+    simulated=""
+    if row.get("real_price") is None and row.get("status") in ("ACIERTO","FALLO") and row.get("result") in (0,1) and 0<p<=1:
+        simulated=round((1/p)-1 if row["result"]==1 else -1,3)
     return {"partido":row.get("event_id"),"fecha_utc":row.get("start_utc"),
         "local":row.get("home"),"visitante":row.get("away"),
         "mercado":row.get("market"),"seleccion":row.get("selection"),
         "probabilidad":row.get("probability"),
         "cuota_justa_teorica":row.get("fair_odds",""),
+        "balance_simulado_1_eur":simulated,
         "cuota_real_ofrecida":row.get("real_price") if row.get("real_price") is not None else "",
         "bookmaker":row.get("bookmaker", ""),
         "captura_cuota_utc":row.get("captured_utc",""),
@@ -42,6 +51,41 @@ def surprises(games,picks):
             "ganador_real":winner,"marcador":f"{g['home_score']}-{g['away_score']}",
             "tipo":"SORPRESA_SEGUN_MODELO_SIN_CUOTAS"})
     return result
+
+
+def theoretical_top3_balance(picks, stake=1.0):
+    """Hypothetical 1 EUR stake at the mathematical fair price 1/p.
+
+    This is NOT realised profit from any available bookmaker. Historical
+    selections with unknown results are excluded, never treated as losses.
+    """
+    settled=[row for row in picks.values() if row.get("result") in (0,1)
+             and row.get("status") in ("ACIERTO","FALLO")
+             and row.get("retrospective") is False]
+    summary={}
+    total=0.0
+    valid=0
+    for row in settled:
+        try:
+            p=float(row["probability"])
+        except (KeyError,ValueError,TypeError):
+            continue
+        if not 0<p<=1:continue
+        net=stake*(1/p-1) if row["result"]==1 else -stake
+        valid+=1
+        total+=net
+        market=row.get("market","desconocido")
+        group=summary.setdefault(market,{"settled":0,"hits":0,"net_eur":0.0})
+        group["settled"]+=1
+        group["hits"]+=int(row["result"]==1)
+        group["net_eur"]+=net
+    for group in summary.values():
+        group["roi_pct"]=round(group["net_eur"]/(group["settled"]*stake)*100,2)
+        group["net_eur"]=round(group["net_eur"],3)
+    return {"settled":valid,"stake_eur":stake,"total_staked_eur":round(valid*stake,2),
+            "net_eur":round(total,3),
+            "roi_pct":round(total/(valid*stake)*100,2) if valid else None,
+            "by_market":summary,"price_basis":"MATHEMATICAL_1_OVER_P_NOT_OFFERED"}
 
 def publish(base,site,games,picks,extras):
     """Export original Top3 and exactly one frozen extra per fixture."""

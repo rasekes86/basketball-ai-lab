@@ -24,3 +24,13 @@
 .install-help{padding:15px 20px 20px;color:var(--text);line-height:1.65}
 .install-help p:last-child{font-size:12px;color:var(--muted)}
 @media(max-width:800px){.install-cta{min-width:39px;font-size:17px;padding:5px 9px}.install-cta span{display:inline;font-size:11px}}
+
+/* Distinguish mathematical price and hypothetical 1-EUR settlement clearly. */
+.fair-note{display:block;font-size:10px;color:var(--muted);font-weight:500;margin-top:4px}
+.pick-meta{display:flex;align-items:flex-end;gap:5px;flex-direction:column;min-width:110px}
+.pick-meta>b{font-variant-numeric:tabular-nums}
+.simulated-net{display:block;font-size:10px;font-variant-numeric:tabular-nums;font-weight:800;text-align:right}
+.simulated-net.positive{color:var(--win)}
+.simulated-net.negative{color:var(--lose)}
+.balance-disclaimer{margin:-12px 0 22px;max-width:850px}
+@media(max-width:520px){.pick-meta{min-width:90px}.fair-note,.simulated-net{font-size:9px}}

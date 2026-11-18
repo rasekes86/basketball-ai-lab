@@ -31,7 +31,14 @@ function fixturePicks(id){const order=['winner','team_threes','team_rebounds','t
 function extraPick(id){return state.extras[id+'|extra']||null}
 function pill(status){const cls=status==='ACIERTO'?'win':status==='FALLO'?'lose':'';return `<span class="status-chip ${cls}">${escape(status||'PENDIENTE')}</span>`}
 function stat(title,value,foot){return `<div class="stat"><span>${escape(title)}</span><strong>${escape(value)}</strong><small>${escape(foot)}</small></div>`}
-function pickLine(p){return `<div class="pick-row"><span>${escape(p.selection)}</span><div>${p.probability!==undefined?`<b>${probability(p.probability)}</b> `:''}${pill(p.status)}</div></div>`}
+function fairPrice(p){const prob=Number(p?.probability);return Number.isFinite(prob)&&prob>0&&prob<=1?1/prob:null}
+function euros(amount){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2,signDisplay:'always'}).format(amount)}
+function pickLine(p){
+  const fair=fairPrice(p);
+  const settled=p.status==='ACIERTO'||p.status==='FALLO';
+  const net=settled&&fair!==null?(p.status==='ACIERTO'?fair-1:-1):null;
+  return `<div class="pick-row"><span>${escape(p.selection)}<small class="fair-note">Cuota equivalente ${fair===null?'—':fair.toFixed(2).replace('.',',')} · no ofrecida por casa</small></span><div class="pick-meta"><b>${probability(p.probability)}</b>${pill(p.status)}${net!==null?`<small class="simulated-net ${net>=0?'positive':'negative'}">${euros(net)} / 1 € simulado</small>`:''}</div></div>`;
+}
 function fixture(g){
   const picks=fixturePicks(g.id);const extra=extraPick(g.id);const done=g.status==='FINAL';
   const sample=matchupSnapshot(g,state.games,state.picks);
@@ -89,13 +96,19 @@ function render(){
   $('stats').innerHTML=stat('PARTIDOS ESTA NOCHE',number(tonight.length),'Todos los de la jornada NBA')+stat('TOP 3 ESTA NOCHE',number(top3Tonight),'3 por partido, cuando hay muestra')+stat('ACIERTOS VERIFICADOS',checked.length?probability(wins/checked.length):'—',`${wins} de ${checked.length} selecciones`)+stat('ADICIONALES REALES',`${extras.length}`,'Cuota ofrecida superior a 1,50');
   $('featured').innerHTML=focus.length?focus.map(fixture).join(''):alertBox('Aún no hay próximos encuentros comprobados','Una ejecución del motor descargará el calendario real; no mostramos partidos ficticios.');
   $('recent').innerHTML=recent.length?recent.slice(0,5).map(resultItem).join(''):alertBox('Pendiente de primeras liquidaciones','Los resultados solo aparecen aquí después de archivar pronósticos y verificar el partido.');
-  $('resultStats').innerHTML=stat('TOP 3 EVALUADO',`${checked.length}/${picks.length}`,'Solo predicciones originales')+stat('ACIERTO TOP 3',checked.length?probability(wins/checked.length):'—','Sin retrospectivos')+stat('ADICIONALES +1,50',`${extraDone.length}/${extras.length}`,'Con cuotas identificadas')+stat('ACIERTO ADICIONAL',extraDone.length?probability(winExtra/extraDone.length):'—','Sin cuota real, no hay ROI');
+  const tb=state.status.top3_theoretical_balance||{};
+  const top3Net=Number(tb.net_eur);
+  const simText=Number(tb.settled)>0&&Number.isFinite(top3Net)?euros(top3Net):'—';
+  const realNet=extraDone.length?euros(Number(state.status.extras_unit_profit)||0):'—';
+  $('resultStats').innerHTML=stat('TOP 3 EVALUADO',`${checked.length}/${picks.length}`,'Solo los 3 archivados')+stat('ACIERTOS TOP 3',checked.length?probability(wins/checked.length):'—','No recalcular después del inicio')+stat('BALANCE TOP 3 SIMULADO',simText,Number(tb.settled)>0?`${tb.roi_pct}% · 1 € por pick a cuota 1/p`:'Sin resultados liquidados')+stat('ADICIONALES +1,50',`${extraDone.length}/${extras.length}`,'Cuotas reales archivadas')+stat('SIMULACIÓN · CUOTA REAL',realNet,'1 € hipotético por apuesta archivada');
   const marketNames={winner:'Ganador',total:'Puntos totales',handicap:'Hándicap',team_threes:'Triples (equipo)',team_rebounds:'Rebotes (equipo)',team_assists:'Asistencias (equipo)'};
   const marketRows=state.status.market_metrics||{};
   $('marketResults').innerHTML=Object.entries(marketNames).map(([key,label])=>{
     const m=marketRows[key]||{};
     const evaluated=Number(m.evaluated)||0;
-    return `<article class="market-quality"><small>${escape(label)}</small><strong>${evaluated?probability(m.accuracy):'—'}</strong><span>${evaluated} evaluadas · Brier ${evaluated?Number(m.brier).toFixed(3):'—'}</span></article>`;
+    const bm=tb.by_market?.[key];
+    const simulated=Number(bm?.settled)>0?` · Sim. ${euros(Number(bm.net_eur)||0)} (${Number(bm.roi_pct).toFixed(1)}%)`:'';
+    return `<article class="market-quality"><small>${escape(label)}</small><strong>${evaluated?probability(m.accuracy):'—'}</strong><span>${evaluated} evaluadas · Brier ${evaluated?Number(m.brier).toFixed(3):'—'}${simulated}</span></article>`;
   }).join('');
   const results=all.filter(g=>g.status==='FINAL').sort((a,b)=>gameTime(b.start_utc)-gameTime(a.start_utc));
   $('fullResults').innerHTML=results.length?results.slice(0,60).map(resultItem).join(''):alertBox('Todavía no hay resultados descargados','Se cargarán automáticamente después de la primera ingestión.');
