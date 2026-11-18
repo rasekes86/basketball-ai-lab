@@ -72,3 +72,22 @@ def historical_coverage(games, boxscores, asof, min_sample=MIN_SAMPLE):
                                  for data in counts.values()),
         "by_team": counts,
     }
+
+
+def supersede_unstarted_picks(picks, now, archive):
+    """Remove only pending future selections, with a separate audit backup.
+
+    Historical, started, evaluated and partially settled predictions are
+    never erased or repriced. Called once when refresh request is pending.
+    """
+    changed = 0
+    for key, row in list(picks.items()):
+        start = time_utc(row.get("start_utc"))
+        if not start or start <= now or row.get("status") != "PENDIENTE" or row.get("result") is not None:
+            continue
+        audit_key = key + "@" + str(row.get("created_utc"))
+        archive[audit_key] = {**row, "superseded_utc": now.isoformat(),
+                              "superseded_reason": "USER_REQUESTED_PREGAME_RESELECTION"}
+        del picks[key]
+        changed += 1
+    return changed
