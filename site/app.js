@@ -145,6 +145,43 @@ function openGame(id){
   $('dialogBody').innerHTML=`${review?`<p class="review-banner">⚠ Partido pendiente de revisión (${escape(review.code)}). No se liquidarán pronósticos hasta contrastar el cambio.</p>`:''}<div class="teams"><div class="team">${crest(g.home)}<strong>${escape(names[g.home])}</strong></div><span class="team-versus score">${g.status==='FINAL'?`${Number(g.home_score)} – ${Number(g.away_score)}`:'VS'}</span><div class="team">${crest(g.away)}<strong>${escape(names[g.away])}</strong></div></div><div class="dialog-stats"><div><span>Fecha en Madrid</span><strong>${escape(date(g.start_utc))}</strong></div><div><span>Estado fuente</span><strong>${escape(g.status)}</strong></div></div><h3>Estadísticas previas del encuentro</h3>${matchupStatsHTML(g)}<h3>Top 3 original</h3><div class="dialog-picks">${p.length?p.map(pickLine).join(''):alertBox('Sin Top 3','Historial insuficiente o análisis todavía no ejecutado.')}</div><h3>Adicional +1,50</h3>${extra?`<div class="extra-row"><div><strong>${escape(extra.selection)}</strong><small>${escape(extra.provider)} · ${escape(extra.bookmaker)} · ${escape(date(extra.quote_updated_utc))}</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span></div><p>${pill(extra.status)}</p>`:'<p class="fineprint">No se archivó ninguna cuota real que superara los filtros antes del partido.</p>'}<p class="fineprint">Cuando aparecen triples, rebotes o asistencias se basan en box scores reales de equipos anteriores al pronóstico. Los mercados de jugadores requieren una fase específica de alineaciones y minutos. Probabilidades de un modelo experimental sin calibración prospectiva demostrada. Los mercados Top 3 usan líneas teóricas, no cuotas ejecutables. No constituye consejo de apuestas.</p>`;
   $('matchDialog').showModal();
 }
+// Browser-owned installation prompt: never install without an explicit tap.
+let deferredInstallPrompt=null;
+const installed=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function refreshInstallButton(){
+  $('installApp').hidden=installed();
+}
+window.addEventListener('beforeinstallprompt',event=>{
+  event.preventDefault();
+  deferredInstallPrompt=event;
+  refreshInstallButton();
+});
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null;
+  refreshInstallButton();
+});
+$('installApp').addEventListener('click',async()=>{
+  if(installed())return;
+  if(deferredInstallPrompt){
+    const prompt=deferredInstallPrompt;
+    deferredInstallPrompt=null;
+    await prompt.prompt();
+    // The user decides whether to accept; a dismissed prompt is not success.
+    try{await prompt.userChoice;}catch{}
+    refreshInstallButton();
+    return;
+  }
+  const ios=/iPad|iPhone|iPod/i.test(navigator.userAgent);
+  $('installInstructions').textContent=ios
+    ?'En Safari, toca Compartir y después Añadir a pantalla de inicio.'
+    :'En Chrome para Android, abre el menú de tres puntos (⋮) y pulsa Instalar aplicación o Añadir a pantalla de inicio. Si no aparece, abre la web directamente en Chrome.';
+  $('installDialog').showModal();
+});
+$('closeInstallDialog').addEventListener('click',()=>$('installDialog').close());
+$('installDialog').addEventListener('click',event=>{
+  if(event.target===$('installDialog'))$('installDialog').close();
+});
+refreshInstallButton();
 $('themeToggle').addEventListener('click',toggleTheme);
 $('refresh').addEventListener('click',refresh);
 $('teamFilter').addEventListener('input',render);
