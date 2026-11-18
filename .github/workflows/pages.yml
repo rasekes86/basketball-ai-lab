@@ -6,6 +6,13 @@ on:
       - 'site/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
+  # Los commits hechos por GITHUB_TOKEN desde nba-daily NO generan push
+  # encadenados. workflow_run SI permite publicar los datos actualizados.
+  workflow_run:
+    workflows:
+      - 'Basketball AI Lab · actualización NBA'
+    types: [completed]
+    branches: [main]
 permissions:
   contents: read
   pages: write
@@ -15,6 +22,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -22,6 +30,10 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
+        with:
+          # En workflow_run, el SHA del evento es el del workflow original.
+          # Necesitamos la rama actual, incluidos datos que acaba de subir.
+          ref: main
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
