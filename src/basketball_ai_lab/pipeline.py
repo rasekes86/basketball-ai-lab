@@ -6,7 +6,7 @@ from .provider import Client,SourceError
 from .transform import normalize_games,normalize_teams,time_utc
 from .model import forecast,settle_one
 from .advanced import parse_summary
-from .history import backfill_policy,historical_coverage
+from .history import backfill_policy,historical_coverage,supersede_unstarted_picks
 from .odds import fetch_snapshot,choose_extra
 from .store import load,save
 from .teams import NBA_TEAMS
@@ -137,14 +137,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     refresh_count=0
     refresh_active=refresh_request.get("pending") is True
     if refresh_active:
-        for key,row in list(picks.items()):
-            start=time_utc(row.get("start_utc"))
-            if start and start>now and row.get("status")=="PENDIENTE" and row.get("result") is None:
-                audit_key=key+"@"+str(row.get("created_utc"))
-                superseded_picks[audit_key]={**row,"superseded_utc":now.isoformat(),
-                    "superseded_reason":"USER_REQUESTED_PREGAME_RESELECTION"}
-                del picks[key]
-                refresh_count+=1
+        refresh_count=supersede_unstarted_picks(picks,now,superseded_picks)
     # A prospective forecast is generated only from already-final games,
     # at the actual creation time, and can never be recalculated in place.
     upcoming=sorted((g for g in games.values() if
