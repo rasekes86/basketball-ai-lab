@@ -172,6 +172,7 @@ def choose_extra(game,picks,quotes,now,baseline=None):
         "real_price":q["price"],"real_price_status":"OFRECIDA_API_REGISTRADA",
         "bookmaker":q["bookmaker"],"provider":q["provider"],
         "quote_updated_utc":q["updated_utc"],"captured_utc":q["captured_utc"],
+        "quote_time_basis":q.get("quote_time_basis","PROVIDER_UPDATED"),
         "quote_event_id":q["event_id"],"estimated_ev":round(ev,4),
         "status":"PENDIENTE","result":None,"quality":"NO_CALIBRADO",
         "retrospective":False}
