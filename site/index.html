@@ -8,6 +8,10 @@
   <title>Basketball AI Lab | NBA</title>
   <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
   <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Basket AI Lab">
   <script>try{if(localStorage.getItem('bal-theme')==='light')document.documentElement.dataset.theme='light'}catch{}</script>
   <link rel="stylesheet" href="./styles.css">
 </head>
@@ -36,6 +40,7 @@
         <div class="topbar-actions">
           <span class="connection" id="connection"><span class="connection-dot"></span>Sin datos</span>
           <button type="button" class="icon-button" id="themeToggle" aria-pressed="false" aria-label="Activar tema claro" title="Cambiar apariencia">☽ <span>Oscuro</span></button>
+          <button type="button" class="icon-button install-cta" id="installApp" aria-label="Instalar Basketball AI Lab" title="Instalar en el dispositivo">↓ <span>Instalar</span></button>
           <button type="button" class="icon-button refresh-button" id="refresh" aria-label="Volver a cargar datos" title="Actualizar">↻</button>
         </div>
       </header>
@@ -95,6 +100,7 @@
     </div>
   </div>
   <dialog id="matchDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><span id="dialogTitle">FICHA NBA</span><button id="closeDialog" aria-label="Cerrar ficha">×</button></div><div id="dialogBody"></div></dialog>
+  <dialog id="installDialog" aria-labelledby="installTitle"><div class="dialog-top"><span id="installTitle">INSTALAR BASKETBALL AI LAB</span><button id="closeInstallDialog" aria-label="Cerrar instrucciones">×</button></div><div class="install-help"><p id="installInstructions"></p><p>Una vez instalada, se abrirá desde el icono de tu móvil, sin mostrar la barra del navegador. Los datos de partidos necesitan conexión para actualizarse.</p></div></dialog>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
