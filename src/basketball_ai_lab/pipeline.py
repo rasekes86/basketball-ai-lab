@@ -142,7 +142,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     # at the actual creation time, and can never be recalculated in place.
     upcoming=sorted((g for g in games.values() if
           (start:=time_utc(g.get("start_utc"))) and start>now
-          and start<now+timedelta(hours=72) and g.get("status")=="SCHEDULED"
+          and start<now+timedelta(days=7) and g.get("status")=="SCHEDULED"
           and g["id"] not in review_flags),
           key=lambda g:g["start_utc"])
     exclusions={}
