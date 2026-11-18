@@ -1,0 +1,34 @@
+name: Basketball AI Lab · pruebas
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'data/**'
+      - 'site/data/**'
+      - 'site/reports/**'
+      - '*.md'
+      - 'docs/**'
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Pruebas del motor y de la protección de cuotas
+        run: PYTHONPATH=src python -m unittest discover -s tests -v
+      - name: Comprobaciones del panel web y PWA
+        run: node --test site/tests.mjs
+      - name: Compilar sintaxis Python sin instalar paquetes
+        run: python -m compileall -q src
+      - name: Comprobar integridad del paquete sin red
+        run: PYTHONPATH=src python -m basketball_ai_lab doctor

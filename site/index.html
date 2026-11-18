@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta id="theme-color" name="theme-color" content="#091622">
+  <meta name="description" content="Basketball AI Lab: NBA, pronósticos experimentales prepartido y resultados auditables.">
+  <title>Basketball AI Lab | NBA</title>
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <script>try{if(localStorage.getItem('bal-theme')==='light')document.documentElement.dataset.theme='light'}catch{}</script>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="app">
+    <aside class="sidebar">
+      <a href="#inicio" class="brand" aria-label="Basketball AI Lab, inicio">
+        <span class="brand-ball" aria-hidden="true">🏀</span>
+        <span><strong>BASKETBALL <b>AI</b> LAB</strong><small>NBA · RESEARCH EDITION</small></span>
+      </a>
+      <p class="sidebar-title">NAVEGACIÓN</p>
+      <nav class="sidebar-menu" aria-label="Secciones">
+        <button class="nav active" data-view="inicio">⌂ <span>Inicio</span></button>
+        <button class="nav" data-view="partidos">▦ <span>Partidos</span></button>
+        <button class="nav" data-view="resultados">✓ <span>Resultados 3+1</span></button>
+        <button class="nav" data-view="equipos">◈ <span>Los 30 equipos</span></button>
+        <button class="nav" data-view="modelo">◎ <span>El modelo</span></button>
+      </nav>
+      <section class="sidebar-note"><small>SOLO ESTUDIO</small><strong>Datos antes que intuiciones.</strong><p>Pronósticos archivados, análisis reproducibles y resultados evaluados sin modificar el pasado.</p></section>
+    </aside>
+    <div class="workspace">
+      <header class="topbar">
+        <div class="mobile-logo"><span>🏀</span><b>BASKETBALL <i>AI</i> LAB</b></div>
+        <div class="topbar-heading"><small>NBA / INTELLIGENCE HUB</small><span>Estudio de probabilidades y seguimiento</span></div>
+        <div class="topbar-actions">
+          <span class="connection" id="connection"><span class="connection-dot"></span>Sin datos</span>
+          <button type="button" class="icon-button" id="themeToggle" aria-pressed="false" aria-label="Activar tema claro" title="Cambiar apariencia">☽ <span>Oscuro</span></button>
+          <button type="button" class="icon-button refresh-button" id="refresh" aria-label="Volver a cargar datos" title="Actualizar">↻</button>
+        </div>
+      </header>
+      <main id="main">
+        <section class="page active" id="view-inicio" aria-labelledby="homeHeading">
+          <div class="hero">
+            <div class="hero-top"><span class="eyebrow">NBA · TEMPORADA REGULAR</span><span class="hero-updated" id="updated">Aún sin publicación</span></div>
+            <h1 id="homeHeading">Cada partido.<br><em>Una hipótesis.</em></h1>
+            <p>Predicciones archivadas antes del salto inicial, resultados verificados y probabilidades que podemos poner a prueba.</p>
+            <div class="hero-tag">● Sin recomendaciones de apuestas · Motor experimental</div>
+          </div>
+          <div class="stat-grid" id="stats" aria-live="polite"></div>
+          <div class="section-title"><div><small>01 · PRÓXIMOS</small><h2>En el radar</h2></div><button data-view="partidos">Ver calendario ›</button></div>
+          <div class="fixture-grid" id="featured" aria-live="polite"></div>
+          <div class="section-title"><div><small>02 · AUDITORÍA</small><h2>Últimos verificados</h2></div><button data-view="resultados">Ver resultados ›</button></div>
+          <div class="result-list" id="recent"></div>
+        </section>
+        <section class="page" id="view-partidos" hidden>
+          <div class="page-title"><span class="eyebrow">COMPETICIÓN · NBA</span><h1>Próximos <em>partidos.</em></h1><p>Selecciona un encuentro para consultar las predicciones congeladas y su situación.</p></div>
+          <div class="filters"><label>Buscar equipo<input type="search" id="teamFilter" placeholder="Lakers, Celtics…" autocomplete="off"></label><label>Mostrar<select id="periodFilter"><option value="future">Próximos</option><option value="all">Todos</option><option value="final">Finalizados</option></select></label></div>
+          <div class="fixture-grid" id="allFixtures"></div>
+        </section>
+        <section class="page" id="view-resultados" hidden>
+          <div class="page-title"><span class="eyebrow">SEGUIMIENTO INDEPENDIENTE</span><h1>Resultados <em>3+1.</em></h1><p>Solo se puntúan los tres mercados originales y la adicional realmente archivada.</p></div>
+          <div class="stat-grid" id="resultStats"></div>
+          <div class="section-title"><div><small>CALIDAD DEL MODELO</small><h2>Fiabilidad por mercado</h2></div></div>
+          <div class="market-results" id="marketResults" aria-live="polite"></div>
+          <div class="export-row"><a href="./reports/top3.csv" download="nba-top3.csv">Descargar Top 3 (CSV/Excel) ↓</a><a href="./reports/adicional_150.csv" download="nba-adicionales.csv">Descargar adicionales ↓</a><a href="./reports/sorpresas.csv" download="nba-sorpresas.csv">Exportar sorpresas ↓</a></div>
+          <div class="legend"><span class="dot win"></span>Acierto confirmado <span class="dot lose"></span>Fallo confirmado <span class="dot pending"></span>Sin verificar</div>
+          <div class="result-list" id="fullResults"></div>
+          <div class="section-title"><div><small>UPSETS · ANÁLISIS</small><h2>Sorpresas del modelo</h2></div></div>
+          <p class="fineprint">Derrotas de un favorito con probabilidad archivada ≥60 %. No implica que las cuotas tuviesen valor.</p><div class="result-list" id="upsets"></div>
+        </section>
+        <section class="page" id="view-equipos" hidden>
+          <div class="page-title"><span class="eyebrow">30 FRANQUICIAS</span><h1>Todos los <em>escudos.</em></h1><p>Emblemas obtenidos del catálogo de ESPN, con iniciales de reserva cuando la imagen no está disponible.</p></div>
+          <div class="team-grid" id="teamGrid"></div>
+        </section>
+        <section class="page" id="view-modelo" hidden>
+          <div class="page-title"><span class="eyebrow">REPRODUCIBLE · SIN CAJA NEGRA</span><h1>Cómo <em>calculamos.</em></h1></div>
+          <div class="method-grid">
+            <article><span>01</span><h2>Historial anterior al partido</h2><p>Solo utilizamos encuentros finalizados y conocidos antes de generar el pronóstico. No entrenamos con resultados futuros.</p></article>
+            <article><span>02</span><h2>Modelo experimental</h2><p>Estimaciones de anotación y defensa por equipo, ponderadas por antigüedad y regularizadas para muestras pequeñas. No está calibrado para apuestas.</p></article>
+            <article><span>03</span><h2>Tres mercados archivados</h2><p>Ganador, total de puntos y margen teórico. Las líneas calculadas por el modelo NO equivalen a líneas ofrecidas por una casa de apuestas.</p></article>
+            <article><span>04</span><h2>Adicional +1,50</h2><p>Solo podrá archivarse si existe una cuota real registrada, de un proveedor y casa identificados, antes de empezar el partido. Por defecto está desactivada.</p></article>
+            <article><span>05</span><h2>Seguimiento postpartido</h2><p>Separación visual de acierto, fallo y pendiente. Ningún resultado ausente se contabiliza como fallo y el Top 3 no se recalcula retrospectivamente.</p></article>
+            <article><span>06</span><h2>Fuentes y límites</h2><p>ESPN ofrece endpoints accesibles sin clave pero no documentados para usos externos. Si el proveedor falla, se conservan los archivos, se señala el problema y no se inventa información.</p></article>
+          </div>
+        </section>
+      </main>
+      <footer><span>BASKETBALL AI LAB · 2026</span><span>Proyecto experimental. Datos ESPN no oficiales. Marcas y escudos © sus titulares. Sin afiliación ni apuestas.</span></footer>
+      <nav class="bottom-nav" aria-label="Navegación móvil">
+        <button data-view="inicio" class="active"><span>⌂</span>Inicio</button>
+        <button data-view="partidos"><span>▦</span>Partidos</button>
+        <button data-view="resultados"><span>✓</span>Resultados</button>
+        <button data-view="equipos"><span>◈</span>Equipos</button>
+      </nav>
+    </div>
+  </div>
+  <dialog id="matchDialog" aria-labelledby="dialogTitle"><div class="dialog-top"><span id="dialogTitle">FICHA NBA</span><button id="closeDialog" aria-label="Cerrar ficha">×</button></div><div id="dialogBody"></div></dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

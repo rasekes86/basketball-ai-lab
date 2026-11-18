@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+.env
+.env.*
+.DS_Store
+coverage/
+node_modules/
+*.log
+
+# QA screenshots are generated locally and never published as real NBA data.
+qa/
+*.tmp
+.coverage

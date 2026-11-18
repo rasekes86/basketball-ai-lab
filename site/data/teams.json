@@ -1,0 +1,216 @@
+{
+  "retrieved_utc": null,
+  "source": "CATALOGO_LOCAL_PENDIENTE_ESPN",
+  "teams": {
+    "ATL": {
+      "abbr": "ATL",
+      "name": "Atlanta Hawks",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "BOS": {
+      "abbr": "BOS",
+      "name": "Boston Celtics",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "BKN": {
+      "abbr": "BKN",
+      "name": "Brooklyn Nets",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "CHA": {
+      "abbr": "CHA",
+      "name": "Charlotte Hornets",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "CHI": {
+      "abbr": "CHI",
+      "name": "Chicago Bulls",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "CLE": {
+      "abbr": "CLE",
+      "name": "Cleveland Cavaliers",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "DAL": {
+      "abbr": "DAL",
+      "name": "Dallas Mavericks",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "DEN": {
+      "abbr": "DEN",
+      "name": "Denver Nuggets",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "DET": {
+      "abbr": "DET",
+      "name": "Detroit Pistons",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "GSW": {
+      "abbr": "GSW",
+      "name": "Golden State Warriors",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "HOU": {
+      "abbr": "HOU",
+      "name": "Houston Rockets",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "IND": {
+      "abbr": "IND",
+      "name": "Indiana Pacers",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "LAC": {
+      "abbr": "LAC",
+      "name": "LA Clippers",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "LAL": {
+      "abbr": "LAL",
+      "name": "Los Angeles Lakers",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "MEM": {
+      "abbr": "MEM",
+      "name": "Memphis Grizzlies",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "MIA": {
+      "abbr": "MIA",
+      "name": "Miami Heat",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "MIL": {
+      "abbr": "MIL",
+      "name": "Milwaukee Bucks",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "MIN": {
+      "abbr": "MIN",
+      "name": "Minnesota Timberwolves",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "NOP": {
+      "abbr": "NOP",
+      "name": "New Orleans Pelicans",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "NYK": {
+      "abbr": "NYK",
+      "name": "New York Knicks",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "OKC": {
+      "abbr": "OKC",
+      "name": "Oklahoma City Thunder",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "ORL": {
+      "abbr": "ORL",
+      "name": "Orlando Magic",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "PHI": {
+      "abbr": "PHI",
+      "name": "Philadelphia 76ers",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "PHX": {
+      "abbr": "PHX",
+      "name": "Phoenix Suns",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "POR": {
+      "abbr": "POR",
+      "name": "Portland Trail Blazers",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "SAC": {
+      "abbr": "SAC",
+      "name": "Sacramento Kings",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "SAS": {
+      "abbr": "SAS",
+      "name": "San Antonio Spurs",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "TOR": {
+      "abbr": "TOR",
+      "name": "Toronto Raptors",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "UTA": {
+      "abbr": "UTA",
+      "name": "Utah Jazz",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    },
+    "WAS": {
+      "abbr": "WAS",
+      "name": "Washington Wizards",
+      "id": "",
+      "logo": null,
+      "source": "PENDIENTE"
+    }
+  }
+}

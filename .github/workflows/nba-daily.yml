@@ -1,0 +1,50 @@
+name: Basketball AI Lab · actualización NBA
+on:
+  # Una actualización diaria, sin consumo del repositorio Football AI Lab.
+  schedule:
+    - cron: '17 9 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/nba-daily.yml'
+permissions:
+  contents: write
+concurrency:
+  group: basketball-ai-lab-update
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Pruebas básicas previas
+        run: PYTHONPATH=src python -m unittest discover -s tests -q
+      - name: Actualizar calendario, escudos, Top 3 y liquidaciones
+        env:
+          PYTHONPATH: src
+          ENABLE_ODDS: ${{ vars.ENABLE_ODDS || 'false' }}
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        run: python -m basketball_ai_lab update --output data --site site/data
+      - name: Validar archivos, fechas, escudos y CSV antes de publicar
+        env:
+          PYTHONPATH: src
+        run: python -m basketball_ai_lab doctor --require-live
+      - name: Conservar solo archivos del proyecto de baloncesto
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data site/data site/reports
+          if git diff --cached --quiet; then
+            echo 'NBA: no hay cambios nuevos.'
+            exit 0
+          fi
+          git commit -m 'NBA: actualización experimental y auditoría'
+          git pull --rebase origin main
+          git push origin HEAD:main
