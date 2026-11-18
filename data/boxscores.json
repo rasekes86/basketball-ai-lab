@@ -1,4 +1,144 @@
 {
+  "401909088": {
+    "away": "BOS",
+    "home": "DET",
+    "id": "401909088",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-20T19:00:00+00:00",
+    "teams": {
+      "BOS": {
+        "assists": 28,
+        "rebounds": 39,
+        "threes": 17
+      },
+      "DET": {
+        "assists": 27,
+        "rebounds": 49,
+        "threes": 15
+      }
+    }
+  },
+  "401909089": {
+    "away": "PHI",
+    "home": "NYK",
+    "id": "401909089",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-20T23:00:00+00:00",
+    "teams": {
+      "NYK": {
+        "assists": 21,
+        "rebounds": 53,
+        "threes": 11
+      },
+      "PHI": {
+        "assists": 28,
+        "rebounds": 45,
+        "threes": 11
+      }
+    }
+  },
+  "401909090": {
+    "away": "OKC",
+    "home": "SAS",
+    "id": "401909090",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-21T01:50:00+00:00",
+    "teams": {
+      "OKC": {
+        "assists": 24,
+        "rebounds": 47,
+        "threes": 14
+      },
+      "SAS": {
+        "assists": 21,
+        "rebounds": 45,
+        "threes": 10
+      }
+    }
+  },
+  "401909091": {
+    "away": "MIN",
+    "home": "MIA",
+    "id": "401909091",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-21T23:30:00+00:00",
+    "teams": {
+      "MIA": {
+        "assists": 27,
+        "rebounds": 34,
+        "threes": 8
+      },
+      "MIN": {
+        "assists": 20,
+        "rebounds": 52,
+        "threes": 21
+      }
+    }
+  },
+  "401909092": {
+    "away": "GSW",
+    "home": "LAL",
+    "id": "401909092",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-22T02:00:00+00:00",
+    "teams": {
+      "GSW": {
+        "assists": 25,
+        "rebounds": 36,
+        "threes": 8
+      },
+      "LAL": {
+        "assists": 28,
+        "rebounds": 43,
+        "threes": 11
+      }
+    }
+  },
+  "401909093": {
+    "away": "CLE",
+    "home": "PHI",
+    "id": "401909093",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-22T23:00:00+00:00",
+    "teams": {
+      "CLE": {
+        "assists": 18,
+        "rebounds": 46,
+        "threes": 7
+      },
+      "PHI": {
+        "assists": 24,
+        "rebounds": 44,
+        "threes": 7
+      }
+    }
+  },
+  "401909094": {
+    "away": "DEN",
+    "home": "OKC",
+    "id": "401909094",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-23T01:30:00+00:00",
+    "teams": {
+      "DEN": {
+        "assists": 17,
+        "rebounds": 53,
+        "threes": 8
+      },
+      "OKC": {
+        "assists": 22,
+        "rebounds": 46,
+        "threes": 11
+      }
+    }
+  },
   "401909095": {
     "away": "NYK",
     "home": "BOS",
@@ -599,6 +739,186 @@
       }
     }
   },
+  "401909834": {
+    "away": "ATL",
+    "home": "ORL",
+    "id": "401909834",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-21T23:00:00+00:00",
+    "teams": {
+      "ATL": {
+        "assists": 28,
+        "rebounds": 42,
+        "threes": 14
+      },
+      "ORL": {
+        "assists": 30,
+        "rebounds": 39,
+        "threes": 13
+      }
+    }
+  },
+  "401909835": {
+    "away": "MIL",
+    "home": "WAS",
+    "id": "401909835",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-21T23:00:00+00:00",
+    "teams": {
+      "MIL": {
+        "assists": 28,
+        "rebounds": 41,
+        "threes": 15
+      },
+      "WAS": {
+        "assists": 28,
+        "rebounds": 44,
+        "threes": 6
+      }
+    }
+  },
+  "401909836": {
+    "away": "CHA",
+    "home": "BKN",
+    "id": "401909836",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-21T23:30:00+00:00",
+    "teams": {
+      "BKN": {
+        "assists": 22,
+        "rebounds": 38,
+        "threes": 12
+      },
+      "CHA": {
+        "assists": 26,
+        "rebounds": 44,
+        "threes": 15
+      }
+    }
+  },
+  "401909837": {
+    "away": "CHI",
+    "home": "TOR",
+    "id": "401909837",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-21T23:30:00+00:00",
+    "teams": {
+      "CHI": {
+        "assists": 16,
+        "rebounds": 57,
+        "threes": 4
+      },
+      "TOR": {
+        "assists": 31,
+        "rebounds": 51,
+        "threes": 10
+      }
+    }
+  },
+  "401909838": {
+    "away": "UTA",
+    "home": "MEM",
+    "id": "401909838",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-22T00:00:00+00:00",
+    "teams": {
+      "MEM": {
+        "assists": 23,
+        "rebounds": 55,
+        "threes": 13
+      },
+      "UTA": {
+        "assists": 25,
+        "rebounds": 38,
+        "threes": 11
+      }
+    }
+  },
+  "401909839": {
+    "away": "IND",
+    "home": "NOP",
+    "id": "401909839",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-22T00:00:00+00:00",
+    "teams": {
+      "IND": {
+        "assists": 29,
+        "rebounds": 43,
+        "threes": 9
+      },
+      "NOP": {
+        "assists": 23,
+        "rebounds": 49,
+        "threes": 10
+      }
+    }
+  },
+  "401909840": {
+    "away": "DAL",
+    "home": "HOU",
+    "id": "401909840",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-22T00:30:00+00:00",
+    "teams": {
+      "DAL": {
+        "assists": 20,
+        "rebounds": 33,
+        "threes": 11
+      },
+      "HOU": {
+        "assists": 32,
+        "rebounds": 42,
+        "threes": 16
+      }
+    }
+  },
+  "401909841": {
+    "away": "PHX",
+    "home": "POR",
+    "id": "401909841",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-22T02:00:00+00:00",
+    "teams": {
+      "PHX": {
+        "assists": 14,
+        "rebounds": 39,
+        "threes": 6
+      },
+      "POR": {
+        "assists": 32,
+        "rebounds": 56,
+        "threes": 19
+      }
+    }
+  },
+  "401909842": {
+    "away": "SAC",
+    "home": "LAC",
+    "id": "401909842",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-22T02:30:00+00:00",
+    "teams": {
+      "LAC": {
+        "assists": 29,
+        "rebounds": 49,
+        "threes": 14
+      },
+      "SAC": {
+        "assists": 22,
+        "rebounds": 42,
+        "threes": 8
+      }
+    }
+  },
   "401909843": {
     "away": "ATL",
     "home": "CHA",
@@ -619,6 +939,66 @@
       }
     }
   },
+  "401909844": {
+    "away": "DAL",
+    "home": "IND",
+    "id": "401909844",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-23T23:00:00+00:00",
+    "teams": {
+      "DAL": {
+        "assists": 28,
+        "rebounds": 46,
+        "threes": 14
+      },
+      "IND": {
+        "assists": 27,
+        "rebounds": 42,
+        "threes": 7
+      }
+    }
+  },
+  "401909845": {
+    "away": "MIN",
+    "home": "ORL",
+    "id": "401909845",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-23T23:00:00+00:00",
+    "teams": {
+      "MIN": {
+        "assists": 33,
+        "rebounds": 61,
+        "threes": 14
+      },
+      "ORL": {
+        "assists": 23,
+        "rebounds": 43,
+        "threes": 8
+      }
+    }
+  },
+  "401909846": {
+    "away": "TOR",
+    "home": "WAS",
+    "id": "401909846",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-23T23:00:00+00:00",
+    "teams": {
+      "TOR": {
+        "assists": 25,
+        "rebounds": 53,
+        "threes": 7
+      },
+      "WAS": {
+        "assists": 21,
+        "rebounds": 40,
+        "threes": 12
+      }
+    }
+  },
   "401909847": {
     "away": "DET",
     "home": "MIA",
@@ -636,6 +1016,26 @@
         "assists": 24,
         "rebounds": 49,
         "threes": 15
+      }
+    }
+  },
+  "401909848": {
+    "away": "CHI",
+    "home": "MIL",
+    "id": "401909848",
+    "retrieved_utc": "2026-11-18T23:58:20.554672+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-10-23T20:00:00+00:00",
+    "teams": {
+      "CHI": {
+        "assists": 29,
+        "rebounds": 44,
+        "threes": 12
+      },
+      "MIL": {
+        "assists": 29,
+        "rebounds": 44,
+        "threes": 19
       }
     }
   },
