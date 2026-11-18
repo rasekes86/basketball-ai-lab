@@ -3,15 +3,24 @@ import csv
 from pathlib import Path
 
 FIELDS=("partido","fecha_utc","local","visitante","mercado","seleccion",
-        "probabilidad","cuota_justa_teorica","cuota_real_ofrecida","bookmaker",
+        "probabilidad","cuota_justa_teorica","balance_simulado_1_eur",
+        "cuota_real_ofrecida","bookmaker",
         "captura_cuota_utc","estado","acierto","nivel","fuente")
 
 def _one(row):
+    try:
+        p=float(row.get("probability"))
+    except (TypeError,ValueError):
+        p=0.0
+    simulated=""
+    if row.get("real_price") is None and row.get("status") in ("ACIERTO","FALLO") and row.get("result") in (0,1) and 0<p<=1:
+        simulated=round((1/p)-1 if row["result"]==1 else -1,3)
     return {"partido":row.get("event_id"),"fecha_utc":row.get("start_utc"),
         "local":row.get("home"),"visitante":row.get("away"),
         "mercado":row.get("market"),"seleccion":row.get("selection"),
         "probabilidad":row.get("probability"),
         "cuota_justa_teorica":row.get("fair_odds",""),
+        "balance_simulado_1_eur":simulated,
         "cuota_real_ofrecida":row.get("real_price") if row.get("real_price") is not None else "",
         "bookmaker":row.get("bookmaker", ""),
         "captura_cuota_utc":row.get("captured_utc",""),
