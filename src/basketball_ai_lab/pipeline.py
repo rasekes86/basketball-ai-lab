@@ -32,6 +32,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     review_flags=load(output/"review_flags.json",{})
     boxscores=load(output/"boxscores.json",{})
     attempts=load(output/"boxscore_attempts.json",{})
+    refresh_request=load(output/"refresh_top3_request.json",{})
+    superseded_picks=load(output/"superseded_top3.json",{})
     history_policy=backfill_policy(games,boxscores)
     client=client or Client(max_calls=history_policy["max_calls"],
                              min_interval=history_policy["min_interval"])
@@ -129,6 +131,20 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
                 else:summary_failed+=1
             except (SourceError,ValueError):
                 summary_failed+=1
+    # A one-time user-authorized refresh discards only UNSTARTED, still-pending
+    # Top 3 rows. Keep a separate excluded audit trail of original rows;
+    # completed/started matches and their historical results are untouched.
+    refresh_count=0
+    refresh_active=refresh_request.get("pending") is True
+    if refresh_active:
+        for key,row in list(picks.items()):
+            start=time_utc(row.get("start_utc"))
+            if start and start>now and row.get("status")=="PENDIENTE" and row.get("result") is None:
+                audit_key=key+"@"+str(row.get("created_utc"))
+                superseded_picks[audit_key]={**row,"superseded_utc":now.isoformat(),
+                    "superseded_reason":"USER_REQUESTED_PREGAME_RESELECTION"}
+                del picks[key]
+                refresh_count+=1
     # A prospective forecast is generated only from already-final games,
     # at the actual creation time, and can never be recalculated in place.
     upcoming=sorted((g for g in games.values() if
@@ -156,6 +172,13 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
             if row["id"] not in picks:
                 picks[row["id"]]=row
                 archived+=1
+    # The refresh is consumed only after valid provider rounds and the
+    # complete archive pass; a later daily run must never reprice it again.
+    if refresh_active:
+        refresh_request={**refresh_request,"pending":False,
+                         "processed_utc":now.isoformat(),
+                         "old_picks_excluded":refresh_count,
+                         "new_picks_archived":archived}
     # Optional real prices are explicitly off until the user sets one secret.
     odds_status="DESACTIVADO"
     quotes=[]
@@ -217,6 +240,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "games":len(games),"final_games":final_count,"upcoming":len(upcoming),
         "logo_coverage":sum(bool(x.get("logo")) for x in (logos.get("teams") or {}).values()),
         "logo_teams":len(logos.get("teams") or {}),"new_top3_picks":archived,
+        "one_time_refresh_applied":refresh_active,
+        "superseded_future_top3":refresh_count,
         "boxscores_archived":len(boxscores),"boxscores_new":summary_ok,
         "boxscores_unavailable":summary_failed,"advanced_stats_enabled":str(env.get("ENABLE_ADVANCED_STATS","")).lower() in ("1","true","yes"),
         "historical_coverage":historical_coverage(games,boxscores,now),
@@ -247,6 +272,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     save(output/"status.json",status)
     save(output/"boxscores.json",boxscores)
     save(output/"boxscore_attempts.json",attempts)
+    save(output/"refresh_top3_request.json",refresh_request)
+    save(output/"superseded_top3.json",superseded_picks)
     # Export sanitized, static JSON for GitHub Pages (no keys and no raw tokens).
     for name,document in (("games.json",games),("teams.json",logos),
                           ("picks.json",picks),("extras.json",extras),
