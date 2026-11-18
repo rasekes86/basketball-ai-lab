@@ -1,0 +1,56 @@
+{
+  "extras_archived": 0,
+  "extras_evaluated": 0,
+  "extras_unit_profit": 0,
+  "extras_verified_priced": 0,
+  "final_games": 210,
+  "games": 270,
+  "logo_coverage": 30,
+  "logo_teams": 30,
+  "market_metrics": {
+    "handicap": {
+      "accuracy": null,
+      "brier": null,
+      "evaluated": 0,
+      "hits": 0
+    },
+    "total": {
+      "accuracy": null,
+      "brier": null,
+      "evaluated": 0,
+      "hits": 0
+    },
+    "winner": {
+      "accuracy": null,
+      "brier": null,
+      "evaluated": 0,
+      "hits": 0
+    }
+  },
+  "new_extras": 0,
+  "new_settlements": 0,
+  "new_top3_picks": 153,
+  "no_historical_repricing": true,
+  "no_top3_reasons": {},
+  "notice": "No son apuestas recomendadas; sin garantías. Los Top 3 usan líneas teóricas; ROI solo de cuotas prepartido ofrecidas y registradas.",
+  "odds_calls_month": 0,
+  "odds_status": "DESACTIVADO",
+  "provider": "ESPN (public, undocumented)",
+  "quality": "EXPERIMENTAL_NO_CALIBRADO",
+  "review_required": {},
+  "review_required_count": 0,
+  "sorpresas_detectadas": 0,
+  "source_circuit_breaker": null,
+  "source_distinct_games_returned": 270,
+  "source_failed_days": 0,
+  "source_failures": [],
+  "source_requests": 54,
+  "source_successful_days": 53,
+  "top3_accuracy": null,
+  "top3_archived": 153,
+  "top3_brier": null,
+  "top3_evaluated": 0,
+  "top3_hits": 0,
+  "upcoming": 51,
+  "updated_utc": "2026-11-18T20:35:18.442925+00:00"
+}
