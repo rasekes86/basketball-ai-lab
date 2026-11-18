@@ -1,4 +1,8 @@
 {
+  "advanced_stats_enabled": true,
+  "boxscores_archived": 35,
+  "boxscores_new": 35,
+  "boxscores_unavailable": 0,
   "extras_archived": 0,
   "extras_evaluated": 0,
   "extras_unit_profit": 0,
@@ -9,6 +13,24 @@
   "logo_teams": 30,
   "market_metrics": {
     "handicap": {
+      "accuracy": null,
+      "brier": null,
+      "evaluated": 0,
+      "hits": 0
+    },
+    "team_assists": {
+      "accuracy": null,
+      "brier": null,
+      "evaluated": 0,
+      "hits": 0
+    },
+    "team_rebounds": {
+      "accuracy": null,
+      "brier": null,
+      "evaluated": 0,
+      "hits": 0
+    },
+    "team_threes": {
       "accuracy": null,
       "brier": null,
       "evaluated": 0,
@@ -29,7 +51,7 @@
   },
   "new_extras": 0,
   "new_settlements": 0,
-  "new_top3_picks": 153,
+  "new_top3_picks": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "No son apuestas recomendadas; sin garantías. Los Top 3 usan líneas teóricas; ROI solo de cuotas prepartido ofrecidas y registradas.",
@@ -41,16 +63,16 @@
   "review_required_count": 0,
   "sorpresas_detectadas": 0,
   "source_circuit_breaker": null,
-  "source_distinct_games_returned": 270,
+  "source_distinct_games_returned": 87,
   "source_failed_days": 0,
   "source_failures": [],
-  "source_requests": 54,
-  "source_successful_days": 53,
+  "source_requests": 47,
+  "source_successful_days": 12,
   "top3_accuracy": null,
   "top3_archived": 153,
   "top3_brier": null,
   "top3_evaluated": 0,
   "top3_hits": 0,
   "upcoming": 51,
-  "updated_utc": "2026-11-18T20:35:18.442925+00:00"
+  "updated_utc": "2026-11-18T21:20:07.322416+00:00"
 }
