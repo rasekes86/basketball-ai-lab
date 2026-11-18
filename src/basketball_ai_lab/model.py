@@ -55,6 +55,31 @@ def _pick(game,market,selection,probability,contract,estimate,asof):
             "result":None,"real_price":None,"real_price_status":"SIN_CUOTA_OFRECIDA",
             "model":"ROLLING_POINTS_V1","quality":"NO_CALIBRADO","retrospective":False}
 
+# Same market-selection policy as Football AI Lab, adapted to NBA statistics.
+# These are fixed/theoretical statistical lines, NOT sportsbook quotes.
+MIN_TOP_PROBABILITY=.55
+MIN_TOP_FAIR_ODDS=1.15
+MAX_TOP=3
+
+def _eligible_for_top(row):
+    p=float(row.get("probability") or 0)
+    return MIN_TOP_PROBABILITY<=p<1 and 1/p>=MIN_TOP_FAIR_ODDS
+
+def _top_by_probability(candidates):
+    """Three highest estimated probabilities; max one per distinct family.
+
+    Unlike the old NBA algorithm, a winner is NEVER a mandatory anchor.
+    A shortage of eligible candidates is shown honestly as fewer than 3.
+    """
+    best={}
+    for row in candidates:
+        if not _eligible_for_top(row):continue
+        market=row["market"]  # One family per market, regardless of team/line.
+        if market not in best or row["probability"]>best[market]["probability"]:
+            best[market]=row
+    return sorted(best.values(),key=lambda r:(-r["probability"],r["market"],r["selection"]))[:MAX_TOP]
+
+
 def forecast(game,games,at,boxscores=None):
     start=time_utc(game.get("start_utc"))
     if game.get("status")=="FINAL" or not start or start<=at:
@@ -63,7 +88,6 @@ def forecast(game,games,at,boxscores=None):
     home=team.get(game.get("home"));away=team.get(game.get("away"))
     if not home or not away or min(home["games"],away["games"])<MIN_GAMES:
         return [],"MUESTRA_INSUFICIENTE"
-    # Predict each club using its own attack and opponent defensive strength.
     ph=.48*home["offense"]+.52*away["defense"]+2.0
     pa=.48*away["offense"]+.52*home["defense"]-2.0
     diff=ph-pa
@@ -73,30 +97,37 @@ def forecast(game,games,at,boxscores=None):
     win_prob=normal_cdf(diff/sd_diff)
     winner=game["home"] if win_prob>=.5 else game["away"]
     pwin=max(win_prob,1-win_prob)
-    picks=[_pick(game,"winner",f"Gana {winner}",pwin,
+    candidates=[_pick(game,"winner",f"Gana {winner}",pwin,
        {"type":"winner","team":winner},diff,at)]
-    # Theoretical lines are 5-point steps, NOT bookmaker prices.
-    total_line=5*round((combined-.5)/5)+.5
-    over=normal_cdf((combined-total_line)/sd_total)
-    direction="over" if over>=.5 else "under"
-    picks.append(_pick(game,"total",f"{direction.upper()} {total_line:g} puntos",
-            max(over,1-over),{"type":"total","direction":direction,"line":total_line},combined,at))
-    handicap_line=5*round((diff-.5)/5)+.5
-    home_cover=normal_cdf((diff-handicap_line)/sd_diff)
-    cover="home" if home_cover>=.5 else "away"
-    picks.append(_pick(game,"handicap",f"{cover.upper()} {handicap_line:+g} margen (teórico)",
-            max(home_cover,1-home_cover),
-            {"type":"handicap","side":cover,"home_margin_line":handicap_line},diff,at))
-    # Existing (already archived) selections are immutable in the pipeline.
-    # For future fixtures with sufficient *verified* team box scores, offer
-    # genuinely different categories, not three renamed points predictions.
+
+    # Comparable half-point lines from a bounded grid of ordinary NBA totals.
+    # The grid and selection are determined BEFORE tipoff; no price guessing.
+    for line in (199.5,204.5,209.5,214.5,219.5,224.5,229.5,234.5,
+                 239.5,244.5,249.5,254.5,259.5):
+        over=normal_cdf((combined-line)/sd_total)
+        for direction,p in (("over",over),("under",1-over)):
+            if not MIN_TOP_PROBABILITY<=p<1:continue
+            candidates.append(_pick(game,"total",f"{direction.upper()} {line:g} puntos (teórico)",
+                  p,{"type":"total","direction":direction,"line":line},combined,at))
+    for line in (-15.5,-12.5,-9.5,-6.5,-3.5,-0.5,2.5,5.5,8.5,11.5,14.5):
+        home_cover=normal_cdf((diff-line)/sd_diff)
+        for side,p in (("home",home_cover),("away",1-home_cover)):
+            if not MIN_TOP_PROBABILITY<=p<1:continue
+            name=game["home"] if side=="home" else game["away"]
+            # 'home_margin_line' is the required home-away margin, not the
+            # bookmaker handicap point (see settle_one).
+            candidates.append(_pick(game,"handicap",
+                f"{name}: {'+' if (line if side=='away' else -line)>0 else ''}{(line if side=='away' else -line):g} puntos (hándicap teórico)",
+                p,{"type":"handicap","side":side,"home_margin_line":line},diff,at))
     if boxscores:
         summaries=matchup_form(game,games,boxscores,at)
-        candidates=[]
-        for stat,market,caption,floor_sd in (
-            ("threes","team_threes","triples del equipo",3.5),
-            ("rebounds","team_rebounds","rebotes del equipo",5.5),
-            ("assists","team_assists","asistencias del equipo",4.5),
+        for stat,market,caption,minimum_sd,lines in (
+            ("threes","team_threes","triples del equipo",3.5,
+             (7.5,9.5,11.5,13.5,15.5,17.5,19.5,21.5)),
+            ("rebounds","team_rebounds","rebotes del equipo",5.5,
+             (29.5,33.5,37.5,41.5,45.5,49.5,53.5,57.5)),
+            ("assists","team_assists","asistencias del equipo",4.5,
+             (16.5,19.5,22.5,25.5,28.5,31.5,34.5,37.5)),
         ):
             for code,opponent in ((game["home"],game["away"]),
                                   (game["away"],game["home"])):
@@ -104,41 +135,20 @@ def forecast(game,games,at,boxscores=None):
                 opp=summaries.get(opponent,{}).get(stat)
                 if not own or not opp:continue
                 expectation=.55*own["made"]+.45*opp["allowed"]
-                # Theoretical half-integer line. Never call this a bookmaker line.
-                line=round(expectation)+.5
-                sd=max(floor_sd,float(own["sd"]))
-                over=normal_cdf((expectation-line)/sd)
-                direction="over" if over>=.5 else "under"
-                probability=max(over,1-over)
-                if probability<.525:continue  # No spurious weak prop.
-                selection=f"{code}: {direction.upper()} {line:g} {caption} (teórico)"
-                candidate=_pick(game,market,selection,probability,
-                    {"type":"team_stat","stat":stat,"team":code,
-                     "direction":direction,"line":line},expectation,at)
-                candidate["model"]="ROLLING_TEAM_STATS_V2"
-                candidate["sample_games"]=min(own["n"],opp["n"])
-                candidates.append(candidate)
-        # Keep the winner as a comparable anchor and diversify the other two.
-        # Do not forcibly publish a prop without a usable team-stat sample.
-        if candidates:
-            best={}
-            for row in candidates:
-                kind=row["market"]
-                if kind not in best or row["probability"]>best[kind]["probability"]:
-                    best[kind]=row
-            # A small diversification bonus breaks ties, not probability claims.
-            ranked=sorted([*best.values(),*picks[1:]],
-                 key=lambda row:(row["probability"]+(.025 if row["market"].startswith("team_") else 0),
-                                 row["probability"]),reverse=True)
-            selected=[picks[0]]
-            if best:
-                selected.append(max(best.values(),key=lambda x:x["probability"]))
-            for row in ranked:
-                if row["market"] not in {p["market"] for p in selected}:
-                    selected.append(row)
-                if len(selected)==3:break
-            picks=selected
-    return picks,"ARCHIVABLE"
+                sd=max(minimum_sd,float(own["sd"]))
+                for line in lines:
+                    over=normal_cdf((expectation-line)/sd)
+                    for direction,p in (("over",over),("under",1-over)):
+                        if not MIN_TOP_PROBABILITY<=p<1:continue
+                        row=_pick(game,market,
+                          f"{code}: {direction.upper()} {line:g} {caption} (teórico)",
+                          p,{"type":"team_stat","stat":stat,"team":code,
+                             "direction":direction,"line":line},expectation,at)
+                        row["model"]="ROLLING_TEAM_STATS_V2"
+                        row["sample_games"]=min(own["n"],opp["n"])
+                        candidates.append(row)
+    picks=_top_by_probability(candidates)
+    return picks,("ARCHIVABLE" if picks else "SIN_MERCADOS_APTOS")
 
 def settle_one(pick,game,boxscore=None):
     if game.get("status")!="FINAL":return None
