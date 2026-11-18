@@ -176,7 +176,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
                          "old_picks_excluded":refresh_count,
                          "new_picks_archived":archived}
     # Optional real prices are explicitly off until the user sets one secret.
-    odds_status="ESPN_PREPARTIDO" if observed_espn_quotes else "ESPN_SIN_CUOTAS"
+    odds_status="ESPN_PREPARTIDO" if observed_espn_quotes else "DESACTIVADO"
     quotes=observed_espn_quotes
     if str(env.get("ENABLE_ODDS","")).lower() in ("1","true","yes"):
         feed=fetch_snapshot(str(env.get("ODDS_API_KEY","")).strip(),now,odds_state,
@@ -253,6 +253,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "new_extras":new_extras,"new_settlements":settled,"odds_status":odds_status,
         "odds_calls_month":(odds_state.get("odds_budget") or {}).get("used",0),
         "espn_bookmaker_quotes_seen":len(observed_espn_quotes),
+        "espn_price_status":"OFERTAS_CAPTURADAS" if observed_espn_quotes else "SIN_OFERTAS_DISPONIBLES",
         "no_historical_repricing":True,"quality":"EXPERIMENTAL_NO_CALIBRADO",
         "review_required_count":len(review_flags),
         "review_required":review_flags,
