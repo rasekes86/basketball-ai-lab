@@ -74,7 +74,7 @@ def historical_coverage(games, boxscores, asof, min_sample=MIN_SAMPLE):
     }
 
 
-def supersede_unstarted_picks(picks, now, archive):
+def supersede_unstarted_picks(picks, now, archive, eligible_ids=None):
     """Remove only pending future selections, with a separate audit backup.
 
     Historical, started, evaluated and partially settled predictions are
@@ -82,6 +82,8 @@ def supersede_unstarted_picks(picks, now, archive):
     """
     changed = 0
     for key, row in list(picks.items()):
+        if eligible_ids is not None and row.get("event_id",key.split("|",1)[0]) not in eligible_ids:
+            continue
         start = time_utc(row.get("start_utc"))
         if not start or start <= now or row.get("status") != "PENDIENTE" or row.get("result") is not None:
             continue
