@@ -1,7 +1,7 @@
 {
   "advanced_stats_enabled": true,
-  "boxscores_archived": 35,
-  "boxscores_new": 35,
+  "boxscores_archived": 120,
+  "boxscores_new": 85,
   "boxscores_unavailable": 0,
   "extras_archived": 0,
   "extras_evaluated": 0,
@@ -9,6 +9,170 @@
   "extras_verified_priced": 0,
   "final_games": 210,
   "games": 270,
+  "historical_coverage": {
+    "by_team": {
+      "ATL": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "BKN": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "BOS": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "CHA": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "CHI": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "CLE": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "DAL": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "DEN": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "DET": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "GSW": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "HOU": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "IND": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "LAC": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "LAL": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "MEM": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "MIA": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "MIL": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "MIN": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "NOP": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "NYK": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "OKC": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "ORL": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "PHI": {
+        "assists": 8,
+        "rebounds": 8,
+        "threes": 8
+      },
+      "PHX": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "POR": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "SAC": {
+        "assists": 7,
+        "rebounds": 7,
+        "threes": 7
+      },
+      "SAS": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "TOR": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "UTA": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      },
+      "WAS": {
+        "assists": 9,
+        "rebounds": 9,
+        "threes": 9
+      }
+    },
+    "fully_ready_teams": 30,
+    "minimum_sample": 5,
+    "ready_teams_by_market": {
+      "assists": 30,
+      "rebounds": 30,
+      "threes": 30
+    },
+    "verified_games": 120
+  },
+  "history_backfill_mode": "HISTORICAL_CATCHUP",
+  "history_summary_budget": 85,
   "logo_coverage": 30,
   "logo_teams": 30,
   "market_metrics": {
@@ -51,12 +215,13 @@
   },
   "new_extras": 0,
   "new_settlements": 0,
-  "new_top3_picks": 0,
+  "new_top3_picks": 156,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "No son apuestas recomendadas; sin garantías. Los Top 3 usan líneas teóricas; ROI solo de cuotas prepartido ofrecidas y registradas.",
   "odds_calls_month": 0,
   "odds_status": "DESACTIVADO",
+  "one_time_refresh_applied": true,
   "provider": "ESPN (public, undocumented)",
   "quality": "EXPERIMENTAL_NO_CALIBRADO",
   "review_required": {},
@@ -66,13 +231,14 @@
   "source_distinct_games_returned": 87,
   "source_failed_days": 0,
   "source_failures": [],
-  "source_requests": 47,
+  "source_requests": 97,
   "source_successful_days": 12,
+  "superseded_future_top3": 153,
   "top3_accuracy": null,
-  "top3_archived": 153,
+  "top3_archived": 156,
   "top3_brier": null,
   "top3_evaluated": 0,
   "top3_hits": 0,
-  "upcoming": 51,
-  "updated_utc": "2026-11-18T21:20:07.322416+00:00"
+  "upcoming": 52,
+  "updated_utc": "2026-11-18T23:11:36.715001+00:00"
 }
