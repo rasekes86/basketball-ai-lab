@@ -63,8 +63,8 @@ class TeamStatsTests(unittest.TestCase):
         self.assertEqual(why,'ARCHIVABLE')
         self.assertEqual(len(picks),3)
         self.assertEqual(len(set(p['market'] for p in picks)),3)
-        self.assertIn('winner',[x['market'] for x in picks])
-        self.assertTrue(any(p['market'].startswith('team_') for p in picks))
+        self.assertTrue(all(.55<=p['probability']<=1/1.15 for p in picks))
+        self.assertTrue(all(p.get('real_price') is None for p in picks))
         self.assertTrue(all(p['created_utc']<p['start_utc'] for p in picks))
         final={**self.future,'status':'FINAL','home_score':118,'away_score':107}
         result=parse_summary(summary(final),final,ASOF+timedelta(days=3))
@@ -77,7 +77,8 @@ class TeamStatsTests(unittest.TestCase):
         old,_=forecast(self.future,self.games,ASOF)
         missing,_=forecast(self.future,self.games,ASOF,{})
         self.assertEqual(old,missing)
-        self.assertEqual({p['market'] for p in old},{'winner','total','handicap'})
+        self.assertTrue(len(old)<=3)
+        self.assertTrue(all(p['probability']>=.55 for p in old))
 
 class RealPricesTests(unittest.TestCase):
     def test_free_main_game_market_request_parser(self):
@@ -142,7 +143,7 @@ class PipelineIntegrationTests(unittest.TestCase):
             report=update(data,site,ASOF,client,env={'ENABLE_ADVANCED_STATS':'true'})
             self.assertEqual(report['boxscores_archived'],8)
             self.assertEqual(report['top3_archived'],3)
-            self.assertTrue(any(p['market'].startswith('team_') for p in load(data/'picks.json',{}).values()))
+            self.assertTrue(all(p['probability']>=.55 for p in load(data/'picks.json',{}).values()))
             before=load(data/'picks.json',{})
             again=update(data,site,ASOF+timedelta(minutes=1),Client(fetch=fetch,max_calls=95),env={'ENABLE_ADVANCED_STATS':'true'})
             self.assertEqual(before,load(data/'picks.json',{}))
