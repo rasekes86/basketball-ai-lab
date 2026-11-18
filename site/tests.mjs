@@ -38,3 +38,25 @@ test('whole Madrid-night slate and archived stats are exposed',()=>{
   assert.match(html,/option value="night"/);
   assert.match(css,/\.stats-table-row/);
 });
+
+test('PWA has an explicit install action and stable standalone identity',()=>{
+  const manifest=JSON.parse(fs.readFileSync(new URL('./manifest.webmanifest',import.meta.url),'utf8'));
+  assert.equal(manifest.display,'standalone');
+  assert.equal(manifest.id,'./');
+  assert.equal(manifest.scope,'./');
+  assert.ok(manifest.icons.some(icon=>icon.sizes==='192x192'));
+  assert.ok(manifest.icons.some(icon=>icon.sizes==='512x512'));
+  assert.match(html,/id="installApp"/);
+  assert.match(html,/id="installDialog"/);
+  assert.match(html,/apple-touch-icon/);
+  assert.match(js,/beforeinstallprompt/);
+  assert.match(js,/appinstalled/);
+  assert.match(js,/userChoice/);
+  assert.match(css,/\.install-cta/);
+});
+test('The Odds API only activates when the GitHub secret is configured',()=>{
+  const workflow=fs.readFileSync(new URL('../.github/workflows/nba-daily.yml',import.meta.url),'utf8');
+  assert.match(workflow,/ENABLE_ODDS:.*secrets\.ODDS_API_KEY/);
+  assert.match(workflow,/ODDS_API_KEY:.*secrets\.ODDS_API_KEY/);
+  assert.doesNotMatch(js,/api\.the-odds-api\.com/);
+});
