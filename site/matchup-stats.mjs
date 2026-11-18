@@ -17,7 +17,9 @@ export function nightKeyMadrid(when) {
 }
 
 export function archivedCutoff(game,picks){
-  const rows=['winner','total','handicap'].map(m=>picks?.[game.id+'|'+m]).filter(Boolean);
+  const rows=Object.values(picks||{}).filter(p=>p&&p.event_id===game.id);
+  // Compatibility with original archives without event_id in unit fixtures.
+  if(!rows.length)rows.push(...['winner','total','handicap'].map(m=>picks?.[game.id+'|'+m]).filter(Boolean));
   const first=rows.length===3?Math.min(...rows.map(p=>Date.parse(p.created_utc))):NaN;
   const kick=Date.parse(game.start_utc);
   // Never reconstruct an archive from a future snapshot. Historical stats must

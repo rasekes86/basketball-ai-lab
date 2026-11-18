@@ -6,6 +6,7 @@ from collections import defaultdict
 from datetime import datetime,timezone
 from math import erf,sqrt
 from statistics import mean
+from .advanced import matchup_form
 from .transform import time_utc
 
 MIN_GAMES=5
@@ -54,7 +55,7 @@ def _pick(game,market,selection,probability,contract,estimate,asof):
             "result":None,"real_price":None,"real_price_status":"SIN_CUOTA_OFRECIDA",
             "model":"ROLLING_POINTS_V1","quality":"NO_CALIBRADO","retrospective":False}
 
-def forecast(game,games,at):
+def forecast(game,games,at,boxscores=None):
     start=time_utc(game.get("start_utc"))
     if game.get("status")=="FINAL" or not start or start<=at:
         return [],"FUERA_DE_VENTANA"
@@ -86,9 +87,60 @@ def forecast(game,games,at):
     picks.append(_pick(game,"handicap",f"{cover.upper()} {handicap_line:+g} margen (teórico)",
             max(home_cover,1-home_cover),
             {"type":"handicap","side":cover,"home_margin_line":handicap_line},diff,at))
+    # Existing (already archived) selections are immutable in the pipeline.
+    # For future fixtures with sufficient *verified* team box scores, offer
+    # genuinely different categories, not three renamed points predictions.
+    if boxscores:
+        summaries=matchup_form(game,games,boxscores,at)
+        candidates=[]
+        for stat,market,caption,floor_sd in (
+            ("threes","team_threes","triples del equipo",3.5),
+            ("rebounds","team_rebounds","rebotes del equipo",5.5),
+            ("assists","team_assists","asistencias del equipo",4.5),
+        ):
+            for code,opponent in ((game["home"],game["away"]),
+                                  (game["away"],game["home"])):
+                own=summaries.get(code,{}).get(stat)
+                opp=summaries.get(opponent,{}).get(stat)
+                if not own or not opp:continue
+                expectation=.55*own["made"]+.45*opp["allowed"]
+                # Theoretical half-integer line. Never call this a bookmaker line.
+                line=round(expectation)+.5
+                sd=max(floor_sd,float(own["sd"]))
+                over=normal_cdf((expectation-line)/sd)
+                direction="over" if over>=.5 else "under"
+                probability=max(over,1-over)
+                if probability<.525:continue  # No spurious weak prop.
+                selection=f"{code}: {direction.upper()} {line:g} {caption} (teórico)"
+                candidate=_pick(game,market,selection,probability,
+                    {"type":"team_stat","stat":stat,"team":code,
+                     "direction":direction,"line":line},expectation,at)
+                candidate["model"]="ROLLING_TEAM_STATS_V2"
+                candidate["sample_games"]=min(own["n"],opp["n"])
+                candidates.append(candidate)
+        # Keep the winner as a comparable anchor and diversify the other two.
+        # Do not forcibly publish a prop without a usable team-stat sample.
+        if candidates:
+            best={}
+            for row in candidates:
+                kind=row["market"]
+                if kind not in best or row["probability"]>best[kind]["probability"]:
+                    best[kind]=row
+            # A small diversification bonus breaks ties, not probability claims.
+            ranked=sorted([*best.values(),*picks[1:]],
+                 key=lambda row:(row["probability"]+(.025 if row["market"].startswith("team_") else 0),
+                                 row["probability"]),reverse=True)
+            selected=[picks[0]]
+            if best:
+                selected.append(max(best.values(),key=lambda x:x["probability"]))
+            for row in ranked:
+                if row["market"] not in {p["market"] for p in selected}:
+                    selected.append(row)
+                if len(selected)==3:break
+            picks=selected
     return picks,"ARCHIVABLE"
 
-def settle_one(pick,game):
+def settle_one(pick,game,boxscore=None):
     if game.get("status")!="FINAL":return None
     h,a=game.get("home_score"),game.get("away_score")
     if not isinstance(h,int) or not isinstance(a,int):return None
@@ -105,5 +157,18 @@ def settle_one(pick,game):
         if diff==c.get("home_margin_line"):return None
         home_covers=diff>c["home_margin_line"]
         win=home_covers if c.get("side")=="home" else not home_covers
+    elif c.get("type")=="team_stat":
+        if not boxscore or boxscore.get("id")!=game.get("id"):
+            return None
+        if boxscore.get("start_utc")!=game.get("start_utc"):
+            return None
+        team=c.get("team");metric=c.get("stat")
+        if team not in (game.get("home"),game.get("away")) or metric not in ("threes","rebounds","assists"):
+            return None
+        value=(boxscore.get("teams") or {}).get(team,{}).get(metric)
+        if not isinstance(value,int) or isinstance(value,bool):return None
+        line=c.get("line")
+        if not isinstance(line,(int,float)) or value==line:return None
+        win=value>line if c.get("direction")=="over" else value<line
     else:return None
     return bool(win)

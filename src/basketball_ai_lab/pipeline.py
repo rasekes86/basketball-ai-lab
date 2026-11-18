@@ -5,12 +5,13 @@ import os
 from .provider import Client,SourceError
 from .transform import normalize_games,normalize_teams,time_utc
 from .model import forecast,settle_one
+from .advanced import parse_summary
 from .odds import fetch_snapshot,choose_extra
 from .store import load,save
 from .teams import NBA_TEAMS
 from .reports import publish
 
-DATA_FILES=("games.json","teams.json","picks.json","extras.json","odds_state.json","review_flags.json","status.json")
+DATA_FILES=("games.json","teams.json","picks.json","extras.json","odds_state.json","review_flags.json","status.json","boxscores.json","boxscore_attempts.json")
 
 def days_for_update(now,initial):
     past=45 if initial else 4
@@ -29,6 +30,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     extras=load(output/"extras.json",{})
     odds_state=load(output/"odds_state.json",{})
     review_flags=load(output/"review_flags.json",{})
+    boxscores=load(output/"boxscores.json",{})
+    attempts=load(output/"boxscore_attempts.json",{})
     initial=not bool(games)
     successes=0
     provider_failures=[]
@@ -98,6 +101,31 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         raise SourceError("Sin calendarios comprobables: se conserva el estado anterior")
     if not games and not schedule_events:
         raise SourceError("El proveedor respondió, pero no devolvió partidos NBA verificables")
+    # Gradually backfill real team box scores from ESPN summary, rate-limited.
+    # Enabled by the NBA workflow only, disabled in stand-alone offline tests.
+    summary_ok=summary_failed=0
+    if str(env.get("ENABLE_ADVANCED_STATS","")).lower() in ("1","true","yes"):
+        finals=sorted((g for g in games.values() if g.get("status")=="FINAL"
+             and g["id"] not in boxscores and g["id"] not in review_flags
+             and (start:=time_utc(g.get("start_utc"))) and start+timedelta(hours=5)<now),
+             key=lambda g:g["start_utc"],reverse=True)
+        # Archive an individual summary only if it matches our exact fixture.
+        # Recheck empty/incomplete responses after a week, not at every update.
+        remaining=max(0,client.max_calls-client.calls-1)
+        for g in finals:
+            if summary_ok+summary_failed>=min(35,remaining) or client.blocked_reason:break
+            previous=time_utc(attempts.get(g["id"]))
+            if previous and (now-previous)<timedelta(days=7):continue
+            attempts[g["id"]]=now.isoformat()
+            try:
+                raw=client.summary(g["id"])
+                parsed=parse_summary(raw,g,now)
+                if parsed:
+                    boxscores[g["id"]]=parsed
+                    summary_ok+=1
+                else:summary_failed+=1
+            except (SourceError,ValueError):
+                summary_failed+=1
     # A prospective forecast is generated only from already-final games,
     # at the actual creation time, and can never be recalculated in place.
     upcoming=sorted((g for g in games.values() if
@@ -108,7 +136,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     exclusions={}
     archived=0
     for game in upcoming:
-        if all(f'{game["id"]}|{m}' in picks for m in ("winner","total","handicap")):
+        if len([p for p in picks.values() if p.get("event_id")==game["id"]])>=3:
             continue
         # ESPN's `dates` uses US date buckets: a 01:00 UTC game can appear
         # under the PREVIOUS calendar day in America. Require the fixture ID
@@ -116,7 +144,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         if game["id"] not in fresh_game_ids:
             exclusions[game["id"]]="PARTIDO_NO_VERIFICADO_EN_LA_RONDA"
             continue
-        proposed,reason=forecast(game,games,now)
+        proposed,reason=forecast(game,games,now,boxscores=boxscores)
         if not proposed:
             exclusions[game["id"]]=reason
             continue
@@ -140,9 +168,12 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     for game in upcoming:
         id_=game["id"]
         if id_+"|extra" in extras:continue
-        game_picks=[picks.get(id_+"|"+m) for m in ("winner","total","handicap")]
-        if any(not p for p in game_picks):continue
-        candidate=choose_extra(game,game_picks,quotes,now)
+        game_picks=[p for p in picks.values() if p.get("event_id")==id_]
+        if len(game_picks)!=3:continue
+        # The auxiliary model estimates price-specific probabilities using
+        # only data available at this run; it does not rewrite the frozen Top 3.
+        baseline,_=forecast(game,games,now)
+        candidate=choose_extra(game,game_picks,quotes,now,baseline=baseline)
         if candidate:
             extras[candidate["id"]]=candidate
             new_extras+=1
@@ -153,7 +184,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         if row.get("status")!="PENDIENTE":continue
         game=games.get(row.get("event_id"))
         if not game or row.get("event_id") in review_flags:continue
-        result=settle_one(row,game)
+        result=settle_one(row,game,boxscores.get(row.get("event_id")))
         if result is not None:
             row["status"]="ACIERTO" if result else "FALLO"
             row["result"]=int(result)
@@ -165,7 +196,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     unit_profit=sum(float(p["real_price"])-1 if p["result"]==1 else -1 for p in verified_extra)
     final_count=sum(1 for g in games.values() if g.get("status")=="FINAL")
     market_metrics={}
-    for name in ("winner","total","handicap"):
+    for name in ("winner","total","handicap","team_threes","team_rebounds","team_assists"):
         rows=[p for p in checked if p.get("market")==name]
         market_metrics[name]={
             "evaluated":len(rows),
@@ -183,6 +214,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "games":len(games),"final_games":final_count,"upcoming":len(upcoming),
         "logo_coverage":sum(bool(x.get("logo")) for x in (logos.get("teams") or {}).values()),
         "logo_teams":len(logos.get("teams") or {}),"new_top3_picks":archived,
+        "boxscores_archived":len(boxscores),"boxscores_new":summary_ok,
+        "boxscores_unavailable":summary_failed,"advanced_stats_enabled":str(env.get("ENABLE_ADVANCED_STATS","")).lower() in ("1","true","yes"),
         "top3_archived":len(picks),"top3_evaluated":len(checked),
         "top3_hits":sum(p["result"]==1 for p in checked),
         "top3_accuracy":round(sum(p["result"]==1 for p in checked)/len(checked),4) if checked else None,
@@ -206,9 +239,11 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     save(output/"odds_state.json",odds_state)
     save(output/"review_flags.json",review_flags)
     save(output/"status.json",status)
+    save(output/"boxscores.json",boxscores)
+    save(output/"boxscore_attempts.json",attempts)
     # Export sanitized, static JSON for GitHub Pages (no keys and no raw tokens).
     for name,document in (("games.json",games),("teams.json",logos),
                           ("picks.json",picks),("extras.json",extras),
-                          ("status.json",status)):
+                          ("status.json",status),("boxscores.json",boxscores)):
         save(site/name,document)
     return status

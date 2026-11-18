@@ -1,6 +1,6 @@
 # Basketball AI Lab · NBA
 
-Proyecto experimental **nuevo e independiente** de Football AI Lab. Versión 0.2.0 (18/11/2026).
+Proyecto experimental **nuevo e independiente** de Football AI Lab. Versión 0.3.0 (18/11/2026).
 
 **Objetivo:** pronosticar partidos de NBA antes de su inicio, archivar tres mercados teóricos, liquidar los resultados cuando se confirme el marcador y, en una fase opcional, registrar una apuesta experimental adicional con **cuota real prepartido superior a 1,50**. No ejecuta apuestas ni promete resultados.
 
@@ -9,9 +9,10 @@ Proyecto experimental **nuevo e independiente** de Football AI Lab. Versión 0.2
 - Fuente inicial **sin registro ni clave**: calendario y marcadores del endpoint público no documentado de ESPN.
 - Identificación exacta de las **30 franquicias NBA** y sus logos obtenidos del catálogo/partidos ESPN. Si un escudo falla, aparece la abreviatura, **sin inventar imágenes**.
 - Motor propio de puntos a favor/en contra con regularización y ponderación de partidos recientes. No usa Poisson de fútbol ni datos posteriores al pronóstico.
-- **Top 3** por encuentro: ganador, puntos totales y hándicap **teóricos**; no confundir con mercados/cuotas ofrecidos. Si faltan al menos 5 encuentros anteriores por equipo, se abstiene.
+- **Top 3 original inmutable**: conserva los mercados anteriores en eventos ya archivados. Para próximos partidos, después de recabar suficientes box scores ESPN reales, puede seleccionar ganador y dos mercados diferentes entre triples, rebotes y asistencias **de equipo**, puntos totales o hándicap. Las líneas teóricas no son cuotas ofrecidas. Sin 5 partidos estadísticos previos verificables por equipo, vuelve al modelo de puntos original.
+- **Jugadores**: no se publican aún pronósticos de triples individuales sin verificación de disponibilidad, minutos y datos históricos del jugador.
 - Archivo inmutable de pronósticos con sello temporal; evaluación postpartido de **solo** esos tres mercados.
-- Preparación de adicional >1,50 con **The Odds API**, desactivada por defecto. Requiere una clave del proveedor y activación voluntaria, no hay cuotas fabricadas.
+- Preparación de adicional >1,50 con **The Odds API** (ganador, hándicap y total, con líneas ofrecidas), desactivada por defecto. Requiere una clave del proveedor y activación voluntaria, no hay cuotas fabricadas.
 - Identificación de **sorpresas del modelo**: favorito archivado >=60 % que perdió; no equivale a anomalía de casas de apuestas.
 - Informes CSV para **Excel** sin conectar Google Sheets: `data/reports/{top3,adicional_150,sorpresas}.csv` y sus copias descargables en `site/reports/`.
 - Auditoría **por mercado** (ganador, total y hándicap), acierto y Brier, además del global.
@@ -81,3 +82,12 @@ Esta entrega contiene **todos los archivos**, pero no está conectada a un repos
 - No se modifica, referencia ni reutiliza ningún workflow ni secreto de Football AI Lab.
 
 Fuentes y límites verificados: [docs/FUENTES_Y_COSTES.md](docs/FUENTES_Y_COSTES.md).
+
+## Activar cuotas gratis (solo cuando tengas tu clave)
+
+1. Alta gratuita en https://the-odds-api.com/ (500 créditos mensuales según su plan vigente).
+2. En el repositorio Basketball AI Lab → Settings → Secrets and variables → Actions → New repository secret: `ODDS_API_KEY` (nunca en archivos ni chats).
+3. En Variables → New repository variable: `ENABLE_ODDS` = `true`.
+4. Ejecuta `Basketball AI Lab · actualización NBA` desde Actions. Un máximo de **una consulta diaria de 3 mercados / 1 región** consume aproximadamente 3 créditos, con freno interno de 100 créditos mensuales. La adicional **solo se archiva** si hay una cuota REAL >1,50 registrada antes del partido y el modelo experimental supera sus filtros. Puede no generarse ninguna.
+
+El proveedor no asegura mercados de jugadores para todos los encuentros. No se consulta ninguno automáticamente; necesitaría una política de gasto por partido y modelado de jugadores específico. Todas las estadísticas avanzadas se obtienen desde endpoints ESPN no oficiales sujetos a límites y disponibilidad. Football AI Lab no comparte secretos ni Actions con este proyecto.

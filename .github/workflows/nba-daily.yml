@@ -29,6 +29,7 @@ jobs:
       - name: Actualizar calendario, escudos, Top 3 y liquidaciones
         env:
           PYTHONPATH: src
+          ENABLE_ADVANCED_STATS: 'true'
           ENABLE_ODDS: ${{ vars.ENABLE_ODDS || 'false' }}
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python -m basketball_ai_lab update --output data --site site/data
