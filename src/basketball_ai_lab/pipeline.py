@@ -10,7 +10,7 @@ from .history import backfill_policy,historical_coverage,supersede_unstarted_pic
 from .odds import fetch_snapshot,choose_extra
 from .store import load,save
 from .teams import NBA_TEAMS
-from .reports import publish
+from .reports import publish,theoretical_top3_balance
 
 DATA_FILES=("games.json","teams.json","picks.json","extras.json","odds_state.json","review_flags.json","status.json","boxscores.json","boxscore_attempts.json")
 
@@ -213,6 +213,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     extra_checked=[p for p in extras.values() if p.get("result") in (0,1)]
     verified_extra=[p for p in extra_checked if p.get("real_price_status")=="OFRECIDA_API_REGISTRADA"]
     unit_profit=sum(float(p["real_price"])-1 if p["result"]==1 else -1 for p in verified_extra)
+    theoretical_balance=theoretical_top3_balance(picks)
     final_count=sum(1 for g in games.values() if g.get("status")=="FINAL")
     market_metrics={}
     for name in ("winner","total","handicap","team_threes","team_rebounds","team_assists"):
@@ -247,6 +248,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "market_metrics":market_metrics,
         "extras_archived":len(extras),"extras_evaluated":len(extra_checked),
         "extras_unit_profit":round(unit_profit,3),"extras_verified_priced":len(verified_extra),
+        "top3_theoretical_balance":theoretical_balance,
         "new_extras":new_extras,"new_settlements":settled,"odds_status":odds_status,
         "odds_calls_month":(odds_state.get("odds_budget") or {}).get("used",0),
         "no_historical_repricing":True,"quality":"EXPERIMENTAL_NO_CALIBRADO",
