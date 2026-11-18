@@ -16,7 +16,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,6 +26,8 @@ jobs:
           python-version: '3.12'
       - name: Pruebas básicas previas
         run: PYTHONPATH=src python -m unittest discover -s tests -q
+      # Historical ESPN summaries are retrieved in a capped, resumable catch-up.
+      # The one-time request file permits only future picks to be replaced.
       - name: Actualizar calendario, escudos, Top 3 y liquidaciones
         env:
           PYTHONPATH: src
