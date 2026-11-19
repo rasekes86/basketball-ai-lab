@@ -91,6 +91,51 @@ class SourceResilienceTests(unittest.TestCase):
             update(self.data,self.site,AT,Client(fetch=malformed,max_calls=65),{})
         self.assertFalse((self.data/'status.json').exists())
 
+    def test_targeted_refresh_only_resets_named_unstarted_fixture(self):
+        self.feed.add(event('OTHER',self.feed.future))
+        initial=update(self.data,self.site,AT,self.client(),{})
+        original=load(self.data/'picks.json',{})
+        self.assertEqual(len([p for p in original.values() if p['event_id']=='NEXT']),3)
+        self.assertEqual(len([p for p in original.values() if p['event_id']=='OTHER']),3)
+        save(self.data/'refresh_top3_request.json',{
+            'pending':True,'scope':'specified_unstarted_fixture_ids',
+            'fixture_ids':['NEXT'],'reason':'Test current minimum 55 percent'
+        })
+        updated=update(self.data,self.site,AT+timedelta(minutes=1),self.client(),{})
+        latest=load(self.data/'picks.json',{})
+        self.assertEqual(updated['superseded_future_top3'],3)
+        self.assertEqual(len([p for p in latest.values() if p['event_id']=='NEXT']),3)
+        self.assertTrue(all(p['probability']>=.55 for p in latest.values() if p['event_id']=='NEXT'))
+        self.assertEqual({k:p for k,p in original.items() if p['event_id']=='OTHER'},
+                         {k:p for k,p in latest.items() if p['event_id']=='OTHER'})
+        backup=load(self.data/'superseded_top3.json',{})
+        self.assertEqual(len(backup),3)
+        self.assertTrue(all(x['superseded_reason']=='USER_REQUESTED_PREGAME_RESELECTION' for x in backup.values()))
+
+    def test_daily_odds_retry_request_consumed_once_in_pipeline(self):
+        quotes=[]
+        def odds(url):
+            quotes.append(url)
+            return [],{'x-requests-last':'3','x-requests-remaining':'491'}
+        env={'ENABLE_ODDS':'true','ODDS_API_KEY':'fake','_ODDS_FETCH_TEST':odds}
+        first=update(self.data,self.site,AT,self.client(),env)
+        self.assertEqual(first['odds_status'],'OK')
+        save(self.data/'odds_recheck_request.json',{
+            'pending':True,'day_utc':AT.strftime('%Y-%m-%d'),
+            'fixture_ids':['NEXT'],'reason':'Manual once-only verification'
+        })
+        second=update(self.data,self.site,AT+timedelta(minutes=1),self.client(),env)
+        self.assertEqual(second['odds_status'],'OK')
+        self.assertEqual(second['odds_recheck_result'],'OK')
+        self.assertEqual(second['odds_calls_month'],6)
+        self.assertEqual(len(quotes),2)
+        request=load(self.data/'odds_recheck_request.json',{})
+        self.assertFalse(request['pending'])
+        self.assertEqual(request['quoted_outcomes_received'],0)
+        third=update(self.data,self.site,AT+timedelta(minutes=2),self.client(),env)
+        self.assertEqual(third['odds_status'],'YA_CONSULTADO_HOY')
+        self.assertEqual(len(quotes),2)
+
     def test_existing_archive_is_not_recomputed_when_all_sources_fail(self):
         first=update(self.data,self.site,AT,self.client(),{})
         old=load(self.data/'picks.json',{})

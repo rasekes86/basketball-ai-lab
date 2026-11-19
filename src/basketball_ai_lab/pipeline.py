@@ -33,6 +33,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     boxscores=load(output/"boxscores.json",{})
     attempts=load(output/"boxscore_attempts.json",{})
     refresh_request=load(output/"refresh_top3_request.json",{})
+    odds_recheck_request=load(output/"odds_recheck_request.json",{})
     superseded_picks=load(output/"superseded_top3.json",{})
     history_policy=backfill_policy(games,boxscores)
     client=client or Client(max_calls=history_policy["max_calls"],
@@ -151,6 +152,19 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
                 if (kick:=time_utc(g.get("start_utc")))
                 and lower<=kick<upper and now<kick
                 and g.get("status")=="SCHEDULED" and g["id"] not in review_flags}
+        elif refresh_request.get("scope")=="specified_unstarted_fixture_ids":
+            ids=refresh_request.get("fixture_ids")
+            if not isinstance(ids,list) or not ids or len(ids)>12 or not all(isinstance(x,str) and x for x in ids):
+                raise ValueError("Lista de partidos para reasignación NBA inválida")
+            refresh_ids={
+                g["id"] for g in games.values() if g.get("id") in set(ids)
+                and g.get("status")=="SCHEDULED" and g["id"] not in review_flags
+                and (start:=time_utc(g.get("start_utc"))) and start>now
+            }
+            if set(ids)!=refresh_ids:
+                raise ValueError("La reasignación exige IDs de partidos NBA vigentes, aún no iniciados")
+        elif refresh_request.get("scope")!="specified_unstarted_window":
+            raise ValueError("Scope de reasignación NBA desconocido")
         refresh_count=supersede_unstarted_picks(picks,now,superseded_picks,refresh_ids)
     # A prospective forecast is generated only from already-final games,
     # at the actual creation time, and can never be recalculated in place.
@@ -192,17 +206,41 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     # Optional real prices are explicitly off until the user sets one secret.
     odds_status="DESACTIVADO"
     quotes=[]
+    retry_ids=set()
+    odds_retry_pending=odds_recheck_request.get("pending") is True
+    if odds_retry_pending:
+        ids=odds_recheck_request.get("fixture_ids")
+        request_day=odds_recheck_request.get("day_utc")
+        if not isinstance(ids,list) or not 0<len(ids)<=12 or len(ids)!=len(set(ids)) or not all(isinstance(x,str) and x for x in ids):
+            raise ValueError("IDs inválidos en solicitud excepcional de cuotas")
+        if request_day!=now.strftime("%Y-%m-%d"):
+            odds_recheck_request={**odds_recheck_request,"pending":False,
+                                  "processed_utc":now.isoformat(),"result":"CADUCADA_OTRO_DIA"}
+        else:
+            retry_ids={g["id"] for g in upcoming if g["id"] in set(ids)}
+            if retry_ids!=set(ids):
+                odds_recheck_request={**odds_recheck_request,"pending":False,
+                                      "processed_utc":now.isoformat(),"result":"PARTIDO_NO_DISPONIBLE_O_INICIADO"}
+                retry_ids.clear()
     if str(env.get("ENABLE_ODDS","")).lower() in ("1","true","yes"):
         feed=fetch_snapshot(str(env.get("ODDS_API_KEY","")).strip(),now,odds_state,
-                            fetch=env.get("_ODDS_FETCH_TEST"))
+                            fetch=env.get("_ODDS_FETCH_TEST"),
+                            allow_extra_daily=bool(retry_ids))
         odds_status=feed["status"]
         quotes=feed["quotes"]
         odds_state=feed["state"]
+    if retry_ids:
+        odds_recheck_request={**odds_recheck_request,"pending":False,
+                              "processed_utc":now.isoformat(),"result":odds_status,
+                              "requested_ids_checked":sorted(retry_ids),
+                              "quoted_outcomes_received":len(quotes)}
+
     new_extras=0
     # If real offers arrive AFTER the main picks but BEFORE start, they may
     # freeze ONE independent extra; after kickoff this is prohibited.
     for game in upcoming:
         id_=game["id"]
+        if retry_ids and id_ not in retry_ids:continue
         if id_+"|extra" in extras:continue
         game_picks=[p for p in picks.values() if p.get("event_id")==id_]
         if len(game_picks)!=3:continue
@@ -284,6 +322,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "pending_postmatch_team_stats":len(pending_team_stats),
         "pending_postmatch_games":len({p["event_id"] for p in pending_postmatch}),
         "new_extras":new_extras,"new_settlements":settled,"new_voids":voided,"odds_status":odds_status,
+        "odds_quoted_outcomes_this_run":len(quotes),
+        "odds_recheck_result":odds_recheck_request.get("result") if odds_recheck_request.get("processed_utc")==now.isoformat() else None,
         "odds_calls_month":(odds_state.get("odds_budget") or {}).get("used",0),
         "no_historical_repricing":True,"quality":"EXPERIMENTAL_NO_CALIBRADO",
         "review_required_count":len(review_flags),
@@ -302,6 +342,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     save(output/"boxscores.json",boxscores)
     save(output/"boxscore_attempts.json",attempts)
     save(output/"refresh_top3_request.json",refresh_request)
+    save(output/"odds_recheck_request.json",odds_recheck_request)
     save(output/"superseded_top3.json",superseded_picks)
     # Export sanitized, static JSON for GitHub Pages (no keys and no raw tokens).
     for name,document in (("games.json",games),("teams.json",logos),
