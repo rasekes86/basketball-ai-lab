@@ -90,3 +90,21 @@ La captura se habilita **automáticamente** cuando existe el secreto de reposito
 Guía móvil y activación detallada: [docs/ACTIVAR_ODDS_API_PWA.md](docs/ACTIVAR_ODDS_API_PWA.md).
 
 Las probabilidades son experimentales, no calibradas para apostar dinero. Las cotizaciones de la región estadounidense pueden no corresponder a operadores disponibles en España. Football AI Lab permanece independiente.
+
+## Skills NBA para Codex y laboratorio de calibración (noviembre de 2026)
+
+- `.agents/skills/nba-data-research/SKILL.md`: datos, equipos, box scores, fuentes y comprobaciones temporales de la NBA.
+- `.agents/skills/nba-model-validation/SKILL.md`: metodología de backtesting cronológico, baselines, fuga de información y calibración.
+- `AGENTS.md` indica a Codex cómo y cuándo utilizarlas dentro del proyecto.
+- `docs/SKILLS_NBA_Y_BACKTEST.md` documenta la revisión de Machina Sports y WalrusQuant, licencias y limitaciones.
+- `src/basketball_ai_lab/research.py`: laboratorio reproducible **retrospectivo**. Lee los ficheros ya archivados; no modifica Top 3, adicional, casas, probabilidades ni el dashboard.
+- `.github/workflows/nba-research.yml`: investigación semanal y manual, SIN consultas externas, SIN nuevas cuotas, aislada del workflow diario.
+
+Ejecutar:
+
+```bash
+PYTHONPATH=src python -m basketball_ai_lab.research --games data/games.json --boxscores data/boxscores.json --output research/walkforward_report.json
+```
+
+El informe distingue `strict_captured` (box scores capturados antes de la predicción) de `historical_reconstruction` (datos obtenidos posteriormente, con disponibilidad simulada y **no verificada históricamente**). Ambos son estudios retrospectivos, nunca evidencia de apuestas prospectivas. Los mercados siguen sin autorizarse automáticamente: primero hay que revisar tamaño de muestra, baseline, calibración y validación prospectiva.
+
