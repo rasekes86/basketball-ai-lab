@@ -1,12 +1,13 @@
 {
   "advanced_stats_enabled": true,
   "boxscores_archived": 219,
-  "boxscores_new": 9,
+  "boxscores_new": 0,
   "boxscores_unavailable": 0,
   "extras_archived": 12,
   "extras_evaluated": 11,
   "extras_unit_profit": -7.15,
   "extras_verified_priced": 11,
+  "extras_voided": 1,
   "final_games": 222,
   "games": 270,
   "historical_coverage": {
@@ -214,16 +215,17 @@
     }
   },
   "new_extras": 0,
-  "new_settlements": 42,
-  "new_top3_picks": 21,
+  "new_settlements": 0,
+  "new_top3_picks": 0,
+  "new_voids": 1,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "No son apuestas recomendadas; Top 3 a cuota matemática solo para simulación, adicionales a cuotas de API archivadas. Ambos balances son hipotéticos.",
   "odds_calls_month": 6,
   "odds_status": "YA_CONSULTADO_HOY",
   "one_time_refresh_applied": false,
-  "pending_postmatch_games": 4,
-  "pending_postmatch_selections": 6,
+  "pending_postmatch_games": 3,
+  "pending_postmatch_selections": 5,
   "pending_postmatch_team_stats": 5,
   "provider": "ESPN (public, undocumented)",
   "quality": "EXPERIMENTAL_NO_CALIBRADO",
@@ -234,7 +236,7 @@
   "source_distinct_games_returned": 82,
   "source_failed_days": 0,
   "source_failures": [],
-  "source_requests": 21,
+  "source_requests": 12,
   "source_successful_days": 12,
   "superseded_future_top3": 0,
   "top3_accuracy": 0.8065,
@@ -282,6 +284,7 @@
     "stake_eur": 1.0,
     "total_staked_eur": 31.0
   },
+  "top3_voided": 0,
   "upcoming": 48,
-  "updated_utc": "2026-11-19T06:44:13.855905+00:00"
+  "updated_utc": "2026-11-19T06:48:48.855611+00:00"
 }
