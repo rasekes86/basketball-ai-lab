@@ -17,19 +17,22 @@ MARKETS=("h2h","spreads","totals")
 REQUEST_COST_BUDGET=3
 MAX_CREDITS_PER_MONTH=100  # local safeguard, not the provider limit (500)
 
-def fetch_snapshot(key,now,state,fetch=None):
-    """At most one three-market, one-region snapshot per UTC day."""
+def fetch_snapshot(key,now,state,fetch=None,allow_extra_daily=False):
+    """One daily snapshot; at most one additional user-authorized retry per UTC day."""
     if not key:return {"status":"SIN_CLAVE","quotes":[],"state":state}
     day=now.strftime("%Y-%m-%d");month=now.strftime("%Y-%m")
     spent=state.get("odds_budget",{})
     used=spent.get("used",0) if spent.get("month")==month else 0
-    if state.get("odds_day")==day:
+    already_queried=state.get("odds_day")==day
+    exceptional=bool(already_queried and allow_extra_daily and state.get("odds_recheck_day")!=day)
+    if already_queried and not exceptional:
         return {"status":"YA_CONSULTADO_HOY","quotes":[],"state":state}
     if used+REQUEST_COST_BUDGET>MAX_CREDITS_PER_MONTH:
         return {"status":"CUPO_INTERNO_AGOTADO","quotes":[],"state":state}
     # Consume our internal budget conservatively even if the HTTP request fails.
     attempted={**state,"odds_day":day,"odds_budget":
                {"month":month,"used":used+REQUEST_COST_BUDGET}}
+    if exceptional: attempted["odds_recheck_day"]=day
     query=urlencode({"apiKey":key,"regions":"us","markets":",".join(MARKETS),
                      "oddsFormat":"decimal","dateFormat":"iso"})
     try:
@@ -50,8 +53,7 @@ def fetch_snapshot(key,now,state,fetch=None):
     except (TypeError,ValueError):credits=REQUEST_COST_BUDGET
     # Never reduce the internal debit below the expected three-market cost.
     credits=max(REQUEST_COST_BUDGET,credits)
-    next_state={**state,"odds_day":day,
-                "odds_budget":{"month":month,"used":used+credits,
+    next_state={**attempted,"odds_budget":{"month":month,"used":used+credits,
                     "last_remaining":usage.get("x-requests-remaining")}}
     quotes=[]
     for event in payload:
