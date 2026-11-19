@@ -4359,6 +4359,26 @@
       }
     }
   },
+  "401910015": {
+    "away": "BOS",
+    "home": "DEN",
+    "id": "401910015",
+    "retrieved_utc": "2026-11-19T12:33:03.503794+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-19T02:30:00+00:00",
+    "teams": {
+      "BOS": {
+        "assists": 22,
+        "rebounds": 46,
+        "threes": 11
+      },
+      "DEN": {
+        "assists": 19,
+        "rebounds": 46,
+        "threes": 7
+      }
+    }
+  },
   "401910016": {
     "away": "GSW",
     "home": "DAL",
@@ -4376,6 +4396,46 @@
         "assists": 28,
         "rebounds": 37,
         "threes": 9
+      }
+    }
+  },
+  "401910017": {
+    "away": "UTA",
+    "home": "LAL",
+    "id": "401910017",
+    "retrieved_utc": "2026-11-19T12:33:03.503794+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-19T03:00:00+00:00",
+    "teams": {
+      "LAL": {
+        "assists": 24,
+        "rebounds": 42,
+        "threes": 9
+      },
+      "UTA": {
+        "assists": 29,
+        "rebounds": 45,
+        "threes": 14
+      }
+    }
+  },
+  "401910018": {
+    "away": "PHX",
+    "home": "SAC",
+    "id": "401910018",
+    "retrieved_utc": "2026-11-19T12:33:03.503794+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-19T03:00:00+00:00",
+    "teams": {
+      "PHX": {
+        "assists": 34,
+        "rebounds": 42,
+        "threes": 15
+      },
+      "SAC": {
+        "assists": 29,
+        "rebounds": 40,
+        "threes": 14
       }
     }
   }

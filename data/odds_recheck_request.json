@@ -1,5 +1,4 @@
 {
-  "pending": true,
   "day_utc": "2026-11-19",
   "fixture_ids": [
     "401910019",
@@ -7,6 +6,16 @@
     "401910021",
     "401910022"
   ],
+  "pending": false,
+  "processed_utc": "2026-11-19T12:33:03.503794+00:00",
+  "quoted_outcomes_received": 214,
   "reason": "Excepcional: el usuario ha solicitado completar las cuatro adicionales prepartido del 19/11; 2a captura limitada al presupuesto",
+  "requested_ids_checked": [
+    "401910019",
+    "401910020",
+    "401910021",
+    "401910022"
+  ],
+  "result": "OK",
   "scope": "four_named_nba_fixtures_no_forced_qualifications"
 }
