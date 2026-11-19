@@ -61,14 +61,14 @@ class PostmatchTests(unittest.TestCase):
     def test_automatic_push_settlement_refunds_without_counting_in_roi(self):
         with TemporaryDirectory() as tmp:
             base=Path(tmp)/"data";web=Path(tmp)/"site"/"data"
-            final={**GAME,"home_score":112,"away_score":117}
+            final=dict(GAME)
             extra={"id":GAME["id"]+"|extra","event_id":GAME["id"],
               "home":"ATL","away":"BOS","start_utc":GAME["start_utc"],
               "created_utc":(TIP-timedelta(hours=2)).isoformat(),
-              "market":"extra_totals","selection":"UNDER 229 puntos",
+              "market":"extra_totals","selection":"UNDER 232 puntos",
               "probability":.55,"status":"PENDIENTE","result":None,
               "real_price":1.93,"real_price_status":"OFRECIDA_API_REGISTRADA",
-              "contract":{"type":"total","direction":"under","line":229}}
+              "contract":{"type":"total","direction":"under","line":232}}
             save(base/"games.json",{GAME["id"]:final})
             save(base/"extras.json",{extra["id"]:extra})
             update(base,web,NOW,Client(fetch=source,max_calls=65),env={})
