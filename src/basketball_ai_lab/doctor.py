@@ -11,13 +11,14 @@ import json
 from datetime import datetime,timezone,timedelta
 from pathlib import Path
 
-from .model import settle_one
+from .model import settle_one,MIN_TOP_PROBABILITY,MIN_TOP_FAIR_ODDS
 from .store import load
 from .teams import NBA_TEAMS
 from .transform import logo_url,time_utc
 
 EXPECTED_MARKETS={'winner','total','handicap','team_threes','team_rebounds','team_assists'}
 DATA_NAMES={'games','picks','extras','teams','status','boxscores'}
+TOP3_POLICY_EFFECTIVE=datetime(2026,11,18,23,58,10,tzinfo=timezone.utc)
 
 
 def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False):
@@ -53,6 +54,7 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
         if not time_utc(fixture.get('start_utc')):
             fail('HORA_INVALIDA','Falta una hora UTC comprobable en un partido.');break
 
+    legacy_low=[]
     for key,p in picks.items():
         market=p.get('market') if isinstance(p,dict) else None
         if market not in EXPECTED_MARKETS or key!=f'{p.get("event_id")}|{market}' or key!=p.get('id'):
@@ -62,6 +64,13 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
             fail('TOP3_NO_PREPARTIDO','Existe un Top 3 sin sello prepartido válido.');break
         if not .0<float(p.get('probability') or 0)<=1.0:
             fail('PROBABILIDAD','Hay una probabilidad fuera de [0, 1].');break
+        probability=float(p.get('probability') or 0)
+        if probability<MIN_TOP_PROBABILITY or (probability>0 and 1/probability<MIN_TOP_FAIR_ODDS-0.000001):
+            if created<TOP3_POLICY_EFFECTIVE:
+                legacy_low.append(p)
+            else:
+                fail('TOP3_BAJO_MINIMO_NUEVO',
+                     f'La selección {key} viola los filtros vigentes de probabilidad y cuota justa.');break
         if p.get('real_price') is not None or p.get('retrospective') is not False:
             fail('TOP3_MEZCLADO','El Top 3 contiene una cuota real o un retrospectivo.');break
         if p.get('status') in ('ACIERTO','FALLO'):
@@ -72,6 +81,9 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
                 expected=settle_one(p,event,boxscores.get(p.get('event_id')))
                 if expected is not None and int(expected)!=int(p['result']):
                     fail('LIQUIDACION_ERRONEA','Un Top 3 no corresponde al resultado final archivado.');break
+    if legacy_low:
+        warn('TOP3_LEGACY_FUERA_DE_FILTRO',
+             f'{len(legacy_low)} selecciones previas al 18/11/2026 23:58 UTC no superan el filtro actual; conservar su archivo original.')
     for event_id in {p.get('event_id') for p in picks.values() if isinstance(p,dict)}:
         present=[x.get('market') for x in picks.values() if isinstance(x,dict) and x.get('event_id')==event_id]
         if len(present)!=3 or len(set(present))!=3:
