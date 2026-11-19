@@ -32,7 +32,7 @@ function fixturePicks(id){
     .sort((a,b)=>(Number(b.probability)||0)-(Number(a.probability)||0)||String(a.market).localeCompare(String(b.market))).slice(0,3);
 }
 function extraPick(id){return state.extras[id+'|extra']||null}
-function pill(status){const cls=status==='ACIERTO'?'win':status==='FALLO'?'lose':'';return `<span class="status-chip ${cls}">${escape(status||'PENDIENTE')}</span>`}
+function pill(status){const cls=status==='ACIERTO'?'win':status==='FALLO'?'lose':status==='ANULADA'?'void':'';return `<span class="status-chip ${cls}">${escape(status||'PENDIENTE')}</span>`}
 function stat(title,value,foot){return `<div class="stat"><span>${escape(title)}</span><strong>${escape(value)}</strong><small>${escape(foot)}</small></div>`}
 function fairPrice(p){const prob=Number(p?.probability);return Number.isFinite(prob)&&prob>0&&prob<=1?1/prob:null}
 function euros(amount){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',minimumFractionDigits:2,maximumFractionDigits:2,signDisplay:'always'}).format(amount)}
@@ -61,12 +61,13 @@ function fixture(g){
 function resultItem(g){
   const all=[...fixturePicks(g.id),...(extraPick(g.id)?[extraPick(g.id)]:[])];
   const done=all.filter(p=>p.status==='ACIERTO'||p.status==='FALLO');
+  const voids=all.filter(p=>p.status==='ANULADA').length;
   const hits=done.filter(p=>p.status==='ACIERTO').length;
   const review=state.status.review_required?.[g.id];
   return `<button class="result-item" data-open-id="${escape(g.id)}">
     <span class="result-with-crests">${crest(g.home)}${crest(g.away)}</span>
     <span class="result-team-text"><strong>${escape(names[g.home]||g.home)} – ${escape(names[g.away]||g.away)}</strong>
-    <small>${escape(date(g.start_utc))} · ${escape(g.home_score)}–${escape(g.away_score)} · ${done.length}/${all.length} selecciones archivadas verificadas${review?' · REVISAR':''}</small></span>
+    <small>${escape(date(g.start_utc))} · ${escape(g.home_score)}–${escape(g.away_score)} · ${done.length}/${all.length} selecciones archivadas verificadas${voids?' · '+voids+' anulada(s)':''}${review?' · REVISAR':''}</small></span>
     <b>${hits}/${done.length||'—'}</b></button>`;
 }
 function alertBox(heading,msg){return `<div class="empty"><strong>${escape(heading)}</strong>${escape(msg)}</div>`}
