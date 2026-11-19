@@ -4,7 +4,7 @@ from pathlib import Path
 import os
 from .provider import Client,SourceError
 from .transform import normalize_games,normalize_teams,time_utc
-from .model import forecast,settle_one,reference_forecast
+from .model import forecast,settle_one,reference_forecast,is_void_line
 from .advanced import parse_summary
 from .history import backfill_policy,historical_coverage,supersede_unstarted_picks,needs_stat_verification,should_retry_summary
 from .odds import fetch_snapshot,choose_extra
@@ -214,6 +214,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
             extras[candidate["id"]]=candidate
             new_extras+=1
     settled=0
+    voided=0
     # Settle only the 3 archived markets and the one frozen extra, never
     # every candidate considered during scoring or valuation.
     for row in list(picks.values())+list(extras.values()):
@@ -226,6 +227,12 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
             row["result"]=int(result)
             row["settled_utc"]=now.isoformat()
             settled+=1
+        elif is_void_line(row,game,boxscores.get(row.get("event_id"))):
+            row["status"]="ANULADA"
+            row["result"]=None
+            row["settled_utc"]=now.isoformat()
+            row["void_reason"]="LINEA_EXACTA_REEMBOLSO"
+            voided+=1
     checked=[p for p in picks.values() if p.get("result") in (0,1)]
     extra_checked=[p for p in extras.values() if p.get("result") in (0,1)]
     verified_extra=[p for p in extra_checked if p.get("real_price_status")=="OFRECIDA_API_REGISTRADA"]
@@ -269,12 +276,14 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "top3_brier":round(brier,5) if brier is not None else None,
         "market_metrics":market_metrics,
         "extras_archived":len(extras),"extras_evaluated":len(extra_checked),
+        "extras_voided":sum(p.get("status")=="ANULADA" for p in extras.values()),
+        "top3_voided":sum(p.get("status")=="ANULADA" for p in picks.values()),
         "extras_unit_profit":round(unit_profit,3),"extras_verified_priced":len(verified_extra),
         "top3_theoretical_balance":theoretical_balance,
         "pending_postmatch_selections":len(pending_postmatch),
         "pending_postmatch_team_stats":len(pending_team_stats),
         "pending_postmatch_games":len({p["event_id"] for p in pending_postmatch}),
-        "new_extras":new_extras,"new_settlements":settled,"odds_status":odds_status,
+        "new_extras":new_extras,"new_settlements":settled,"new_voids":voided,"odds_status":odds_status,
         "odds_calls_month":(odds_state.get("odds_budget") or {}).get("used",0),
         "no_historical_repricing":True,"quality":"EXPERIMENTAL_NO_CALIBRADO",
         "review_required_count":len(review_flags),
