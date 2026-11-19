@@ -1,0 +1,48 @@
+name: Basketball AI Lab · laboratorio walk-forward
+on:
+  workflow_dispatch:
+  schedule:
+    # Semanal, sin llamadas de red NBA ni consumos de The Odds API.
+    - cron: '21 11 * * 0'
+  push:
+    branches: [main]
+    paths:
+      - 'src/basketball_ai_lab/research.py'
+      - 'tests/test_research.py'
+      - '.github/workflows/nba-research.yml'
+permissions:
+  contents: write
+concurrency:
+  group: basketball-ai-lab-research
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verificar el motor NBA sin usar servicios externos
+        env:
+          PYTHONPATH: src
+        run: python -m unittest discover -s tests -q
+      - name: Ejecutar evaluación retrospectiva aislada y offline
+        env:
+          PYTHONPATH: src
+        run: python -m basketball_ai_lab.research --games data/games.json --boxscores data/boxscores.json --output research/walkforward_report.json
+      - name: Publicar únicamente el informe del laboratorio
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add research/walkforward_report.json
+          if git diff --cached --quiet; then
+            echo 'Sin cambios en el informe de investigación.'
+            exit 0
+          fi
+          git commit -m 'NBA research: resumen walk-forward retrospectivo'
+          git pull --rebase origin main
+          git push origin HEAD:main
