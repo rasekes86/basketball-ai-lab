@@ -106,6 +106,24 @@ class RealPricesTests(unittest.TestCase):
         self.assertIn(extra['market'],('extra_h2h','extra_spreads','extra_totals'))
         self.assertGreater(extra['real_price'],1.5)
         self.assertEqual(extra['quote_event_id'],'odds123')
+    def test_explicit_user_requested_second_snapshot_only_once_per_utc_day(self):
+        calls=[]
+        def fetch(url):
+            calls.append(url)
+            return [],{'x-requests-last':'3','x-requests-remaining':'491'}
+        first=fetch_snapshot('key',ASOF,{},fetch)
+        self.assertEqual(first["status"],"OK")
+        self.assertEqual(first["state"]["odds_budget"]["used"],3)
+        self.assertEqual(fetch_snapshot('key',ASOF,first["state"],fetch)["status"],"YA_CONSULTADO_HOY")
+        again=fetch_snapshot('key',ASOF,first["state"],fetch,allow_extra_daily=True)
+        self.assertEqual(again["status"],"OK")
+        self.assertEqual(again["state"]["odds_budget"]["used"],6)
+        self.assertEqual(again["state"]["odds_recheck_day"],"2026-11-18")
+        self.assertEqual(fetch_snapshot('key',ASOF,again["state"],fetch,allow_extra_daily=True)["status"],"YA_CONSULTADO_HOY")
+        self.assertEqual(len(calls),2)
+        blocked=fetch_snapshot('key',ASOF,{"odds_day":"2026-11-18","odds_budget":{"month":"2026-11","used":99}},fetch,allow_extra_daily=True)
+        self.assertEqual(blocked["status"],"CUPO_INTERNO_AGOTADO")
+
     def test_no_key_no_calls_and_strict_budget(self):
         def nope(url):raise AssertionError('network without key')
         self.assertEqual(fetch_snapshot('',ASOF,{},nope)['status'],'SIN_CLAVE')
