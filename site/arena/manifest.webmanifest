@@ -1,0 +1,23 @@
+{
+  "id": "./",
+  "name": "PULSE ARENA · Sports Intelligence Hub",
+  "short_name": "PULSE ARENA",
+  "description": "Fútbol, baloncesto y los próximos laboratorios de inteligencia deportiva en un solo sitio.",
+  "lang": "es-ES",
+  "start_url": "./#inicio",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0d13",
+  "theme_color": "#0a0d13",
+  "orientation": "any",
+  "categories": ["sports", "productivity"],
+  "icons": [
+    {"src":"./icon-192.png","sizes":"192x192","type":"image/png","purpose":"any maskable"},
+    {"src":"./icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"},
+    {"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}
+  ],
+  "shortcuts": [
+    {"name":"Football AI Lab","short_name":"Fútbol","url":"./#football","icons":[{"src":"./icon-192.png","sizes":"192x192","type":"image/png"}]},
+    {"name":"Basketball AI Lab","short_name":"NBA","url":"./#basketball","icons":[{"src":"./icon-192.png","sizes":"192x192","type":"image/png"}]}
+  ]
+}
