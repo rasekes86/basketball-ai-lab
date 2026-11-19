@@ -6,7 +6,7 @@ from .provider import Client,SourceError
 from .transform import normalize_games,normalize_teams,time_utc
 from .model import forecast,settle_one,reference_forecast
 from .advanced import parse_summary
-from .history import backfill_policy,historical_coverage,supersede_unstarted_picks
+from .history import backfill_policy,historical_coverage,supersede_unstarted_picks,needs_stat_verification,should_retry_summary
 from .odds import fetch_snapshot,choose_extra
 from .store import load,save
 from .teams import NBA_TEAMS
@@ -111,7 +111,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     summary_ok=summary_failed=0
     if str(env.get("ENABLE_ADVANCED_STATS","")).lower() in ("1","true","yes"):
         finals=sorted((g for g in games.values() if g.get("status")=="FINAL"
-             and g["id"] not in boxscores and g["id"] not in review_flags
+             and (g["id"] not in boxscores or needs_stat_verification(g,picks,boxscores.get(g["id"])))
+             and g["id"] not in review_flags
              and (start:=time_utc(g.get("start_utc"))) and start+timedelta(hours=5)<now),
              key=lambda g:g["start_utc"],reverse=True)
         # Archive an individual summary only if it matches our exact fixture.
@@ -119,13 +120,16 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         remaining=max(0,client.max_calls-client.calls-1)
         for g in finals:
             if summary_ok+summary_failed>=min(history_policy["summary_limit"],remaining) or client.blocked_reason:break
-            previous=time_utc(attempts.get(g["id"]))
-            if previous and (now-previous)<timedelta(days=7):continue
+            urgent=needs_stat_verification(g,picks,boxscores.get(g["id"]))
+            if not should_retry_summary(g,attempts.get(g["id"]),now,urgent=urgent):continue
             attempts[g["id"]]=now.isoformat()
             try:
                 raw=client.summary(g["id"])
                 parsed=parse_summary(raw,g,now)
-                if parsed:
+                existing=boxscores.get(g["id"])
+                # Keep the most complete verified record. An incomplete retry
+                # never replaces usable previously captured team statistics.
+                if parsed and (not existing or not needs_stat_verification(g,picks,parsed)):
                     boxscores[g["id"]]=parsed
                     summary_ok+=1
                 else:summary_failed+=1
@@ -228,6 +232,11 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     unit_profit=sum(float(p["real_price"])-1 if p["result"]==1 else -1 for p in verified_extra)
     theoretical_balance=theoretical_top3_balance(picks)
     final_count=sum(1 for g in games.values() if g.get("status")=="FINAL")
+    pending_postmatch=[p for p in list(picks.values())+list(extras.values())
+        if p.get("status")=="PENDIENTE"
+        and (games.get(p.get("event_id")) or {}).get("status")=="FINAL"]
+    pending_team_stats=[p for p in pending_postmatch if
+        (p.get("contract") or {}).get("type")=="team_stat"]
     market_metrics={}
     for name in ("winner","total","handicap","team_threes","team_rebounds","team_assists"):
         rows=[p for p in checked if p.get("market")==name]
@@ -262,12 +271,15 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "extras_archived":len(extras),"extras_evaluated":len(extra_checked),
         "extras_unit_profit":round(unit_profit,3),"extras_verified_priced":len(verified_extra),
         "top3_theoretical_balance":theoretical_balance,
+        "pending_postmatch_selections":len(pending_postmatch),
+        "pending_postmatch_team_stats":len(pending_team_stats),
+        "pending_postmatch_games":len({p["event_id"] for p in pending_postmatch}),
         "new_extras":new_extras,"new_settlements":settled,"odds_status":odds_status,
         "odds_calls_month":(odds_state.get("odds_budget") or {}).get("used",0),
         "no_historical_repricing":True,"quality":"EXPERIMENTAL_NO_CALIBRADO",
         "review_required_count":len(review_flags),
         "review_required":review_flags,
-        "notice":"No son apuestas recomendadas; sin garantías. Los Top 3 usan líneas teóricas; ROI solo de cuotas prepartido ofrecidas y registradas.",
+        "notice":"No son apuestas recomendadas; Top 3 a cuota matemática solo para simulación, adicionales a cuotas de API archivadas. Ambos balances son hipotéticos.",
         "no_top3_reasons":exclusions}
     # CSV downloads are linked from /site/reports/, NOT /site/data/reports/.
     status.update(publish(output,site.parent,games,picks,extras))

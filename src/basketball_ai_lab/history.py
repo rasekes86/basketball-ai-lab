@@ -93,3 +93,39 @@ def supersede_unstarted_picks(picks, now, archive, eligible_ids=None):
         del picks[key]
         changed += 1
     return changed
+
+
+def needs_stat_verification(game, picks, boxscore):
+    """Whether an archived, pending team-stat pick still needs ESPN evidence.
+
+    A parsed but incomplete team box score must NOT permanently block retries.
+    Only immutable original picks are considered, not exploratory markets.
+    """
+    required=set()
+    for row in picks.values():
+        if row.get("event_id")!=game.get("id") or row.get("status")!="PENDIENTE":
+            continue
+        contract=row.get("contract") or {}
+        if contract.get("type")!="team_stat":continue
+        required.add((contract.get("team"),contract.get("stat")))
+    if not required:return False
+    if not isinstance(boxscore,dict) or boxscore.get("id")!=game.get("id") or boxscore.get("start_utc")!=game.get("start_utc"):
+        return True
+    teams=boxscore.get("teams") or {}
+    return any(type((teams.get(team) or {}).get(stat)) is not int
+               for team,stat in required)
+
+
+def should_retry_summary(game, previous_attempt, now, urgent=False):
+    """Retry recently finished, unverified picks at 4h; older backfill at 7d.
+
+    This prevents a transient incomplete box score from keeping last night's
+    prediction pending for a full week. The caller enforces provider budgets.
+    """
+    if previous_attempt is None:return True
+    prior=time_utc(previous_attempt)
+    tip=time_utc(game.get("start_utc"))
+    if not prior or not tip or prior>now:return False
+    recent=timedelta(0)<=now-tip<=timedelta(days=4)
+    interval=timedelta(hours=4) if urgent and recent else timedelta(days=7)
+    return now-prior>=interval

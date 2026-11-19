@@ -103,7 +103,7 @@ function render(){
   const top3Net=Number(tb.net_eur);
   const simText=Number(tb.settled)>0&&Number.isFinite(top3Net)?euros(top3Net):'—';
   const realNet=extraDone.length?euros(Number(state.status.extras_unit_profit)||0):'—';
-  $('resultStats').innerHTML=stat('TOP 3 EVALUADO',`${checked.length}/${picks.length}`,'Solo los 3 archivados')+stat('ACIERTOS TOP 3',checked.length?probability(wins/checked.length):'—','No recalcular después del inicio')+stat('BALANCE TOP 3 SIMULADO',simText,Number(tb.settled)>0?`${tb.roi_pct}% · 1 € por pick a cuota 1/p`:'Sin resultados liquidados')+stat('ADICIONALES +1,50',`${extraDone.length}/${extras.length}`,'Cuotas reales archivadas')+stat('SIMULACIÓN · CUOTA REAL',realNet,'1 € hipotético por apuesta archivada');
+  $('resultStats').innerHTML=stat('TOP 3 EVALUADO',`${checked.length}/${picks.length}`,'Solo los 3 archivados')+stat('ACIERTOS TOP 3',checked.length?probability(wins/checked.length):'—','No recalcular después del inicio')+stat('BALANCE TOP 3 SIMULADO',simText,Number(tb.settled)>0?`${tb.roi_pct}% · 1 € por pick a cuota 1/p`:'Sin resultados liquidados')+stat('ADICIONALES +1,50',`${extraDone.length}/${extras.length}`,'Cuotas reales archivadas')+stat('SIMULACIÓN · CUOTA REAL',realNet,'1 € hipotético por apuesta archivada')+stat('PENDIENTES TRAS FINAL',Number(state.status.pending_postmatch_selections)||0,(Number(state.status.pending_postmatch_team_stats)||0)+' requieren estadísticas de equipo');
   const marketNames={winner:'Ganador',total:'Puntos totales',handicap:'Hándicap',team_threes:'Triples (equipo)',team_rebounds:'Rebotes (equipo)',team_assists:'Asistencias (equipo)'};
   const marketRows=state.status.market_metrics||{};
   $('marketResults').innerHTML=Object.entries(marketNames).map(([key,label])=>{
