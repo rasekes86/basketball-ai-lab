@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0d13">
+  <meta name="description" content="PULSE ARENA: tu centro de inteligencia deportiva. Football AI Lab y Basketball AI Lab, en una sola plataforma.">
+  <title>PULSE ARENA · Tu centro de inteligencia deportiva</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="logo" href="#inicio" aria-label="PULSE ARENA, volver al inicio">
+        <span class="logo-emblem" aria-hidden="true"><svg viewBox="0 0 44 44" fill="none"><path d="M23 4 8 25h12l-2 15 18-24H23z" fill="currentColor"/></svg></span>
+        <span class="logo-type"><strong>PULSE<span class="dot">.</span></strong><small>ARENA <span> / 001</span></small></span>
+      </a>
+      <div class="sidebar-section">TU ESPACIO</div>
+      <nav class="navigation" aria-label="Navegación principal">
+        <a class="nav-link" data-route="inicio" href="#inicio"><span class="nav-symbol">◈</span> Centro de mando <span class="nav-arrow">↗</span></a>
+        <a class="nav-link" data-route="catalogo" href="#catalogo"><span class="nav-symbol">▦</span> Todos los deportes <span class="nav-arrow">↗</span></a>
+      </nav>
+      <div class="sidebar-section modules-label">LABORATORIOS</div>
+      <nav class="navigation" aria-label="Laboratorios disponibles">
+        <a class="nav-link" data-route="football" href="#football"><span class="nav-symbol nav-football">⚽</span> Fútbol <span class="nav-arrow">↗</span></a>
+        <a class="nav-link" data-route="basketball" href="#basketball"><span class="nav-symbol nav-basketball">🏀</span> Baloncesto <span class="nav-arrow">↗</span></a>
+      </nav>
+      <div class="sidebar-grow"></div>
+      <div class="sidebar-bottom">
+        <div class="side-orbit" aria-hidden="true"><span></span><span></span><span></span><i>+</i></div>
+        <div class="side-caption">Una arena.<br><b>Infinitas posibilidades.</b></div>
+        <p>Más deportes, análisis y modelos. El espacio crece contigo.</p>
+      </div>
+      <div class="sidebar-footer"><span class="tiny-led"></span> PULSE CORE <span class="sidebar-version">V1.0</span></div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>PLATFORM</span><span class="separator">/</span><strong id="breadcrumbCurrent">OVERVIEW</strong></div>
+        <div class="topbar-right">
+          <span class="live-label"><span class="live-dot"></span> LABORATORIOS CONECTADOS</span>
+          <button id="installButton" class="top-button" type="button" hidden aria-label="Instalar PULSE ARENA">↓ <span>Instalar app</span></button>
+          <span class="avatar" aria-hidden="true">P</span>
+        </div>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <section class="page" id="page-inicio" aria-labelledby="homeTitle">
+          <div class="eyebrow"><span class="eyebrow-slash">//</span> SPORTS INTELLIGENCE HQ <span class="eyebrow-line"></span> YOUR COMMAND CENTER</div>
+          <div class="hero">
+            <div class="hero-content">
+              <div class="hero-kicker"><span class="kicker-led"></span> WELCOME TO THE NEXT LEVEL</div>
+              <h1 id="homeTitle">EL DEPORTE<br><em>SE VIVE.</em><br><span>LOS DATOS,</span><br><strong>SE DOMINAN.</strong></h1>
+              <p>Una sola arena para todos tus laboratorios deportivos. Pronósticos, resultados y análisis. Todo conectado. Todo en tu terreno.</p>
+              <div class="hero-actions"><a href="#catalogo" class="primary-cta">Explorar laboratorios <span aria-hidden="true">↗</span></a><span class="hero-subs"><span class="status-spark"></span> 2 DEPORTES DISPONIBLES</span></div>
+            </div>
+            <div class="hero-art" aria-hidden="true">
+              <div class="art-glow"></div>
+              <div class="art-ring outer"></div><div class="art-ring middle"></div><div class="art-ring inner"></div>
+              <div class="art-axis horizontal"></div><div class="art-axis vertical"></div>
+              <div class="hero-sphere"><svg viewBox="0 0 250 250"><circle cx="125" cy="125" r="109" fill="none" stroke="currentColor" stroke-width="2" opacity=".7"/><path d="M16 125h218M125 16v218M35 65c67 15 113 105 89 168M213 59c-79 23-99 97-89 174M45 184c69-28 117-29 164 3M47 60c52 25 111 24 162-6" fill="none" stroke="currentColor" stroke-width="2" opacity=".45"/></svg></div>
+              <span class="art-label art-top">SYS / ONLINE</span><span class="art-label art-bottom">02 / 00</span>
+              <span class="art-float one">+</span><span class="art-float two">·</span><span class="art-float three">×</span>
+            </div>
+            <span class="hero-number" aria-hidden="true">01 — ∞</span>
+          </div>
+
+          <div class="section-head"><div><span class="section-index">01 / ELIGE TU TERRENO</span><h2>Tu próxima jugada <span class="italic">empieza aquí.</span></h2></div><a class="subtle-link" href="#catalogo">Ver todos los deportes <span>↗</span></a></div>
+          <div id="activeCards" class="sport-grid"></div>
+
+          <div class="bottom-layout">
+            <section class="metrics-section" aria-labelledby="pulseMetricsTitle">
+              <div class="mini-heading"><span class="small-line"></span> EL PULSO DE LA PLATAFORMA</div>
+              <h2 id="pulseMetricsTitle">Datos en movimiento<span>.</span></h2>
+              <div class="metric-grid">
+                <div class="metric"><span class="metric-value">02</span><span class="metric-label">Laboratorios<br>disponibles</span><span class="metric-mark">↗</span></div>
+                <div class="metric"><span class="metric-value">06</span><span class="metric-label">Ligas de fútbol<br>en seguimiento</span><span class="metric-mark">↗</span></div>
+                <div class="metric"><span class="metric-value">30</span><span class="metric-label">Franquicias<br>de NBA</span><span class="metric-mark">↗</span></div>
+              </div>
+            </section>
+            <section class="next-card" aria-labelledby="nextTitle"><span class="next-eyebrow">WHAT'S NEXT / 003</span><div class="next-icon">✳</div><h2 id="nextTitle">Esto no ha hecho más que empezar.</h2><p>Tenis, motor, nuevos modelos... La arena está diseñada para crecer deporte a deporte.</p><a href="#catalogo">Descubrir próximos deportes <span>↗</span></a></section>
+          </div>
+        </section>
+
+        <section class="page" id="page-catalogo" aria-labelledby="catalogTitle">
+          <div class="eyebrow"><span class="eyebrow-slash">//</span> SPORT DIRECTORY <span class="eyebrow-line"></span> THE LINEUP</div>
+          <div class="title-band"><span class="section-index">02 / TODOS LOS DEPORTES</span><h1 id="catalogTitle">UN UNIVERSO.<br><em>MÚLTIPLES JUEGOS.</em></h1><p>Elige un deporte para entrar en su laboratorio. Nuevas disciplinas se añadirán aquí sin perder tus aplicaciones actuales.</p></div>
+          <div class="search-row"><label class="search-box"><span aria-hidden="true">⌕</span><span class="sr-only">Buscar deporte</span><input id="sportsSearch" type="search" placeholder="Busca un deporte..." autocomplete="off"></label><span id="catalogCount" class="result-count"></span></div>
+          <div id="catalogCards" class="catalog-grid"></div><p id="emptySearch" class="empty-message" hidden>No hay deportes que coincidan con esa búsqueda.</p>
+        </section>
+
+        <section class="page" id="page-lab" aria-labelledby="labTitle">
+          <div class="lab-topline"><a href="#inicio" class="back-link">← Volver al centro</a><span class="lab-status"><span class="tiny-led"></span> LABORATORIO ACTIVO</span></div>
+          <div class="lab-heading"><div><span id="labEyebrow" class="section-index"></span><h1 id="labTitle">LABORATORIO</h1><p id="labDescription"></p></div><div class="lab-actions"><a id="labOpenExternal" href="#" target="_blank" rel="noopener noreferrer" class="open-link">Abrir original <span>↗</span></a><button id="labReload" type="button" class="reload-btn" title="Recargar laboratorio" aria-label="Recargar laboratorio">↻</button></div></div>
+          <div class="embed-wrap"><div class="embed-bar"><span class="browser-dots"><i></i><i></i><i></i></span><span id="embedUrl" class="embed-url"></span><span class="embed-badge">PULSE CONNECT</span></div><div class="embed-stage"><iframe id="labFrame" title="Laboratorio deportivo" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="fullscreen" src="about:blank"></iframe><div id="frameFallback" class="frame-fallback" hidden><b>El contenido no se ha podido mostrar integrado.</b><p>Puedes abrir el laboratorio original sin perder ninguno de sus datos o funciones.</p><a id="fallbackOpen" href="#" target="_blank" rel="noopener noreferrer">Abrir laboratorio ↗</a></div></div></div>
+          <div class="embed-note"><span>ℹ</span> El laboratorio funciona de forma independiente y mantiene sus propias actualizaciones. Si necesitas más espacio, usa «Abrir original».</div>
+        </section>
+      </main>
+      <footer class="footer"><span>© <span id="footerYear"></span> PULSE ARENA</span><span>BUILT FOR THE GAME. POWERED BY DATA.</span><span>EXPERIMENTAL · NO SON RECOMENDACIONES DE APUESTAS</span></footer>
+    </div>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
