@@ -5,6 +5,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 from urllib.parse import urlsplit,parse_qs
 from basketball_ai_lab.history import needs_stat_verification,should_retry_summary
+from basketball_ai_lab.model import is_void_line
 from basketball_ai_lab.pipeline import update
 from basketball_ai_lab.provider import Client
 from basketball_ai_lab.store import save,load
@@ -50,6 +51,36 @@ def source(url):
 
 
 class PostmatchTests(unittest.TestCase):
+    def test_exact_total_is_void_not_error_or_pending(self):
+        final={**GAME,"home_score":112,"away_score":117}
+        extra={"contract":{"type":"total","direction":"under","line":229}}
+        self.assertTrue(is_void_line(extra,final))
+        self.assertFalse(is_void_line(extra,{**final,"status":"SCHEDULED"}))
+        self.assertFalse(is_void_line({"contract":{"type":"total","direction":"under","line":229.5}},final))
+
+    def test_automatic_push_settlement_refunds_without_counting_in_roi(self):
+        with TemporaryDirectory() as tmp:
+            base=Path(tmp)/"data";web=Path(tmp)/"site"/"data"
+            final={**GAME,"home_score":112,"away_score":117}
+            extra={"id":GAME["id"]+"|extra","event_id":GAME["id"],
+              "home":"ATL","away":"BOS","start_utc":GAME["start_utc"],
+              "created_utc":(TIP-timedelta(hours=2)).isoformat(),
+              "market":"extra_totals","selection":"UNDER 229 puntos",
+              "probability":.55,"status":"PENDIENTE","result":None,
+              "real_price":1.93,"real_price_status":"OFRECIDA_API_REGISTRADA",
+              "contract":{"type":"total","direction":"under","line":229}}
+            save(base/"games.json",{GAME["id"]:final})
+            save(base/"extras.json",{extra["id"]:extra})
+            update(base,web,NOW,Client(fetch=source,max_calls=65),env={})
+            actual=load(base/"extras.json",{})[extra["id"]]
+            self.assertEqual(actual["status"],"ANULADA")
+            self.assertIsNone(actual["result"])
+            status=load(base/"status.json",{})
+            self.assertEqual(status["extras_voided"],1)
+            self.assertEqual(status["extras_evaluated"],0)
+            self.assertEqual(status["extras_unit_profit"],0)
+            self.assertEqual(status["pending_postmatch_selections"],0)
+
     def test_recent_pending_gets_four_hour_retry(self):
         self.assertTrue(should_retry_summary(GAME,(NOW-timedelta(hours=5)).isoformat(),NOW,True))
         self.assertFalse(should_retry_summary(GAME,(NOW-timedelta(hours=3)).isoformat(),NOW,True))
