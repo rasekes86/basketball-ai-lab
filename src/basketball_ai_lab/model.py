@@ -178,6 +178,32 @@ def reference_forecast(game,games,at):
         max(p,1-p),{"type":"total","direction":direction,"line":total_line},combined,at))
     return result
 
+def is_void_line(pick,game,boxscore=None):
+    """A verified exact push refunds the stake, not a missing result.
+
+    Main-market integer totals and integer handicap margins can push. For a
+    team-stat market, require the exact verified ESPN team count first.
+    """
+    if game.get("status")!="FINAL":return False
+    h,a=game.get("home_score"),game.get("away_score")
+    if type(h) is not int or type(a) is not int:return False
+    c=pick.get("contract") or {}
+    kind=c.get("type")
+    if kind=="total":
+        return isinstance(c.get("line"),(int,float)) and h+a==c["line"]
+    if kind=="handicap":
+        return isinstance(c.get("home_margin_line"),(int,float)) and h-a==c["home_margin_line"]
+    if kind=="team_stat":
+        if not boxscore or boxscore.get("id")!=game.get("id") or boxscore.get("start_utc")!=game.get("start_utc"):
+            return False
+        team,metric=c.get("team"),c.get("stat")
+        if team not in (game.get("home"),game.get("away")) or metric not in ("threes","rebounds","assists"):
+            return False
+        value=(boxscore.get("teams") or {}).get(team,{}).get(metric)
+        return type(value) is int and isinstance(c.get("line"),(int,float)) and value==c["line"]
+    return False
+
+
 def settle_one(pick,game,boxscore=None):
     if game.get("status")!="FINAL":return None
     h,a=game.get("home_score"),game.get("away_score")
