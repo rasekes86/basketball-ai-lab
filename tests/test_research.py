@@ -9,7 +9,7 @@ from basketball_ai_lab.research import (
 )
 
 START=datetime(2026,10,1,tzinfo=timezone.utc)
-RETRIEVED=datetime(2026,12,1,tzinfo=timezone.utc)
+RETRIEVED=datetime(2027,2,1,tzinfo=timezone.utc)
 
 
 def fixtures(count=65):
@@ -105,7 +105,7 @@ class NBAResearchTests(unittest.TestCase):
     def test_no_data_no_fabricated_success(self):
         result=walkforward({}, {})
         self.assertEqual(result["modes"]["strict_captured"]["overall"]["evaluated"],0)
-        self.assertEqual(result["modes"]["historical_reconstruction"]["overall"]["evidence"] if "evidence" in result["modes"]["historical_reconstruction"]["overall"] else "none","SIN_RESULTADOS")
+        self.assertEqual(result["modes"]["historical_reconstruction"]["overall"]["evidence"],"SIN_RESULTADOS")
         with self.assertRaises(ValueError):
             walkforward({}, {},max_games=0)
 
