@@ -60,3 +60,9 @@ test('The Odds API only activates when the GitHub secret is configured',()=>{
   assert.match(workflow,/ODDS_API_KEY:.*secrets\.ODDS_API_KEY/);
   assert.doesNotMatch(js,/api\.the-odds-api\.com/);
 });
+
+test('V3 prospective results do not blend old forecasts',()=>{
+  assert.match(js,/v3Checked=checked\.filter\(p=>p\.model_version==='NBA_CONTEXT_V3'\)/);
+  assert.match(js,/v3Extras=extras\.filter\(p=>p\.model_version==='NBA_CONTEXT_V3_MARKET_GUARD'\)/);
+  assert.match(js,/ACIERTOS TOP 3 V3/);
+});
