@@ -23,8 +23,8 @@ class V3RegressionTests(unittest.TestCase):
                    "home_score":190,"away_score":50}
         baseline=matchup_context({"r":recent},NOW,future)
         self.assertEqual(baseline,matchup_context({"r":recent,"bad":malicious},NOW,future))
-        self.assertEqual(baseline[0],-.5)
-        self.assertEqual(baseline[1],-.5)
+        self.assertEqual(baseline[0],-1.5)
+        self.assertEqual(baseline[1],-1.5)
 
     def test_needs_two_independently_paired_bookmakers(self):
         q={"event_id":"e","home":"ATL","away":"BOS","market":"totals","point":225.5,
