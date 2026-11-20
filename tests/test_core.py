@@ -119,12 +119,20 @@ class OptionalOddsTests(unittest.TestCase):
     def test_extra_needs_matched_event_and_valid_real_price(self):
         game={"id":"F","home":"ATL","away":"BOS","start_utc":(NOW+timedelta(days=1)).isoformat(),"status":"SCHEDULED"}
         picks=[{"market":"winner","probability":.65,"contract":{"team":"ATL"}}]
-        q={"home":"ATL","away":"BOS","team":"ATL","start_utc":game["start_utc"],
-           "price":1.75,"updated_utc":NOW.isoformat(),"bookmaker":"book123",
+        q={"home":"ATL","away":"BOS","team":"ATL","market":"h2h",
+           "start_utc":game["start_utc"],"price":1.90,
+           "updated_utc":NOW.isoformat(),"bookmaker":"book123",
            "captured_utc":NOW.isoformat(),"provider":"The Odds API","event_id":"external"}
-        selected=choose_extra(game,picks,[q],NOW)
-        self.assertEqual(selected["real_price"],1.75)
+        opposite={**q,"team":"BOS","price":2.0}
+        second={**q,"bookmaker":"book456","price":1.85}
+        second_opposite={**second,"team":"BOS","price":2.05}
+        self.assertIsNone(choose_extra(game,picks,[q],NOW))
+        selected=choose_extra(game,picks,[q,opposite,second,second_opposite],NOW)
+        self.assertIsNotNone(selected)
+        self.assertEqual(selected["real_price"],1.90)
         self.assertEqual(selected["bookmaker"],"book123")
+        self.assertLess(selected["probability"],picks[0]["probability"])
+        self.assertEqual(selected["model_version"],"NBA_CONTEXT_V3_MARKET_GUARD")
         self.assertIsNone(choose_extra(game,picks,[{**q,"away":"NYK"}],NOW))
         self.assertIsNone(choose_extra(game,picks,[q],NOW+timedelta(days=2)))
         self.assertIsNone(choose_extra(game,picks,[{**q,"price":1.49}],NOW))
