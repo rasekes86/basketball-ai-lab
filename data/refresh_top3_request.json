@@ -1,41 +1,51 @@
 {
-  "eligible_fixture_ids": [
-    "401910020"
-  ],
-  "fixture_ids": [
-    "401910020"
-  ],
-  "new_picks_archived": 3,
-  "old_picks_excluded": 3,
-  "pending": false,
-  "policy": "MIN_PROBABILITY_0.55_MIN_FAIR_1.15",
+  "pending": true,
+  "scope": "specified_unstarted_window",
+  "start_utc": "2026-11-20T06:00:00+00:00",
+  "end_utc": "2027-12-31T00:00:00+00:00",
+  "reason": "User-authorized full prospective 3+1 rescore from the night of 20 Nov 2026 with NBA_CONTEXT_V3; archive old Top 3 and all future extras; never modify already-started games",
+  "policy": "NBA_CONTEXT_V3_MARKET_GUARD",
+  "replacement_version": "NBA_CONTEXT_V3",
+  "requested_utc": "2026-11-20T06:23:00+00:00",
   "previous_processed_request": {
     "eligible_fixture_ids": [
-      "401910007",
-      "401910008",
-      "401910009",
-      "401910010",
-      "401910011",
-      "401910012",
-      "401910013",
-      "401910014",
-      "401910015",
-      "401910016",
-      "401910017",
-      "401910018"
+      "401910020"
     ],
-    "end_utc": "2026-11-19T04:00:00+00:00",
-    "new_picks_archived": 36,
-    "old_picks_excluded": 36,
+    "fixture_ids": [
+      "401910020"
+    ],
+    "new_picks_archived": 3,
+    "old_picks_excluded": 3,
     "pending": false,
-    "processed_utc": "2026-11-18T23:58:20.554672+00:00",
-    "reason": "User authorized today's NBA Top3 reselection with Football AI Lab rules; retain started games",
-    "replacement_version": "FOOTBALL_STYLE_TOP3_NBA_V2",
-    "requested_utc": "2026-11-18T23:55:00+00:00",
-    "scope": "specified_unstarted_window",
-    "start_utc": "2026-11-19T00:00:00+00:00"
-  },
-  "processed_utc": "2026-11-19T12:33:03.503794+00:00",
-  "reason": "User confirmed pregame correction of MIL-POR 53.0144% and 53.3473% under current >=55% Top3 rule; preserve superseded archive",
-  "scope": "specified_unstarted_fixture_ids"
+    "policy": "MIN_PROBABILITY_0.55_MIN_FAIR_1.15",
+    "previous_processed_request": {
+      "eligible_fixture_ids": [
+        "401910007",
+        "401910008",
+        "401910009",
+        "401910010",
+        "401910011",
+        "401910012",
+        "401910013",
+        "401910014",
+        "401910015",
+        "401910016",
+        "401910017",
+        "401910018"
+      ],
+      "end_utc": "2026-11-19T04:00:00+00:00",
+      "new_picks_archived": 36,
+      "old_picks_excluded": 36,
+      "pending": false,
+      "processed_utc": "2026-11-18T23:58:20.554672+00:00",
+      "reason": "User authorized today's NBA Top3 reselection with Football AI Lab rules; retain started games",
+      "replacement_version": "FOOTBALL_STYLE_TOP3_NBA_V2",
+      "requested_utc": "2026-11-18T23:55:00+00:00",
+      "scope": "specified_unstarted_window",
+      "start_utc": "2026-11-19T00:00:00+00:00"
+    },
+    "processed_utc": "2026-11-19T12:33:03.503794+00:00",
+    "reason": "User confirmed pregame correction of MIL-POR 53.0144% and 53.3473% under current >=55% Top3 rule; preserve superseded archive",
+    "scope": "specified_unstarted_fixture_ids"
+  }
 }

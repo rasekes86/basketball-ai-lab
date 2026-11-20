@@ -10,6 +10,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/nba-daily.yml'
+      - 'src/basketball_ai_lab/**'
+      - 'data/refresh_top3_request.json'
 permissions:
   contents: write
 concurrency:

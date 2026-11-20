@@ -102,10 +102,8 @@ class RealPricesTests(unittest.TestCase):
         primary=[{'market':'winner','contract':{'team':'ATL'},'probability':.65,'estimated':7.0}]
         baseline=[*primary,{'market':'total','estimated':235.0}]
         extra=choose_extra(game,primary,sample['quotes'],ASOF,baseline=baseline)
-        self.assertIsNotNone(extra)
-        self.assertIn(extra['market'],('extra_h2h','extra_spreads','extra_totals'))
-        self.assertGreater(extra['real_price'],1.5)
-        self.assertEqual(extra['quote_event_id'],'odds123')
+        # V3: single-sided offers from one book cannot substantiate an edge.
+        self.assertIsNone(extra)
     def test_explicit_user_requested_second_snapshot_only_once_per_utc_day(self):
         calls=[]
         def fetch(url):
