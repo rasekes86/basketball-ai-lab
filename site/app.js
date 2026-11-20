@@ -87,7 +87,7 @@ function render(){
   $('updated').textContent=state.status.updated_utc?'Datos: '+date(state.status.updated_utc):'Aún sin publicación';
   const failed=Number(state.status.source_failed_days)||0;
   const age=Date.now()-Date.parse(state.status.updated_utc||'');
-  const stale=state.status.updated_utc && age>48*3600*1000;
+  const stale=state.status.updated_utc && age>24*3600*1000;
   const reviews=Number(state.status.review_required_count)||0;
   const indicator=$('connection');
   indicator.className='connection'+(state.status.updated_utc?(failed||stale||reviews?' warn':' ready'):'');
