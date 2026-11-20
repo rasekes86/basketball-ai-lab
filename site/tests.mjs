@@ -66,3 +66,14 @@ test('V3 prospective results do not blend old forecasts',()=>{
   assert.match(js,/v3Extras=extras\.filter\(p=>p\.model_version==='NBA_CONTEXT_V3_MARKET_GUARD'\)/);
   assert.match(js,/ACIERTOS TOP 3 V3/);
 });
+
+test('NBA update uses three off-peak schedule slots with a late fallback',()=>{
+  const workflow=fs.readFileSync(new URL('../.github/workflows/nba-daily.yml',import.meta.url),'utf8');
+  for(const cron of ["23 9 * * *","41 14 * * *","47 19 * * *"])
+    assert.ok(workflow.includes("cron: '"+cron+"'"),'missing scheduled slot '+cron);
+  assert.match(workflow,/workflow_dispatch:/);
+  assert.match(workflow,/concurrency:/);
+});
+test('dashboard flags stale NBA data after one day',()=>{
+  assert.match(js,/age>24\*3600\*1000/);
+});
