@@ -369,11 +369,12 @@
     "quote_updated_utc": "2026-11-19T12:32:21+00:00",
     "real_price": 1.98,
     "real_price_status": "OFRECIDA_API_REGISTRADA",
-    "result": null,
+    "result": 0,
     "retrospective": false,
     "selection": "OVER 227.5 puntos totales",
+    "settled_utc": "2026-11-20T06:58:52.523382+00:00",
     "start_utc": "2026-11-20T01:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "FALLO"
   },
   "401910020|extra": {
     "away": "POR",
@@ -397,11 +398,12 @@
     "quote_updated_utc": "2026-11-19T12:32:20+00:00",
     "real_price": 1.97,
     "real_price_status": "OFRECIDA_API_REGISTRADA",
-    "result": null,
+    "result": 0,
     "retrospective": false,
     "selection": "MIL +9.5 puntos (hándicap)",
+    "settled_utc": "2026-11-20T06:58:52.523382+00:00",
     "start_utc": "2026-11-20T01:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "FALLO"
   },
   "401910021|extra": {
     "away": "NYK",
@@ -425,11 +427,12 @@
     "quote_updated_utc": "2026-11-19T12:32:22+00:00",
     "real_price": 1.91,
     "real_price_status": "OFRECIDA_API_REGISTRADA",
-    "result": null,
+    "result": 0,
     "retrospective": false,
     "selection": "MIN +1.5 puntos (hándicap)",
+    "settled_utc": "2026-11-20T06:58:52.523382+00:00",
     "start_utc": "2026-11-20T01:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "FALLO"
   },
   "401910022|extra": {
     "away": "LAC",
@@ -453,10 +456,11 @@
     "quote_updated_utc": "2026-11-19T12:32:24+00:00",
     "real_price": 1.91,
     "real_price_status": "OFRECIDA_API_REGISTRADA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "selection": "LAC +16 puntos (hándicap)",
+    "settled_utc": "2026-11-20T06:58:52.523382+00:00",
     "start_utc": "2026-11-20T01:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   }
 }
