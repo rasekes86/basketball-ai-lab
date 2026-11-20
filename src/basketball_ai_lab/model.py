@@ -8,6 +8,7 @@ from math import erf,sqrt
 from statistics import mean
 from .advanced import matchup_form
 from .transform import time_utc
+from .model_v3 import cautious_probability, matchup_context, VERSION
 
 MIN_GAMES=5
 HALF_LIFE_DAYS=24
@@ -46,6 +47,7 @@ def ratings(games, at):
     return baseline,outcome
 
 def _pick(game,market,selection,probability,contract,estimate,asof):
+    probability=cautious_probability(probability)
     return {"id":f'{game["id"]}|{market}',"event_id":game["id"],
             "start_utc":game["start_utc"],"created_utc":asof.isoformat(),
             "home":game["home"],"away":game["away"],"market":market,
@@ -53,7 +55,7 @@ def _pick(game,market,selection,probability,contract,estimate,asof):
             "fair_odds":round(1/probability,3),"contract":contract,
             "estimated":round(estimate,2),"status":"PENDIENTE",
             "result":None,"real_price":None,"real_price_status":"SIN_CUOTA_OFRECIDA",
-            "model":"ROLLING_POINTS_V1","quality":"NO_CALIBRADO","retrospective":False}
+            "model":"ROLLING_POINTS_CONTEXT_V3","model_version":VERSION,"quality":"EXPERIMENTAL_NO_CALIBRADO","retrospective":False}
 
 # Same market-selection policy as Football AI Lab, adapted to NBA statistics.
 # These are fixed/theoretical statistical lines, NOT sportsbook quotes.
@@ -90,10 +92,10 @@ def forecast(game,games,at,boxscores=None):
         return [],"MUESTRA_INSUFICIENTE"
     ph=.48*home["offense"]+.52*away["defense"]+2.0
     pa=.48*away["offense"]+.52*home["defense"]-2.0
+    rest_h,rest_a,sd_diff,sd_total=matchup_context(games,at,game)
+    ph+=rest_h; pa+=rest_a
     diff=ph-pa
     combined=ph+pa
-    sd_diff=15.5
-    sd_total=18.5
     win_prob=normal_cdf(diff/sd_diff)
     winner=game["home"] if win_prob>=.5 else game["away"]
     pwin=max(win_prob,1-win_prob)
@@ -104,12 +106,14 @@ def forecast(game,games,at,boxscores=None):
     # The grid and selection are determined BEFORE tipoff; no price guessing.
     for line in (199.5,204.5,209.5,214.5,219.5,224.5,229.5,234.5,
                  239.5,244.5,249.5,254.5,259.5):
+        if abs(combined-line)>1.10*sd_total:continue
         over=normal_cdf((combined-line)/sd_total)
         for direction,p in (("over",over),("under",1-over)):
             if not MIN_TOP_PROBABILITY<=p<1:continue
             candidates.append(_pick(game,"total",f"{direction.upper()} {line:g} puntos (teórico)",
                   p,{"type":"total","direction":direction,"line":line},combined,at))
     for line in (-15.5,-12.5,-9.5,-6.5,-3.5,-0.5,2.5,5.5,8.5,11.5,14.5):
+        if abs(diff-line)>1.10*sd_diff:continue
         home_cover=normal_cdf((diff-line)/sd_diff)
         for side,p in (("home",home_cover),("away",1-home_cover)):
             if not MIN_TOP_PROBABILITY<=p<1:continue
@@ -137,6 +141,7 @@ def forecast(game,games,at,boxscores=None):
                 expectation=.55*own["made"]+.45*opp["allowed"]
                 sd=max(minimum_sd,float(own["sd"]))
                 for line in lines:
+                    if abs(expectation-line)>1.10*sd:continue
                     over=normal_cdf((expectation-line)/sd)
                     for direction,p in (("over",over),("under",1-over)):
                         if not MIN_TOP_PROBABILITY<=p<1:continue
@@ -165,15 +170,17 @@ def reference_forecast(game,games,at):
     if not h or not a or min(h["games"],a["games"])<MIN_GAMES:return []
     ph=.48*h["offense"]+.52*a["defense"]+2.0
     pa=.48*a["offense"]+.52*h["defense"]-2.0
+    rest_h,rest_a,sd_diff,sd_total=matchup_context(games,at,game)
+    ph+=rest_h;pa+=rest_a
     diff=ph-pa
     combined=ph+pa
-    probability=normal_cdf(diff/15.5)
+    probability=normal_cdf(diff/sd_diff)
     winner=game["home"] if probability>=.5 else game["away"]
     result=[_pick(game,"winner",f"Gana {winner}",max(probability,1-probability),
         {"type":"winner","team":winner},diff,at)]
     total_line=5*round((combined-.5)/5)+.5
     direction="over" if combined>total_line else "under"
-    p=normal_cdf((combined-total_line)/18.5)
+    p=normal_cdf((combined-total_line)/sd_total)
     result.append(_pick(game,"total",f"{direction.upper()} {total_line:g} puntos (referencia)",
         max(p,1-p),{"type":"total","direction":direction,"line":total_line},combined,at))
     return result
