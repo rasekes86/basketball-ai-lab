@@ -99,8 +99,55 @@ def fetch_snapshot(key,now,state,fetch=None,allow_extra_daily=False):
                     quotes.append(quote)
     return {"status":"OK","quotes":quotes,"state":next_state}
 
+def _same_offer(a,b):
+    """The identical side/line, possibly from a different bookmaker."""
+    if any(a.get(key)!=b.get(key) for key in ("event_id","home","away","market","start_utc")):return False
+    kind=a.get("market","h2h")
+    if kind=="h2h":return a.get("team")==b.get("team")
+    if kind=="spreads":return a.get("team")==b.get("team") and a.get("point")==b.get("point")
+    if kind=="totals":return a.get("direction")==b.get("direction") and a.get("point")==b.get("point")
+    return False
+
+def _opposite_offer(a,b):
+    if a.get("bookmaker")!=b.get("bookmaker"):return False
+    if any(a.get(key)!=b.get(key) for key in ("event_id","home","away","market","start_utc")):return False
+    kind=a.get("market","h2h")
+    if kind=="h2h":return a.get("team")!=b.get("team")
+    if kind=="totals":return a.get("point")==b.get("point") and a.get("direction")!=b.get("direction")
+    if kind=="spreads":
+        point=a.get("point");other=b.get("point")
+        return (a.get("team")!=b.get("team") and isinstance(point,(int,float))
+                and isinstance(other,(int,float)) and abs(point+other)<.0001)
+    return False
+
+def market_consensus_probability(quote, quotes):
+    """Median vig-free probability from >=2 independently paired bookmakers.
+
+    Missing, lone or inconsistent lines are rejected: we never invent market
+    reference probabilities or compare odds for mismatched handicaps.
+    """
+    values=[]
+    seen=set()
+    for q in quotes:
+        if not _same_offer(quote,q) or q.get("bookmaker") in seen:continue
+        try:price=float(q["price"])
+        except (ValueError,TypeError,KeyError):continue
+        for opposite in quotes:
+            if not _opposite_offer(q,opposite):continue
+            try:other=float(opposite["price"])
+            except (ValueError,TypeError,KeyError):continue
+            if price<=1.01 or other<=1.01:continue
+            prob=(1/price)/(1/price+1/other)
+            values.append(prob)
+            seen.add(q["bookmaker"])
+            break
+    if len(values)<2:return None
+    values.sort()
+    middle=len(values)//2
+    return values[middle] if len(values)%2 else (values[middle-1]+values[middle])/2
+
 def choose_extra(game,picks,quotes,now,baseline=None):
-    """One offered >1.50, unambiguous pregame selection; never a fake price.
+    """One offered >1.50, paired-market-audited pregame selection; never a fake price.
 
     As a safeguard, a genuinely independent market is preferred over
     duplicating the frozen winner pick. Experimental probabilities/EV are
@@ -166,6 +213,12 @@ def choose_extra(game,picks,quotes,now,baseline=None):
         # In particular do not publish "Gana IND" twice as happened before.
         if len(picks)>=3 and any(row.get("contract")==contract for row in picks):
             continue
+        market_p=market_consensus_probability(q,quotes)
+        if market_p is None:continue
+        # The old model assigned implausibly high edges to common NBA lines.
+        # Reject strong disagreement instead of selecting it as "value".
+        if abs(p-market_p)>.15:continue
+        p=.80*market_p+.20*p  # deliberately market-anchored, NOT proven calibrated
         ev=p*price-1
         if p>=.53 and ev>=.025:eligible.append((ev,p,q,selection,contract))
     if not eligible:return None
@@ -180,4 +233,4 @@ def choose_extra(game,picks,quotes,now,baseline=None):
         "quote_updated_utc":q["updated_utc"],"captured_utc":q["captured_utc"],
         "quote_event_id":q["event_id"],"estimated_ev":round(ev,4),
         "status":"PENDIENTE","result":None,"quality":"NO_CALIBRADO",
-        "retrospective":False}
+        "retrospective":False,"model_version":"NBA_CONTEXT_V3_MARKET_GUARD"}
