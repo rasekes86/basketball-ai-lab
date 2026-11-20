@@ -79,6 +79,11 @@ function render(){
   const wins=checked.filter(p=>p.status==='ACIERTO').length;
   const extras=Object.values(state.extras), extraDone=extras.filter(p=>p.status==='ACIERTO'||p.status==='FALLO');
   const winExtra=extraDone.filter(p=>p.status==='ACIERTO').length;
+  // Keep the new prospective V3 record separate from historical V1/V2 picks.
+  const v3Checked=checked.filter(p=>p.model_version==='NBA_CONTEXT_V3');
+  const v3Wins=v3Checked.filter(p=>p.status==='ACIERTO').length;
+  const v3Extras=extras.filter(p=>p.model_version==='NBA_CONTEXT_V3_MARKET_GUARD');
+  const v3ExtraDone=v3Extras.filter(p=>p.status==='ACIERTO'||p.status==='FALLO');
   $('updated').textContent=state.status.updated_utc?'Datos: '+date(state.status.updated_utc):'Aún sin publicación';
   const failed=Number(state.status.source_failed_days)||0;
   const age=Date.now()-Date.parse(state.status.updated_utc||'');
@@ -97,14 +102,14 @@ function render(){
   const top3Tonight=tonight.reduce((n,g)=>n+fixturePicks(g.id).length,0);
   $('nightCount').textContent=tonight.length?`· ${tonight.length} partidos`:'';
   $('nightLabel').textContent=tonight.length?`Jornada NBA del ${key.split('-').reverse().join('/')} · ${top3Tonight} pronósticos Top 3 archivados · horarios de Madrid`:'Próximos encuentros NBA · horarios de Madrid';
-  $('stats').innerHTML=stat('PARTIDOS ESTA NOCHE',number(tonight.length),'Todos los de la jornada NBA')+stat('TOP 3 ESTA NOCHE',number(top3Tonight),'3 por partido, cuando hay muestra')+stat('ACIERTOS VERIFICADOS',checked.length?probability(wins/checked.length):'—',`${wins} de ${checked.length} selecciones`)+stat('ADICIONALES REALES',`${extras.length}`,'Cuota ofrecida superior a 1,50');
+  $('stats').innerHTML=stat('PARTIDOS ESTA NOCHE',number(tonight.length),'Todos los de la jornada NBA')+stat('TOP 3 ESTA NOCHE',number(top3Tonight),'3 por partido, cuando hay muestra')+stat('ACIERTOS TOP 3 V3',v3Checked.length?probability(v3Wins/v3Checked.length):'—',`${v3Wins} de ${v3Checked.length} · sin mezclar modelos`)+stat('ADICIONALES REALES',`${extras.length}`,'Cuota ofrecida superior a 1,50');
   $('featured').innerHTML=focus.length?focus.map(fixture).join(''):alertBox('Aún no hay próximos encuentros comprobados','Una ejecución del motor descargará el calendario real; no mostramos partidos ficticios.');
   $('recent').innerHTML=recent.length?recent.slice(0,5).map(resultItem).join(''):alertBox('Pendiente de primeras liquidaciones','Los resultados solo aparecen aquí después de archivar pronósticos y verificar el partido.');
   const tb=state.status.top3_theoretical_balance||{};
   const top3Net=Number(tb.net_eur);
   const simText=Number(tb.settled)>0&&Number.isFinite(top3Net)?euros(top3Net):'—';
   const realNet=extraDone.length?euros(Number(state.status.extras_unit_profit)||0):'—';
-  $('resultStats').innerHTML=stat('TOP 3 EVALUADO',`${checked.length}/${picks.length}`,'Solo los 3 archivados')+stat('ACIERTOS TOP 3',checked.length?probability(wins/checked.length):'—','No recalcular después del inicio')+stat('BALANCE TOP 3 SIMULADO',simText,Number(tb.settled)>0?`${tb.roi_pct}% · 1 € por pick a cuota 1/p`:'Sin resultados liquidados')+stat('ADICIONALES +1,50',`${extraDone.length}/${extras.length}`,'Cuotas reales archivadas')+stat('SIMULACIÓN · CUOTA REAL',realNet,'1 € hipotético por apuesta archivada')+stat('PENDIENTES TRAS FINAL',Number(state.status.pending_postmatch_selections)||0,(Number(state.status.pending_postmatch_team_stats)||0)+' requieren estadísticas de equipo');
+  $('resultStats').innerHTML=stat('HISTÓRICO TOP 3',`${checked.length}/${picks.length}`,'Incluye modelos anteriores')+stat('ACIERTOS V3',v3Checked.length?probability(v3Wins/v3Checked.length):'—',`${v3Wins} de ${v3Checked.length} desde el cambio de modelo`)+stat('BALANCE TOP 3 SIMULADO',simText,Number(tb.settled)>0?`${tb.roi_pct}% · 1 € por pick a cuota 1/p`:'Sin resultados liquidados')+stat('ADICIONALES V3 +1,50',`${v3ExtraDone.length}/${v3Extras.length}`,'Solo ofertas verificadas con filtro V3')+stat('SIMULACIÓN HISTÓRICA',realNet,'1 € hipotético · incluye anteriores')+stat('PENDIENTES TRAS FINAL',Number(state.status.pending_postmatch_selections)||0,(Number(state.status.pending_postmatch_team_stats)||0)+' requieren estadísticas de equipo');
   const marketNames={winner:'Ganador',total:'Puntos totales',handicap:'Hándicap',team_threes:'Triples (equipo)',team_rebounds:'Rebotes (equipo)',team_assists:'Asistencias (equipo)'};
   const marketRows=state.status.market_metrics||{};
   $('marketResults').innerHTML=Object.entries(marketNames).map(([key,label])=>{
@@ -112,7 +117,7 @@ function render(){
     const evaluated=Number(m.evaluated)||0;
     const bm=tb.by_market?.[key];
     const simulated=Number(bm?.settled)>0?` · Sim. ${euros(Number(bm.net_eur)||0)} (${Number(bm.roi_pct).toFixed(1)}%)`:'';
-    return `<article class="market-quality"><small>${escape(label)}</small><strong>${evaluated?probability(m.accuracy):'—'}</strong><span>${evaluated} evaluadas · Brier ${evaluated?Number(m.brier).toFixed(3):'—'}${simulated}</span></article>`;
+    return `<article class="market-quality"><small>${escape(label)} · histórico</small><strong>${evaluated?probability(m.accuracy):'—'}</strong><span>${evaluated} evaluadas · Brier ${evaluated?Number(m.brier).toFixed(3):'—'}${simulated}</span></article>`;
   }).join('');
   const results=all.filter(g=>g.status==='FINAL').sort((a,b)=>gameTime(b.start_utc)-gameTime(a.start_utc));
   $('fullResults').innerHTML=results.length?results.slice(0,60).map(resultItem).join(''):alertBox('Todavía no hay resultados descargados','Se cargarán automáticamente después de la primera ingestión.');
