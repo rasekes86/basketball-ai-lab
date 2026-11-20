@@ -35,6 +35,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     refresh_request=load(output/"refresh_top3_request.json",{})
     odds_recheck_request=load(output/"odds_recheck_request.json",{})
     superseded_picks=load(output/"superseded_top3.json",{})
+    superseded_extras=load(output/"superseded_extras.json",{})
     history_policy=backfill_policy(games,boxscores)
     client=client or Client(max_calls=history_policy["max_calls"],
                              min_interval=history_policy["min_interval"])
@@ -140,6 +141,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     # Top 3 rows. Keep a separate excluded audit trail of original rows;
     # completed/started matches and their historical results are untouched.
     refresh_count=0
+    refresh_extra_count=0
     refresh_active=refresh_request.get("pending") is True
     refresh_ids=None
     if refresh_active:
@@ -166,6 +168,17 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         elif refresh_request.get("scope")!="specified_unstarted_window":
             raise ValueError("Scope de reasignación NBA desconocido")
         refresh_count=supersede_unstarted_picks(picks,now,superseded_picks,refresh_ids)
+        # User-approved V3 reset also retires OLD extras/probabilities. A new
+        # extra is allowed only with a FRESH, correctly paired market quote.
+        for key,row in list(extras.items()):
+            tip=time_utc(row.get("start_utc"))
+            if (row.get("event_id") in refresh_ids and tip and tip>now
+                    and row.get("status")=="PENDIENTE" and row.get("result") is None):
+                audit_key=key+"@"+str(row.get("created_utc"))
+                superseded_extras[audit_key]={**row,"superseded_utc":now.isoformat(),
+                    "superseded_reason":"USER_REQUESTED_PREGAME_MODEL_V3"}
+                del extras[key]
+                refresh_extra_count+=1
     # A prospective forecast is generated only from already-final games,
     # at the actual creation time, and can never be recalculated in place.
     upcoming=sorted((g for g in games.values() if
@@ -201,6 +214,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         refresh_request={**refresh_request,"pending":False,
                          "processed_utc":now.isoformat(),
                          "old_picks_excluded":refresh_count,
+                         "old_extras_excluded":refresh_extra_count,
                          "new_picks_archived":archived,
                          "eligible_fixture_ids":sorted(refresh_ids) if refresh_ids is not None else None}
     # Optional real prices are explicitly off until the user sets one secret.
@@ -303,6 +317,8 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "logo_teams":len(logos.get("teams") or {}),"new_top3_picks":archived,
         "one_time_refresh_applied":refresh_active,
         "superseded_future_top3":refresh_count,
+        "superseded_future_extras":refresh_extra_count,
+        "forecast_model_version":"NBA_CONTEXT_V3",
         "boxscores_archived":len(boxscores),"boxscores_new":summary_ok,
         "boxscores_unavailable":summary_failed,"advanced_stats_enabled":str(env.get("ENABLE_ADVANCED_STATS","")).lower() in ("1","true","yes"),
         "historical_coverage":historical_coverage(games,boxscores,now),
@@ -344,6 +360,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     save(output/"refresh_top3_request.json",refresh_request)
     save(output/"odds_recheck_request.json",odds_recheck_request)
     save(output/"superseded_top3.json",superseded_picks)
+    save(output/"superseded_extras.json",superseded_extras)
     # Export sanitized, static JSON for GitHub Pages (no keys and no raw tokens).
     for name,document in (("games.json",games),("teams.json",logos),
                           ("picks.json",picks),("extras.json",extras),
