@@ -93,5 +93,5 @@ test('2+1 removes ONLY the duplicate exact contract, preserving the archived thr
   assert.equal(activeFixturePicks(archived,{...extra,contract:{type:'winner',team:'BOS'}}).length,3);
   assert.equal(activeFixturePicks(archived,{...extra,event_id:'OTHER'}).length,3);
   assert.equal(activeFixturePicks(archived,{...extra,contract:{type:'total',direction:'over',line:211.5}}).length,3);
-  assert.match(sw,/selection_policy\\.mjs/,'PWA must cache the policy helper as shell code');
+  assert.match(sw,/selection_policy\.mjs/,'PWA must cache the policy helper as shell code');
 });
