@@ -254,6 +254,8 @@
   "top3_brier": 0.1667,
   "top3_evaluated": 75,
   "top3_hits": 59,
+  "top3_original_archived": 213,
+  "top3_promoted_to_additional": 0,
   "top3_theoretical_balance": {
     "by_market": {
       "handicap": {
@@ -302,5 +304,5 @@
   },
   "top3_voided": 0,
   "upcoming": 46,
-  "updated_utc": "2026-11-21T09:16:44.581165+00:00"
+  "updated_utc": "2026-11-21T09:17:12.784334+00:00"
 }
