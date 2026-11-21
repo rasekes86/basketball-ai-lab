@@ -4698,5 +4698,25 @@
         "threes": 11
       }
     }
+  },
+  "401910023": {
+    "away": "MIL",
+    "home": "PHI",
+    "id": "401910023",
+    "retrieved_utc": "2026-11-21T23:55:58.874242+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-21T18:00:00+00:00",
+    "teams": {
+      "MIL": {
+        "assists": 25,
+        "rebounds": 49,
+        "threes": 16
+      },
+      "PHI": {
+        "assists": 33,
+        "rebounds": 42,
+        "threes": 9
+      }
+    }
   }
 }
