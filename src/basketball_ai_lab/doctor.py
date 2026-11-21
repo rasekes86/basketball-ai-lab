@@ -17,7 +17,7 @@ from .teams import NBA_TEAMS
 from .transform import logo_url,time_utc
 
 EXPECTED_MARKETS={'winner','total','handicap','team_threes','team_rebounds','team_assists'}
-DATA_NAMES={'games','picks','extras','teams','status','boxscores'}
+DATA_NAMES={'games','picks','extras','theoretical_extras','teams','status','boxscores'}
 TOP3_POLICY_EFFECTIVE=datetime(2026,11,18,23,58,10,tzinfo=timezone.utc)
 
 
@@ -31,6 +31,7 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
     docs={name:load(output/(name+'.json'),{}) for name in DATA_NAMES}
     games,picks,extras,teams,status=(docs[x] for x in ('games','picks','extras','teams','status'))
     boxscores=docs['boxscores']
+    theoretical_extras=docs['theoretical_extras']
     flags=load(output/'review_flags.json',{})
     has_live_data=bool(status.get('source_successful_days')) and bool(games)
     if not has_live_data:
@@ -102,6 +103,18 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
             fail('ADICIONAL_NO_VALIDA','Precio u origen de la adicional no cumplen los filtros.');break
         if not (p.get('bookmaker') and p.get('provider') and p.get('quote_event_id')):
             fail('ADICIONAL_SIN_PROVEEDOR','Falta identificación de bookmaker o evento de la cuota.');break
+    # Model-only additional references are never bookmaker quotes.
+    for key,p in theoretical_extras.items():
+        if not isinstance(p,dict) or key!=f'{p.get("event_id")}|extra_teorica' or p.get("id")!=key:
+            fail('ADICIONAL_TEORICA_ID','Referencia adicional sin identificador válido.');break
+        created=time_utc(p.get('created_utc'));start=time_utc(p.get('start_utc'))
+        probability=float(p.get('probability') or 0)
+        if not created or not start or not created<start or not .0<probability<1/1.5:
+            fail('ADICIONAL_TEORICA_INVALIDA','Referencia adicional sin probabilidad/prepartido válido.');break
+        if p.get('real_price') is not None or p.get('real_price_status')!='CUOTA_JUSTA_TEORICA_NO_OFRECIDA':
+            fail('ADICIONAL_TEORICA_COTIZADA','Una cuota justa fue confundida con cuota real.');break
+        if any(other.get('event_id')==p.get('event_id') and other.get('contract')==p.get('contract') for other in picks.values()):
+            fail('ADICIONAL_TEORICA_DUPLICADA','La referencia adicional duplica un Top 3.');break
     # A new statistic must trace to a genuine finalized ESPN game.
     for id_,record in boxscores.items():
         fixture=games.get(id_)
@@ -148,7 +161,7 @@ def audit(output=Path('data'),site=Path('site/data'),now=None,require_live=False
 
     return {'state':'ERROR' if issues else 'OK' if has_live_data else 'PENDING_LIVE',
         'checked_utc':now.isoformat(),'errors':issues,'warnings':warnings,'notes':observations,
-        'summary':{'games':len(games),'top3':len(picks),'additional':len(extras),
+        'summary':{'games':len(games),'top3':len(picks),'additional':len(extras),'theoretical_additional':len(theoretical_extras),
                    'registered_teams':len(source_teams),'logo_urls':verified,
                    'manual_review':len(flags),'data_files':len(DATA_NAMES)}}
 
