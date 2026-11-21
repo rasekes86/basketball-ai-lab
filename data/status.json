@@ -10,7 +10,7 @@
   "extras_voided": 1,
   "final_games": 226,
   "forecast_model_version": "NBA_CONTEXT_V3",
-  "games": 281,
+  "games": 286,
   "historical_coverage": {
     "by_team": {
       "ATL": {
@@ -217,15 +217,15 @@
   },
   "new_extras": 0,
   "new_settlements": 0,
-  "new_top3_picks": 0,
+  "new_top3_picks": 12,
   "new_voids": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "No son apuestas recomendadas; Top 3 a cuota matemática solo para simulación, adicionales a cuotas de API archivadas. Ambos balances son hipotéticos.",
-  "odds_calls_month": 12,
-  "odds_quoted_outcomes_this_run": 0,
+  "odds_calls_month": 15,
+  "odds_quoted_outcomes_this_run": 382,
   "odds_recheck_result": null,
-  "odds_status": "YA_CONSULTADO_HOY",
+  "odds_status": "OK",
   "one_time_refresh_applied": false,
   "pending_postmatch_games": 0,
   "pending_postmatch_selections": 0,
@@ -236,7 +236,7 @@
   "review_required_count": 0,
   "sorpresas_detectadas": 1,
   "source_circuit_breaker": null,
-  "source_distinct_games_returned": 84,
+  "source_distinct_games_returned": 81,
   "source_failed_days": 0,
   "source_failures": [],
   "source_requests": 12,
@@ -244,7 +244,7 @@
   "superseded_future_extras": 0,
   "superseded_future_top3": 0,
   "top3_accuracy": 0.75,
-  "top3_archived": 180,
+  "top3_archived": 192,
   "top3_brier": 0.18269,
   "top3_evaluated": 48,
   "top3_hits": 36,
@@ -296,5 +296,5 @@
   },
   "top3_voided": 0,
   "upcoming": 44,
-  "updated_utc": "2026-11-20T16:05:00.104914+00:00"
+  "updated_utc": "2026-11-21T00:57:22.087126+00:00"
 }
