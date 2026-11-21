@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import {sameOutcome,activeFixturePicks,activePicksFromRecords} from './selection_policy.mjs';
 const html=fs.readFileSync(new URL('./index.html',import.meta.url),'utf8');
 const css=fs.readFileSync(new URL('./styles.css',import.meta.url),'utf8');
 const js=fs.readFileSync(new URL('./app.js',import.meta.url),'utf8');
@@ -76,4 +77,21 @@ test('NBA update uses three off-peak schedule slots with a late fallback',()=>{
 });
 test('dashboard flags stale NBA data after one day',()=>{
   assert.match(js,/age>24\*3600\*1000/);
+});
+
+test('2+1 removes ONLY the duplicate exact contract, preserving the archived three',()=>{
+  const archived=[
+    {id:'G|winner',event_id:'G',contract:{type:'winner',team:'ATL'}},
+    {id:'G|total',event_id:'G',contract:{type:'total',direction:'over',line:210.5}},
+    {id:'G|handicap',event_id:'G',contract:{type:'handicap',side:'home',home_margin_line:-5.5}}
+  ];
+  const extra={id:'G|extra',event_id:'G',contract:{team:'ATL',type:'winner'},real_price:1.9};
+  assert.equal(sameOutcome(archived[0],extra),true,'contract key order must not matter');
+  assert.equal(activeFixturePicks(archived,extra).length,2);
+  assert.equal(activePicksFromRecords(Object.fromEntries(archived.map(p=>[p.id,p])),{'G|extra':extra}).length,2);
+  assert.equal(archived.length,3,'original frozen history must remain intact');
+  assert.equal(activeFixturePicks(archived,{...extra,contract:{type:'winner',team:'BOS'}}).length,3);
+  assert.equal(activeFixturePicks(archived,{...extra,event_id:'OTHER'}).length,3);
+  assert.equal(activeFixturePicks(archived,{...extra,contract:{type:'total',direction:'over',line:211.5}}).length,3);
+  assert.match(sw,/selection_policy\\.mjs/,'PWA must cache the policy helper as shell code');
 });
