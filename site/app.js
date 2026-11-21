@@ -8,7 +8,7 @@ const probability=x=>Number.isFinite(+x)?new Intl.NumberFormat('es-ES',{style:'p
 const date=x=>{const d=new Date(x);return Number.isFinite(d.getTime())?new Intl.DateTimeFormat('es-ES',{timeZone:'Europe/Madrid',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}).format(d):'Fecha sin verificar'};
 const gameTime=x=>Number(new Date(x))||Infinity;
 const safeLogo=x=>{try{const u=new URL(x);return u.protocol==='https:'&&!u.username&&!u.password&&!u.hash&&(u.port===''||u.port==='443')&&['a.espncdn.com','a1.espn.com','a1.espncdn.com','cdn.nba.com'].includes(u.hostname)?u.href:''}catch{return ''}};
-const state={games:{},teams:{},picks:{},extras:{},boxscores:{},status:{},view:'inicio'};
+const state={games:{},teams:{},picks:{},extras:{},theoretical_extras:{},boxscores:{},status:{},view:'inicio'};
 const themeKey='bal-theme';
 function appearance(x){
   const theme=x==='light'?'light':'dark';
@@ -31,7 +31,8 @@ function fixturePicks(id){
   return Object.values(state.picks).filter(p=>p&&p.event_id===id)
     .sort((a,b)=>(Number(b.probability)||0)-(Number(a.probability)||0)||String(a.market).localeCompare(String(b.market))).slice(0,3);
 }
-function extraPick(id){return state.extras[id+'|extra']||null}
+function extraPick(id){return state.extras[id+'|extra']||state.theoretical_extras[id+'|extra_teorica']||null}
+function isTheoretical(extra){return extra?.real_price_status==='CUOTA_JUSTA_TEORICA_NO_OFRECIDA'}
 function pill(status){const cls=status==='ACIERTO'?'win':status==='FALLO'?'lose':status==='ANULADA'?'void':'';return `<span class="status-chip ${cls}">${escape(status||'PENDIENTE')}</span>`}
 function stat(title,value,foot){return `<div class="stat"><span>${escape(title)}</span><strong>${escape(value)}</strong><small>${escape(foot)}</small></div>`}
 function fairPrice(p){const prob=Number(p?.probability);return Number.isFinite(prob)&&prob>0&&prob<=1?1/prob:null}
@@ -46,8 +47,8 @@ function fixture(g){
   const picks=fixturePicks(g.id);const extra=extraPick(g.id);const done=g.status==='FINAL';
   const sample=matchupSnapshot(g,state.games,state.picks);
   const form=sample?.home&&sample?.away?`<div class="fixture-form"><span>Últimos 5: <b>${sample.home.wins5}-${sample.home.losses5}</b> / <b>${sample.away.wins5}-${sample.away.losses5}</b></span><span>Puntos a favor (10): <b>${sample.home.points_for}</b> / <b>${sample.away.points_for}</b></span></div>`:'';
-  const value=extra?`<div><strong>${escape(extra.selection)}</strong><small>Oferta ${escape(extra.bookmaker||'')} · cuota prepartido registrada</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span>`:
-    '<div><strong>Sin adicional +1,50 archivada</strong><small>No existe una oferta válida confirmada; no se inventa</small></div>';
+  const value=extra?(isTheoretical(extra)?`<div><strong>${escape(extra.selection)}</strong><small>CUARTA SELECCIÓN TEÓRICA · cuota justa estimada, no ofrecida</small></div><span class="price">${Number(extra.fair_odds).toFixed(2)}*</span>`:`<div><strong>${escape(extra.selection)}</strong><small>Oferta ${escape(extra.bookmaker||'')} · cuota prepartido registrada</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span>`):
+    '<div><strong>Sin cuarta selección archivada</strong><small>Modelo o captura prepartido todavía no disponible; no se inventa</small></div>';
   const review=state.status.review_required?.[g.id];
   const label=review?'REVISIÓN PENDIENTE':done?'FINAL':gameTime(g.start_utc)>Date.now()?'PRÓXIMO PARTIDO':'SIN VERIFICAR';
   return `<article class="fixture"><div class="fixture-meta"><span>NBA · ${label}</span><time>${escape(date(g.start_utc))}</time></div>
@@ -102,7 +103,7 @@ function render(){
   const top3Tonight=tonight.reduce((n,g)=>n+fixturePicks(g.id).length,0);
   $('nightCount').textContent=tonight.length?`· ${tonight.length} partidos`:'';
   $('nightLabel').textContent=tonight.length?`Jornada NBA del ${key.split('-').reverse().join('/')} · ${top3Tonight} pronósticos Top 3 archivados · horarios de Madrid`:'Próximos encuentros NBA · horarios de Madrid';
-  $('stats').innerHTML=stat('PARTIDOS ESTA NOCHE',number(tonight.length),'Todos los de la jornada NBA')+stat('TOP 3 ESTA NOCHE',number(top3Tonight),'3 por partido, cuando hay muestra')+stat('ACIERTOS TOP 3 V3',v3Checked.length?probability(v3Wins/v3Checked.length):'—',`${v3Wins} de ${v3Checked.length} · sin mezclar modelos`)+stat('ADICIONALES REALES',`${extras.length}`,'Cuota ofrecida superior a 1,50');
+  $('stats').innerHTML=stat('PARTIDOS ESTA NOCHE',number(tonight.length),'Todos los de la jornada NBA')+stat('TOP 3 ESTA NOCHE',number(top3Tonight),'3 por partido, cuando hay muestra')+stat('ACIERTOS TOP 3 V3',v3Checked.length?probability(v3Wins/v3Checked.length):'—',`${v3Wins} de ${v3Checked.length} · sin mezclar modelos`)+stat('CUARTAS SELECCIONES',`${Number(state.status.extras_displayed)||0}`,`${extras.length} reales · ${Object.keys(state.theoretical_extras).length} referencias teóricas archivadas`);
   $('featured').innerHTML=focus.length?focus.map(fixture).join(''):alertBox('Aún no hay próximos encuentros comprobados','Una ejecución del motor descargará el calendario real; no mostramos partidos ficticios.');
   $('recent').innerHTML=recent.length?recent.slice(0,5).map(resultItem).join(''):alertBox('Pendiente de primeras liquidaciones','Los resultados solo aparecen aquí después de archivar pronósticos y verificar el partido.');
   const tb=state.status.top3_theoretical_balance||{};
@@ -138,7 +139,7 @@ async function fetchJson(filename){
 }
 async function refresh(){
   $('refresh').disabled=true;
-  const files=['games','picks','extras','teams','status','boxscores'];
+  const files=['games','picks','extras','theoretical_extras','teams','status','boxscores'];
   const values=await Promise.allSettled(files.map(fetchJson));
   let failures=0;values.forEach((x,i)=>{if(x.status==='fulfilled')state[files[i]]=files[i]==='teams'?x.value.teams||{}:x.value;else failures++});
   $('refresh').disabled=false;render();
@@ -164,7 +165,7 @@ function openGame(id){
   const g=state.games[id];if(!g)return;
   const p=fixturePicks(id),extra=extraPick(id);
   const review=state.status.review_required?.[id];
-  $('dialogBody').innerHTML=`${review?`<p class="review-banner">⚠ Partido pendiente de revisión (${escape(review.code)}). No se liquidarán pronósticos hasta contrastar el cambio.</p>`:''}<div class="teams"><div class="team">${crest(g.home)}<strong>${escape(names[g.home])}</strong></div><span class="team-versus score">${g.status==='FINAL'?`${Number(g.home_score)} – ${Number(g.away_score)}`:'VS'}</span><div class="team">${crest(g.away)}<strong>${escape(names[g.away])}</strong></div></div><div class="dialog-stats"><div><span>Fecha en Madrid</span><strong>${escape(date(g.start_utc))}</strong></div><div><span>Estado fuente</span><strong>${escape(g.status)}</strong></div></div><h3>Estadísticas previas del encuentro</h3>${matchupStatsHTML(g)}<h3>Top 3 original</h3><div class="dialog-picks">${p.length?p.map(pickLine).join(''):alertBox('Sin Top 3','Historial insuficiente o análisis todavía no ejecutado.')}</div><h3>Adicional +1,50</h3>${extra?`<div class="extra-row"><div><strong>${escape(extra.selection)}</strong><small>${escape(extra.provider)} · ${escape(extra.bookmaker)} · ${escape(date(extra.quote_updated_utc))}</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span></div><p>${pill(extra.status)}</p>`:'<p class="fineprint">No se archivó ninguna cuota real que superara los filtros antes del partido.</p>'}<p class="fineprint">Cuando aparecen triples, rebotes o asistencias se basan en box scores reales de equipos anteriores al pronóstico. Los mercados de jugadores requieren una fase específica de alineaciones y minutos. Probabilidades de un modelo experimental sin calibración prospectiva demostrada. Los mercados Top 3 usan líneas teóricas, no cuotas ejecutables. No constituye consejo de apuestas.</p>`;
+  $('dialogBody').innerHTML=`${review?`<p class="review-banner">⚠ Partido pendiente de revisión (${escape(review.code)}). No se liquidarán pronósticos hasta contrastar el cambio.</p>`:''}<div class="teams"><div class="team">${crest(g.home)}<strong>${escape(names[g.home])}</strong></div><span class="team-versus score">${g.status==='FINAL'?`${Number(g.home_score)} – ${Number(g.away_score)}`:'VS'}</span><div class="team">${crest(g.away)}<strong>${escape(names[g.away])}</strong></div></div><div class="dialog-stats"><div><span>Fecha en Madrid</span><strong>${escape(date(g.start_utc))}</strong></div><div><span>Estado fuente</span><strong>${escape(g.status)}</strong></div></div><h3>Estadísticas previas del encuentro</h3>${matchupStatsHTML(g)}<h3>Top 3 original</h3><div class="dialog-picks">${p.length?p.map(pickLine).join(''):alertBox('Sin Top 3','Historial insuficiente o análisis todavía no ejecutado.')}</div><h3>Cuarta selección · real o teórica</h3>${extra?(isTheoretical(extra)?`<div class="extra-row"><div><strong>${escape(extra.selection)}</strong><small>CUOTA JUSTA TEÓRICA · no ofrecida por casa de apuestas</small></div><span class="price">${Number(extra.fair_odds).toFixed(2)}*</span></div><p>${pill(extra.status)}</p>`:`<div class="extra-row"><div><strong>${escape(extra.selection)}</strong><small>${escape(extra.provider)} · ${escape(extra.bookmaker)} · ${escape(date(extra.quote_updated_utc))}</small></div><span class="price">${Number(extra.real_price).toFixed(2)}</span></div><p>${pill(extra.status)}</p>`):'<p class="fineprint">Sin cuarta selección prepartido archivada: faltan datos para estimarla sin inventar.</p>'}<p class="fineprint">Cuando aparecen triples, rebotes o asistencias se basan en box scores reales de equipos anteriores al pronóstico. Los mercados de jugadores requieren una fase específica de alineaciones y minutos. Probabilidades de un modelo experimental sin calibración prospectiva demostrada. Los mercados Top 3 usan líneas teóricas, no cuotas ejecutables. No constituye consejo de apuestas.</p>`;
   $('matchDialog').showModal();
 }
 // Browser-owned installation prompt: never install without an explicit tap.
