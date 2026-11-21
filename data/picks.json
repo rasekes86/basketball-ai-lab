@@ -4036,11 +4036,12 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "selection": "PHI: +6.5 puntos (hándicap teórico)",
+    "settled_utc": "2026-11-21T20:39:42.122367+00:00",
     "start_utc": "2026-11-21T18:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910023|team_assists": {
     "away": "MIL",
@@ -4091,11 +4092,12 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "selection": "OVER 209.5 puntos (teórico)",
+    "settled_utc": "2026-11-21T20:39:42.122367+00:00",
     "start_utc": "2026-11-21T18:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910024|team_assists": {
     "away": "POR",

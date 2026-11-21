@@ -3613,9 +3613,9 @@
   },
   "401910023": {
     "away": "MIL",
-    "away_score": null,
+    "away_score": 129,
     "home": "PHI",
-    "home_score": null,
+    "home_score": 132,
     "id": "401910023",
     "logos": {
       "MIL": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mil.png",
@@ -3623,7 +3623,7 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-21T18:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401910024": {
     "away": "POR",
