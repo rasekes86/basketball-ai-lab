@@ -234,3 +234,41 @@ def choose_extra(game,picks,quotes,now,baseline=None):
         "quote_event_id":q["event_id"],"estimated_ev":round(ev,4),
         "status":"PENDIENTE","result":None,"quality":"NO_CALIBRADO",
         "retrospective":False,"model_version":"NBA_CONTEXT_V3_MARKET_GUARD"}
+
+def choose_theoretical_extra(game,picks,baseline,now):
+    """Freeze a fourth MODEL-ONLY outcome when no real offered odd is available.
+
+    The quote is NEVER a bookmaker price. Derive a plausible half-point total
+    near the model's pregame expectation. Do not duplicate a frozen Top 3
+    contract or use final scores. Do not fabricate a result without a baseline.
+    """
+    start=time_utc(game.get("start_utc"))
+    if not start or now>=start:return None
+    total=next((p for p in baseline if p.get("market")=="total"),None)
+    if not total or not isinstance(total.get("estimated"),(int,float)):return None
+    projected=float(total["estimated"])
+    center=5*round((projected-.5)/5)+.5
+    occupied={json.dumps(p.get("contract") or {},sort_keys=True) for p in picks}
+    candidates=[]
+    for offset in (-20,-15,-10,-5,0,5,10,15,20):
+        line=center+offset
+        if line<=0:continue
+        over=normal_cdf((projected-line)/18.5)
+        for direction,p in (("over",over),("under",1-over)):
+            if not .55<=p<1/1.50:continue
+            contract={"type":"total","direction":direction,"line":line}
+            if json.dumps(contract,sort_keys=True) in occupied:continue
+            candidates.append((p,abs(line-projected),direction,line,contract))
+    if not candidates:return None
+    p,_,direction,line,contract=max(candidates,key=lambda x:(x[0],-x[1],x[2]))
+    return {"id":game["id"]+"|extra_teorica","event_id":game["id"],
+        "created_utc":now.isoformat(),"start_utc":game["start_utc"],
+        "home":game["home"],"away":game["away"],
+        "market":"extra_theoretical_total",
+        "selection":f"{direction.upper()} {line:g} puntos totales (teórico)",
+        "probability":round(p,6),"fair_odds":round(1/p,3),
+        "contract":contract,"real_price":None,
+        "real_price_status":"CUOTA_JUSTA_TEORICA_NO_OFRECIDA",
+        "status":"PENDIENTE","result":None,
+        "quality":"EXPERIMENTAL_NO_CALIBRADO",
+        "retrospective":False,"model_version":"NBA_CONTEXT_V3_EXTRA_REFERENCIA"}
