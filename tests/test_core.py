@@ -144,9 +144,9 @@ class OptionalOddsTests(unittest.TestCase):
         picks=[
             {"id":"G|winner","event_id":"G","market":"winner","probability":.65,
              "contract":{"type":"winner","team":"ATL"}},
-            {"id":"G|total","event_id":"G","market":"total","probability":.6,
+            {"id":"G|total","event_id":"G","market":"total","probability":.6,"estimated":222.0,
              "contract":{"type":"total","direction":"under","line":244.5}},
-            {"id":"G|handicap","event_id":"G","market":"handicap","probability":.6,
+            {"id":"G|handicap","event_id":"G","market":"handicap","probability":.6,"estimated":6.0,
              "contract":{"type":"handicap","side":"home","home_margin_line":-4.5}},
         ]
         q={"home":"ATL","away":"BOS","team":"ATL","market":"h2h",
