@@ -1,11 +1,12 @@
 name: Basketball AI Lab · actualización NBA
 on:
-  # GitHub puede demorar u omitir eventos schedule: usar minutos no redondos
-  # y un tercer horario de recuperación. 09:23, 14:41 y 19:47 UTC:
-  # 10:23, 15:41 y 20:47 en Madrid durante el invierno.
-  # No garantiza ejecución puntual; el motor es idempotente y la cuota API
-  # conserva el límite de una captura al día UTC.
+  # Primera ronda al acabar los partidos NBA de madrugada.
+  # Reintento matinal mas otras tres ventanas existentes: GitHub puede
+  # retrasar/omitir cron. El pipeline es idempotente y protege cuotas y Top 3.
+  # UTC: 05:37, 07:11, 09:23, 14:41 y 19:47 todos los dias.
   schedule:
+    - cron: '37 5 * * *'
+    - cron: '11 7 * * *'
     - cron: '23 9 * * *'
     - cron: '41 14 * * *'
     - cron: '47 19 * * *'
