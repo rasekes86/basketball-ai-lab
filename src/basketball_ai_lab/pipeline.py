@@ -7,7 +7,7 @@ from .transform import normalize_games,normalize_teams,time_utc
 from .model import forecast,settle_one,reference_forecast,is_void_line
 from .advanced import parse_summary
 from .history import backfill_policy,historical_coverage,supersede_unstarted_picks,needs_stat_verification,should_retry_summary
-from .odds import fetch_snapshot,choose_extra
+from .odds import fetch_snapshot,choose_extra,choose_theoretical_extra
 from .store import load,save
 from .teams import NBA_TEAMS
 from .reports import publish,theoretical_top3_balance
@@ -28,6 +28,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     logos=load(output/"teams.json",{})
     picks=load(output/"picks.json",{})
     extras=load(output/"extras.json",{})
+    theoretical_extras=load(output/"theoretical_extras.json",{})
     odds_state=load(output/"odds_state.json",{})
     review_flags=load(output/"review_flags.json",{})
     boxscores=load(output/"boxscores.json",{})
@@ -265,11 +266,25 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         if candidate:
             extras[candidate["id"]]=candidate
             new_extras+=1
+    # Freeze a separate model-only fourth outcome for each eligible fixture.
+    # Genuine bookmaker extras still take precedence in the app.
+    new_theoretical_extras=0
+    for game in upcoming:
+        event_id=game["id"]
+        key=event_id+"|extra_teorica"
+        if key in theoretical_extras or event_id in review_flags:continue
+        archived_picks=[p for p in picks.values() if p.get("event_id")==event_id]
+        if len(archived_picks)!=3 or event_id not in fresh_game_ids:continue
+        baseline=reference_forecast(game,games,now)
+        candidate=choose_theoretical_extra(game,archived_picks,baseline,now)
+        if candidate:
+            theoretical_extras[key]=candidate
+            new_theoretical_extras+=1
     settled=0
     voided=0
     # Settle only the 3 archived markets and the one frozen extra, never
     # every candidate considered during scoring or valuation.
-    for row in list(picks.values())+list(extras.values()):
+    for row in list(picks.values())+list(extras.values())+list(theoretical_extras.values()):
         if row.get("status")!="PENDIENTE":continue
         game=games.get(row.get("event_id"))
         if not game or row.get("event_id") in review_flags:continue
@@ -288,10 +303,11 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     checked=[p for p in picks.values() if p.get("result") in (0,1)]
     extra_checked=[p for p in extras.values() if p.get("result") in (0,1)]
     verified_extra=[p for p in extra_checked if p.get("real_price_status")=="OFRECIDA_API_REGISTRADA"]
+    checked_theoretical=[p for p in theoretical_extras.values() if p.get("result") in (0,1)]
     unit_profit=sum(float(p["real_price"])-1 if p["result"]==1 else -1 for p in verified_extra)
     theoretical_balance=theoretical_top3_balance(picks)
     final_count=sum(1 for g in games.values() if g.get("status")=="FINAL")
-    pending_postmatch=[p for p in list(picks.values())+list(extras.values())
+    pending_postmatch=[p for p in list(picks.values())+list(extras.values())+list(theoretical_extras.values())
         if p.get("status")=="PENDIENTE"
         and (games.get(p.get("event_id")) or {}).get("status")=="FINAL"]
     pending_team_stats=[p for p in pending_postmatch if
@@ -330,6 +346,11 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "top3_brier":round(brier,5) if brier is not None else None,
         "market_metrics":market_metrics,
         "extras_archived":len(extras),"extras_evaluated":len(extra_checked),
+        "extras_theoretical_archived":len(theoretical_extras),
+        "extras_theoretical_evaluated":len(checked_theoretical),
+        "extras_theoretical_hits":sum(p["result"]==1 for p in checked_theoretical),
+        "extras_with_real_price":len(extras),
+        "extras_displayed":len(set(p.get("event_id") for p in list(extras.values())+list(theoretical_extras.values()))),
         "extras_voided":sum(p.get("status")=="ANULADA" for p in extras.values()),
         "top3_voided":sum(p.get("status")=="ANULADA" for p in picks.values()),
         "extras_unit_profit":round(unit_profit,3),"extras_verified_priced":len(verified_extra),
@@ -337,14 +358,14 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "pending_postmatch_selections":len(pending_postmatch),
         "pending_postmatch_team_stats":len(pending_team_stats),
         "pending_postmatch_games":len({p["event_id"] for p in pending_postmatch}),
-        "new_extras":new_extras,"new_settlements":settled,"new_voids":voided,"odds_status":odds_status,
+        "new_extras":new_extras,"new_theoretical_extras":new_theoretical_extras,"new_settlements":settled,"new_voids":voided,"odds_status":odds_status,
         "odds_quoted_outcomes_this_run":len(quotes),
         "odds_recheck_result":odds_recheck_request.get("result") if odds_recheck_request.get("processed_utc")==now.isoformat() else None,
         "odds_calls_month":(odds_state.get("odds_budget") or {}).get("used",0),
         "no_historical_repricing":True,"quality":"EXPERIMENTAL_NO_CALIBRADO",
         "review_required_count":len(review_flags),
         "review_required":review_flags,
-        "notice":"No son apuestas recomendadas; Top 3 a cuota matemática solo para simulación, adicionales a cuotas de API archivadas. Ambos balances son hipotéticos.",
+        "notice":"Top 3 y cuarta referencia teórica usan cuotas justas matemáticas NO ofrecidas. Solo las adicionales reales tienen bookmaker y precio archivado. Todas las simulaciones son hipotéticas.",
         "no_top3_reasons":exclusions}
     # CSV downloads are linked from /site/reports/, NOT /site/data/reports/.
     status.update(publish(output,site.parent,games,picks,extras))
@@ -352,6 +373,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     save(output/"teams.json",logos)
     save(output/"picks.json",picks)
     save(output/"extras.json",extras)
+    save(output/"theoretical_extras.json",theoretical_extras)
     save(output/"odds_state.json",odds_state)
     save(output/"review_flags.json",review_flags)
     save(output/"status.json",status)
@@ -364,6 +386,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
     # Export sanitized, static JSON for GitHub Pages (no keys and no raw tokens).
     for name,document in (("games.json",games),("teams.json",logos),
                           ("picks.json",picks),("extras.json",extras),
+                          ("theoretical_extras.json",theoretical_extras),
                           ("status.json",status),("boxscores.json",boxscores)):
         save(site/name,document)
     return status
