@@ -137,6 +137,31 @@ class OptionalOddsTests(unittest.TestCase):
         self.assertIsNone(choose_extra(game,picks,[q],NOW+timedelta(days=2)))
         self.assertIsNone(choose_extra(game,picks,[{**q,"price":1.49}],NOW))
 
+    def test_same_frozen_winner_may_be_real_additional_before_tipoff(self):
+        from basketball_ai_lab.selection_policy import active_top3
+        game={"id":"G","home":"ATL","away":"BOS",
+              "start_utc":(NOW+timedelta(days=1)).isoformat(),"status":"SCHEDULED"}
+        picks=[
+            {"id":"G|winner","event_id":"G","market":"winner","probability":.65,
+             "contract":{"type":"winner","team":"ATL"}},
+            {"id":"G|total","event_id":"G","market":"total","probability":.6,
+             "contract":{"type":"total","direction":"under","line":244.5}},
+            {"id":"G|handicap","event_id":"G","market":"handicap","probability":.6,
+             "contract":{"type":"handicap","side":"home","home_margin_line":-4.5}},
+        ]
+        q={"home":"ATL","away":"BOS","team":"ATL","market":"h2h",
+           "start_utc":game["start_utc"],"price":1.90,
+           "updated_utc":NOW.isoformat(),"bookmaker":"book123",
+           "captured_utc":NOW.isoformat(),"provider":"The Odds API","event_id":"external"}
+        quotes=[q,{**q,"team":"BOS","price":2.0},
+                {**q,"bookmaker":"book456","price":1.85},
+                {**q,"bookmaker":"book456","team":"BOS","price":2.05}]
+        chosen=choose_extra(game,picks,quotes,NOW)
+        self.assertIsNotNone(chosen)
+        self.assertEqual(chosen["contract"],picks[0]["contract"])
+        active=active_top3({p["id"]:p for p in picks},{chosen["id"]:chosen})
+        self.assertEqual(len(active),2)
+
 class PipelineTests(unittest.TestCase):
     def setUp(self):
         self.tmp=TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
