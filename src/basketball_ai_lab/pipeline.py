@@ -11,6 +11,7 @@ from .odds import fetch_snapshot,choose_extra,choose_theoretical_extra
 from .store import load,save
 from .teams import NBA_TEAMS
 from .reports import publish,theoretical_top3_balance
+from .selection_policy import active_top3
 
 DATA_FILES=("games.json","teams.json","picks.json","extras.json","odds_state.json","review_flags.json","status.json","boxscores.json","boxscore_attempts.json")
 
@@ -300,14 +301,15 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
             row["settled_utc"]=now.isoformat()
             row["void_reason"]="LINEA_EXACTA_REEMBOLSO"
             voided+=1
-    checked=[p for p in picks.values() if p.get("result") in (0,1)]
+    active_picks=active_top3(picks,extras)
+    checked=[p for p in active_picks.values() if p.get("result") in (0,1)]
     extra_checked=[p for p in extras.values() if p.get("result") in (0,1)]
     verified_extra=[p for p in extra_checked if p.get("real_price_status")=="OFRECIDA_API_REGISTRADA"]
     checked_theoretical=[p for p in theoretical_extras.values() if p.get("result") in (0,1)]
     unit_profit=sum(float(p["real_price"])-1 if p["result"]==1 else -1 for p in verified_extra)
-    theoretical_balance=theoretical_top3_balance(picks)
+    theoretical_balance=theoretical_top3_balance(active_picks)
     final_count=sum(1 for g in games.values() if g.get("status")=="FINAL")
-    pending_postmatch=[p for p in list(picks.values())+list(extras.values())+list(theoretical_extras.values())
+    pending_postmatch=[p for p in list(active_picks.values())+list(extras.values())+list(theoretical_extras.values())
         if p.get("status")=="PENDIENTE"
         and (games.get(p.get("event_id")) or {}).get("status")=="FINAL"]
     pending_team_stats=[p for p in pending_postmatch if
@@ -340,7 +342,9 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "historical_coverage":historical_coverage(games,boxscores,now),
         "history_backfill_mode":history_policy["mode"],
         "history_summary_budget":history_policy["summary_limit"],
-        "top3_archived":len(picks),"top3_evaluated":len(checked),
+        "top3_archived":len(active_picks),"top3_original_archived":len(picks),
+        "top3_promoted_to_additional":len(picks)-len(active_picks),
+        "top3_evaluated":len(checked),
         "top3_hits":sum(p["result"]==1 for p in checked),
         "top3_accuracy":round(sum(p["result"]==1 for p in checked)/len(checked),4) if checked else None,
         "top3_brier":round(brier,5) if brier is not None else None,
@@ -368,7 +372,7 @@ def update(output=Path("data"),site=Path("site/data"),now=None,client=None,env=N
         "notice":"Top 3 y cuarta referencia teórica usan cuotas justas matemáticas NO ofrecidas. Solo las adicionales reales tienen bookmaker y precio archivado. Todas las simulaciones son hipotéticas.",
         "no_top3_reasons":exclusions}
     # CSV downloads are linked from /site/reports/, NOT /site/data/reports/.
-    status.update(publish(output,site.parent,games,picks,extras))
+    status.update(publish(output,site.parent,games,active_picks,extras))
     save(output/"games.json",games)
     save(output/"teams.json",logos)
     save(output/"picks.json",picks)
