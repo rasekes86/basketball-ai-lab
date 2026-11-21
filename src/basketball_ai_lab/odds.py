@@ -149,9 +149,9 @@ def market_consensus_probability(quote, quotes):
 def choose_extra(game,picks,quotes,now,baseline=None):
     """One offered >1.50, paired-market-audited pregame selection; never a fake price.
 
-    As a safeguard, a genuinely independent market is preferred over
-    duplicating the frozen winner pick. Experimental probabilities/EV are
-    NOT calibrated and should not be interpreted as a validated edge.
+    Exact overlap with a frozen Top 3 is allowed. The duplicate is removed
+    only from the ACTIVE Top 3 score (2+1); the original remains in history.
+    Experimental probabilities/EV are NOT proven calibrated.
     """
     start=time_utc(game.get("start_utc"))
     if not start or now>=start:return None
@@ -209,10 +209,8 @@ def choose_extra(game,picks,quotes,now,baseline=None):
             selection=f"{direction.upper()} {point:g} puntos totales"
         else:continue
         if not .0<p<1.0:continue
-        # A complete Top 3 +1 must not repeat the exact frozen outcome.
-        # In particular do not publish "Gana IND" twice as happened before.
-        if len(picks)>=3 and any(row.get("contract")==contract for row in picks):
-            continue
+        # Repetir la misma cuota concreta es válido: otra capa contará
+        # solo 2 posiciones Top 3 activas + esta adicional (sin duplicados).
         market_p=market_consensus_probability(q,quotes)
         if market_p is None:continue
         # The old model assigned implausibly high edges to common NBA lines.
