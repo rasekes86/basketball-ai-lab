@@ -1,5 +1,6 @@
 import {nightKeyMadrid,matchupSnapshot} from './matchup-stats.mjs';
 import {activeFixturePicks,activePicksFromRecords} from './selection_policy.mjs';
+import {auditSnapshot,healthSnapshot,renderAudit,renderHealth} from './audit_insights.mjs';
 /* Basketball AI Lab · zero-dependency static NBA dashboard */
 const $=id=>document.getElementById(id);
 const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -115,6 +116,14 @@ function render(){
   const simText=Number(tb.settled)>0&&Number.isFinite(top3Net)?euros(top3Net):'—';
   const realNet=extraDone.length?euros(Number(state.status.extras_unit_profit)||0):'—';
   $('resultStats').innerHTML=stat('HISTÓRICO TOP 3',`${checked.length}/${picks.length}`,'Incluye modelos anteriores')+stat('ACIERTOS V3',v3Checked.length?probability(v3Wins/v3Checked.length):'—',`${v3Wins} de ${v3Checked.length} desde el cambio de modelo`)+stat('BALANCE TOP 3 SIMULADO',simText,Number(tb.settled)>0?`${tb.roi_pct}% · 1 € por pick a cuota 1/p`:'Sin resultados liquidados')+stat('ADICIONALES V3 +1,50',`${v3ExtraDone.length}/${v3Extras.length}`,'Solo ofertas verificadas con filtro V3')+stat('SIMULACIÓN HISTÓRICA',realNet,'1 € hipotético · incluye anteriores')+stat('PENDIENTES TRAS FINAL',Number(state.status.pending_postmatch_selections)||0,(Number(state.status.pending_postmatch_team_stats)||0)+' requieren estadísticas de equipo');
+  const insights=auditSnapshot(state,{days:Number($('auditDaysFilter').value),model:$('auditModelFilter').value});
+  const auditHtml=renderAudit(insights);
+  $('auditSummary').innerHTML=auditHtml.totals;
+  $('auditNights').innerHTML=auditHtml.nights;
+  $('auditMarkets').innerHTML=auditHtml.markets;
+  $('auditModels').innerHTML=auditHtml.models;
+  $('auditCalibration').innerHTML=auditHtml.calibration;
+  $('healthSummary').innerHTML=renderHealth(healthSnapshot(state.status,new Date()));
   const marketNames={winner:'Ganador',total:'Puntos totales',handicap:'Hándicap',team_threes:'Triples (equipo)',team_rebounds:'Rebotes (equipo)',team_assists:'Asistencias (equipo)'};
   const marketRows=state.status.market_metrics||{};
   $('marketResults').innerHTML=Object.entries(marketNames).map(([key,label])=>{
@@ -213,6 +222,8 @@ $('themeToggle').addEventListener('click',toggleTheme);
 $('refresh').addEventListener('click',refresh);
 $('teamFilter').addEventListener('input',render);
 $('periodFilter').addEventListener('change',render);
+$('auditDaysFilter').addEventListener('change',render);
+$('auditModelFilter').addEventListener('change',render);
 $('closeDialog').addEventListener('click',()=>$('matchDialog').close());
 $('matchDialog').addEventListener('click',e=>{if(e.target===$('matchDialog'))$('matchDialog').close()});
 document.addEventListener('error',e=>{const img=e.target;if(img?.tagName==='IMG'&&img.closest('.crest')){const container=img.closest('.crest');container.textContent=container.dataset.team||'NBA'}},true);
