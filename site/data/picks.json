@@ -4467,12 +4467,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "BOS: UNDER 31.5 asistencias del equipo (teórico)",
+    "settled_utc": "2026-11-22T13:34:47.884571+00:00",
     "start_utc": "2026-11-22T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910028|team_threes": {
     "away": "BOS",
@@ -4496,12 +4497,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "BOS: OVER 9.5 triples del equipo (teórico)",
+    "settled_utc": "2026-11-22T13:34:47.884571+00:00",
     "start_utc": "2026-11-22T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910028|total": {
     "away": "BOS",
