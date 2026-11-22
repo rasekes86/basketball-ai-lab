@@ -1228,5 +1228,29 @@
     "selection": "UNDER 235.5 puntos totales (teórico)",
     "start_utc": "2026-11-29T01:30:00+00:00",
     "status": "PENDIENTE"
+  },
+  "401910054|extra_teorica": {
+    "away": "MIA",
+    "contract": {
+      "direction": "under",
+      "line": 240.5,
+      "type": "total"
+    },
+    "created_utc": "2026-11-22T20:50:17.414802+00:00",
+    "event_id": "401910054",
+    "fair_odds": 1.582,
+    "home": "CLE",
+    "id": "401910054|extra_teorica",
+    "market": "extra_theoretical_total",
+    "model_version": "NBA_CONTEXT_V3_EXTRA_REFERENCIA",
+    "probability": 0.632054,
+    "quality": "EXPERIMENTAL_NO_CALIBRADO",
+    "real_price": null,
+    "real_price_status": "CUOTA_JUSTA_TEORICA_NO_OFRECIDA",
+    "result": null,
+    "retrospective": false,
+    "selection": "UNDER 240.5 puntos totales (teórico)",
+    "start_utc": "2026-11-29T20:30:00+00:00",
+    "status": "PENDIENTE"
   }
 }

@@ -4,9 +4,9 @@
   "boxscores_new": 0,
   "boxscores_unavailable": 0,
   "extras_archived": 16,
-  "extras_displayed": 67,
+  "extras_displayed": 68,
   "extras_evaluated": 15,
-  "extras_theoretical_archived": 51,
+  "extras_theoretical_archived": 52,
   "extras_theoretical_evaluated": 6,
   "extras_theoretical_hits": 0,
   "extras_unit_profit": -9.24,
@@ -222,8 +222,8 @@
   },
   "new_extras": 0,
   "new_settlements": 0,
-  "new_theoretical_extras": 0,
-  "new_top3_picks": 0,
+  "new_theoretical_extras": 1,
+  "new_top3_picks": 3,
   "new_voids": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
@@ -250,11 +250,11 @@
   "superseded_future_extras": 0,
   "superseded_future_top3": 0,
   "top3_accuracy": 0.7742,
-  "top3_archived": 228,
+  "top3_archived": 231,
   "top3_brier": 0.17322,
   "top3_evaluated": 93,
   "top3_hits": 72,
-  "top3_original_archived": 228,
+  "top3_original_archived": 231,
   "top3_promoted_to_additional": 0,
   "top3_theoretical_balance": {
     "by_market": {
@@ -304,5 +304,5 @@
   },
   "top3_voided": 0,
   "upcoming": 45,
-  "updated_utc": "2026-11-22T17:14:03.448877+00:00"
+  "updated_utc": "2026-11-22T20:50:17.414802+00:00"
 }
