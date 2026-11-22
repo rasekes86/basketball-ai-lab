@@ -27,7 +27,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -38,6 +38,9 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./site
+      # GitHub puede tardar en indexar el artefacto; evitar error transitorio 'no artifact found'.
+      - name: Esperar indexación del artefacto de Pages
+        run: sleep 12
       - name: Publicar GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
