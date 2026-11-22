@@ -9,12 +9,15 @@ on:
     branches: [main]
   schedule:
     # Auditoría matinal y nocturna, aunque no se haya ejecutado el pipeline.
+    # Comprobación temprana tras la primera liquidación (07:53 Madrid en invierno).
+    - cron: '53 6 * * *'
     - cron: '13 8 * * *'
     - cron: '29 22 * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
+  actions: write
 
 concurrency:
   group: basketball-ai-lab-health
@@ -31,6 +34,114 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Recuperar liquidaciones de madrugada si el programador no ha actuado
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          python - <<'PY' > /tmp/nba_recovery
+          import json
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+
+          now = datetime.now(timezone.utc)
+          def utc(value):
+              try:
+                  dt = datetime.fromisoformat(str(value).replace('Z', '+00:00'))
+                  return dt.astimezone(timezone.utc) if dt.tzinfo else None
+              except (ValueError, TypeError, OverflowError):
+                  return None
+
+          status = json.loads(Path('data/status.json').read_text(encoding='utf-8'))
+          games = json.loads(Path('data/games.json').read_text(encoding='utf-8'))
+          updated = utc(status.get('updated_utc'))
+          refresh_age = now - updated if updated else timedelta(days=99)
+          overdue = [str(game.get('id', game_id)) for game_id, game in
+                     (games.items() if isinstance(games, dict) else enumerate(games))
+                     if game.get('status') == 'SCHEDULED'
+                     and (start := utc(game.get('start_utc'))) is not None
+                     and timedelta(hours=5) <= now - start <= timedelta(hours=30)]
+          # Evita un ciclo de workflow_run y evita reintentos cada pocos minutos.
+          should_run = (bool(overdue) and refresh_age >= timedelta(minutes=90)) or refresh_age >= timedelta(hours=24)
+          print('recovery_required=' + ('yes' if should_run else 'no'))
+          print('overdue_games=' + ','.join(overdue))
+          print('last_update=' + str(status.get('updated_utc')))
+          PY
+          cat /tmp/nba_recovery
+          if grep -q '^recovery_required=yes
+        env:
+          PYTHONPATH: src
+        run: python -m basketball_ai_lab doctor --require-live
+      - name: Detectar ejecuciones fallidas, datos caducados y partidos sin liquidar
+        env:
+          SOURCE_CONCLUSION: ${{ github.event.workflow_run.conclusion || '' }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timedelta, timezone
+          from pathlib import Path
+
+          now = datetime.now(timezone.utc)
+          def utc(value):
+              try:
+                  dt = datetime.fromisoformat(str(value).replace('Z', '+00:00'))
+                  return dt.astimezone(timezone.utc) if dt.tzinfo else None
+              except (ValueError, TypeError, OverflowError):
+                  return None
+
+          status = json.loads(Path('data/status.json').read_text(encoding='utf-8'))
+          games = json.loads(Path('data/games.json').read_text(encoding='utf-8'))
+          picks = json.loads(Path('data/picks.json').read_text(encoding='utf-8'))
+          extras = json.loads(Path('data/extras.json').read_text(encoding='utf-8'))
+          problems = []
+
+          conclusion = os.environ.get('SOURCE_CONCLUSION', '')
+          if conclusion and conclusion != 'success':
+              problems.append('La última actualización terminó en ' + conclusion)
+
+          updated = utc(status.get('updated_utc'))
+          if not updated or updated > now + timedelta(minutes=5) or now - updated > timedelta(hours=30):
+              problems.append('Los datos NBA no tienen una actualización verificable de las últimas 30 horas')
+          if int(status.get('source_successful_days') or 0) < 1:
+              problems.append('No consta ningún calendario ESPN obtenido correctamente')
+          if status.get('source_circuit_breaker'):
+              problems.append('La fuente ESPN ha activado su circuito de protección')
+          if status.get('source_failures'):
+              problems.append('La última ronda registró errores ESPN de calendario')
+          if status.get('review_required_count'):
+              problems.append('Hay partidos con contradicciones que necesitan revisión manual')
+
+          overdue = set()
+          for record in list(picks.values()) + list(extras.values()):
+              if record.get('status') != 'PENDIENTE':
+                  continue
+              start = utc(record.get('start_utc'))
+              if not start or not timedelta(hours=10) < now - start:
+                  continue
+              fixture_id = record.get('event_id')
+              if fixture_id in games:
+                  overdue.add(str(fixture_id))
+          if overdue:
+              problems.append(f'{len(overdue)} encuentros con selecciones pendientes pasadas 10 horas desde el inicio: ' +
+                              ', '.join(sorted(overdue)[:12]))
+
+          print('NBA: ultima actualización:', status.get('updated_utc'))
+          print('NBA: partidos finales:', status.get('final_games'),
+                'Top 3 liquidados:', status.get('top3_evaluated'),
+                'adicionales liquidadas:', status.get('extras_evaluated'))
+          print('NBA: pendientes postpartido:', status.get('pending_postmatch_selections'),
+                'partidos atrasados:', len(overdue))
+          for p in problems:
+              print('::error::NBA HEALTH: ' + p)
+          if problems:
+              raise SystemExit(1)
+          print('NBA HEALTH: OK; datos íntegros y sin retrasos críticos')
+          PY
+ /tmp/nba_recovery; then
+            echo '::warning::NBA: partidos atrasados o datos obsoletos. Lanzando actualización de recuperación.'
+            gh workflow run nba-daily.yml --ref main
+          fi
       - name: Verificar historicos, liquidaciones y sincronizacion web
         env:
           PYTHONPATH: src
