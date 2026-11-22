@@ -1,8 +1,8 @@
 name: Basketball AI Lab · actualización NBA
 on:
   # Primera ronda al acabar los partidos NBA de madrugada.
-  # Reintento matinal mas otras tres ventanas existentes: GitHub puede
-  # retrasar/omitir cron. El pipeline es idempotente y protege cuotas y Top 3.
+  # Reintento matinal y recuperación desde nba-health.yml si GitHub
+  # retrasa u omite cron. El pipeline es idempotente y protege cuotas y Top 3.
   # UTC: 05:37, 07:11, 09:23, 14:41 y 19:47 todos los dias.
   schedule:
     - cron: '37 5 * * *'
@@ -25,7 +25,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
