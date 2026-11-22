@@ -27,7 +27,7 @@ jobs:
       - name: Pruebas del motor y de la protección de cuotas
         run: PYTHONPATH=src python -m unittest discover -s tests -v
       - name: Comprobaciones del panel web y PWA
-        run: node --test site/tests.mjs site/matchup-stats.test.mjs
+        run: node --test site/tests.mjs site/matchup-stats.test.mjs site/audit_insights.test.mjs
       - name: Compilar sintaxis Python sin instalar paquetes
         run: python -m compileall -q src
       - name: Comprobar integridad del paquete sin red

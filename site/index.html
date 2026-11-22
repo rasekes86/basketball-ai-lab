@@ -53,6 +53,7 @@
             <div class="hero-tag">● Sin recomendaciones de apuestas · Motor experimental</div>
           </div>
           <div class="stat-grid" id="stats" aria-live="polite"></div>
+          <div id="healthSummary" aria-live="polite"></div>
           <div class="section-title"><div><small>01 · JORNADA COMPLETA</small><h2>Esta noche <span class="night-count" id="nightCount"></span></h2><p class="fineprint" id="nightLabel">Todos los encuentros, hora de Madrid</p></div><button data-view="partidos">Ver calendario ›</button></div>
           <div class="fixture-grid" id="featured" aria-live="polite"></div>
           <div class="section-title"><div><small>02 · AUDITORÍA</small><h2>Últimos verificados</h2></div><button data-view="resultados">Ver resultados ›</button></div>
@@ -66,6 +67,19 @@
         <section class="page" id="view-resultados" hidden>
           <div class="page-title"><span class="eyebrow">SEGUIMIENTO INDEPENDIENTE</span><h1>Resultados <em>3+1.</em></h1><p>Solo se puntúan los tres mercados originales y la adicional realmente archivada.</p></div>
           <div class="stat-grid" id="resultStats"></div>
+          <section class="audit-insights" aria-labelledby="auditInsightsTitle">
+            <div class="section-title"><div><small>AUDITORÍA 3+1 · HISTÓRICO INTACTO</small><h2 id="auditInsightsTitle">Evolución y diagnóstico</h2></div></div>
+            <div class="filters">
+              <label>Periodo<select id="auditDaysFilter"><option value="7">Últimas 7 noches</option><option value="30" selected>Últimas 30 noches</option><option value="90">Últimas 90 noches</option><option value="365">Último año</option></select></label>
+              <label>Versión del modelo<select id="auditModelFilter"><option value="ALL">Todas, separadas por versión</option><option value="V3">Solo V3</option></select></label>
+            </div>
+            <div id="auditSummary" aria-live="polite"></div>
+            <details class="audit-fold" open><summary>Resultados por noche</summary><div id="auditNights" class="audit-insight-grid"></div></details>
+            <details class="audit-fold"><summary>Desglose por mercado</summary><div id="auditMarkets" class="audit-insight-grid"></div></details>
+            <details class="audit-fold"><summary>Rendimiento por versión</summary><div id="auditModels" class="audit-insight-grid"></div></details>
+            <details class="audit-fold"><summary>Calibración del Top 3</summary><p class="fineprint">Compara la probabilidad prepartido archivada con el resultado observado. Estas muestras no demuestran rentabilidad ni calibración definitiva.</p><div id="auditCalibration"></div></details>
+            <p class="fineprint">Solo Top 3 activo y adicional real congelados. Los pronósticos exploratorios y cuotas justas teóricas no entran en el balance de adicionales. No se modifican registros originales.</p>
+          </section>
           <p class="fineprint balance-disclaimer">Top 3: cálculo hipotético con 1 € por selección a cuota matemática 1/probabilidad, que no es una cuota ofrecida ni una ganancia obtenida. Adicional: balance simulado con 1 € usando exclusivamente precios reales prepartido archivados. Ninguno supone apuestas ejecutadas.</p>
           <div class="section-title"><div><small>CALIDAD DEL MODELO</small><h2>Fiabilidad por mercado</h2></div></div>
           <div class="market-results" id="marketResults" aria-live="polite"></div>
