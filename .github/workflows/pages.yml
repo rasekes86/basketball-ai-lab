@@ -37,6 +37,8 @@ jobs:
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
+          # Evita colisiones de artefactos al reejecutar un job.
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: ./site
       # GitHub puede tardar en indexar el artefacto; evitar error transitorio 'no artifact found'.
       - name: Esperar indexación del artefacto de Pages
@@ -44,3 +46,5 @@ jobs:
       - name: Publicar GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
