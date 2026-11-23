@@ -4,18 +4,18 @@
   "boxscores_new": 0,
   "boxscores_unavailable": 0,
   "extras_archived": 16,
-  "extras_displayed": 68,
+  "extras_displayed": 75,
   "extras_evaluated": 15,
-  "extras_theoretical_archived": 52,
-  "extras_theoretical_evaluated": 6,
+  "extras_theoretical_archived": 59,
+  "extras_theoretical_evaluated": 7,
   "extras_theoretical_hits": 0,
   "extras_unit_profit": -9.24,
   "extras_verified_priced": 15,
   "extras_voided": 1,
   "extras_with_real_price": 16,
-  "final_games": 241,
+  "final_games": 242,
   "forecast_model_version": "NBA_CONTEXT_V3",
-  "games": 296,
+  "games": 303,
   "historical_coverage": {
     "by_team": {
       "ATL": {
@@ -184,10 +184,10 @@
   "logo_teams": 30,
   "market_metrics": {
     "handicap": {
-      "accuracy": 0.8667,
-      "brier": 0.14505,
-      "evaluated": 15,
-      "hits": 13
+      "accuracy": 0.875,
+      "brier": 0.14054,
+      "evaluated": 16,
+      "hits": 14
     },
     "team_assists": {
       "accuracy": 0.8,
@@ -208,9 +208,9 @@
       "hits": 16
     },
     "total": {
-      "accuracy": 0.7727,
-      "brier": 0.17066,
-      "evaluated": 22,
+      "accuracy": 0.7391,
+      "brier": 0.1874,
+      "evaluated": 23,
       "hits": 17
     },
     "winner": {
@@ -221,48 +221,48 @@
     }
   },
   "new_extras": 0,
-  "new_settlements": 0,
-  "new_theoretical_extras": 1,
-  "new_top3_picks": 3,
+  "new_settlements": 3,
+  "new_theoretical_extras": 7,
+  "new_top3_picks": 21,
   "new_voids": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "Top 3 y cuarta referencia teórica usan cuotas justas matemáticas NO ofrecidas. Solo las adicionales reales tienen bookmaker y precio archivado. Todas las simulaciones son hipotéticas.",
-  "odds_calls_month": 18,
-  "odds_quoted_outcomes_this_run": 0,
+  "odds_calls_month": 21,
+  "odds_quoted_outcomes_this_run": 170,
   "odds_recheck_result": null,
-  "odds_status": "YA_CONSULTADO_HOY",
+  "odds_status": "OK",
   "one_time_refresh_applied": false,
-  "pending_postmatch_games": 0,
-  "pending_postmatch_selections": 0,
-  "pending_postmatch_team_stats": 0,
+  "pending_postmatch_games": 1,
+  "pending_postmatch_selections": 1,
+  "pending_postmatch_team_stats": 1,
   "provider": "ESPN (public, undocumented)",
   "quality": "EXPERIMENTAL_NO_CALIBRADO",
   "review_required": {},
   "review_required_count": 0,
   "sorpresas_detectadas": 1,
   "source_circuit_breaker": null,
-  "source_distinct_games_returned": 86,
+  "source_distinct_games_returned": 81,
   "source_failed_days": 0,
   "source_failures": [],
   "source_requests": 12,
   "source_successful_days": 12,
   "superseded_future_extras": 0,
   "superseded_future_top3": 0,
-  "top3_accuracy": 0.7742,
-  "top3_archived": 231,
-  "top3_brier": 0.17322,
-  "top3_evaluated": 93,
-  "top3_hits": 72,
-  "top3_original_archived": 231,
+  "top3_accuracy": 0.7684,
+  "top3_archived": 252,
+  "top3_brier": 0.17619,
+  "top3_evaluated": 95,
+  "top3_hits": 73,
+  "top3_original_archived": 252,
   "top3_promoted_to_additional": 0,
   "top3_theoretical_balance": {
     "by_market": {
       "handicap": {
-        "hits": 13,
-        "net_eur": 1.839,
-        "roi_pct": 12.26,
-        "settled": 15
+        "hits": 14,
+        "net_eur": 2.21,
+        "roi_pct": 13.81,
+        "settled": 16
       },
       "team_assists": {
         "hits": 16,
@@ -284,9 +284,9 @@
       },
       "total": {
         "hits": 17,
-        "net_eur": -0.407,
-        "roi_pct": -1.85,
-        "settled": 22
+        "net_eur": -1.407,
+        "roi_pct": -6.12,
+        "settled": 23
       },
       "winner": {
         "hits": 2,
@@ -295,14 +295,14 @@
         "settled": 3
       }
     },
-    "net_eur": -0.021,
+    "net_eur": -0.651,
     "price_basis": "MATHEMATICAL_1_OVER_P_NOT_OFFERED",
-    "roi_pct": -0.02,
-    "settled": 93,
+    "roi_pct": -0.68,
+    "settled": 95,
     "stake_eur": 1.0,
-    "total_staked_eur": 93.0
+    "total_staked_eur": 95.0
   },
   "top3_voided": 0,
-  "upcoming": 45,
-  "updated_utc": "2026-11-22T20:50:17.414802+00:00"
+  "upcoming": 48,
+  "updated_utc": "2026-11-23T00:29:54.221558+00:00"
 }
