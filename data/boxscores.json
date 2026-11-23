@@ -4818,5 +4818,25 @@
         "threes": 7
       }
     }
+  },
+  "401910029": {
+    "away": "DET",
+    "home": "ATL",
+    "id": "401910029",
+    "retrieved_utc": "2026-11-23T02:55:37.679959+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-22T20:30:00+00:00",
+    "teams": {
+      "ATL": {
+        "assists": 23,
+        "rebounds": 62,
+        "threes": 15
+      },
+      "DET": {
+        "assists": 30,
+        "rebounds": 43,
+        "threes": 11
+      }
+    }
   }
 }
