@@ -4838,5 +4838,125 @@
         "threes": 11
       }
     }
+  },
+  "401910030": {
+    "away": "OKC",
+    "home": "MIA",
+    "id": "401910030",
+    "retrieved_utc": "2026-11-23T06:36:05.900084+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-22T23:00:00+00:00",
+    "teams": {
+      "MIA": {
+        "assists": 30,
+        "rebounds": 48,
+        "threes": 15
+      },
+      "OKC": {
+        "assists": 24,
+        "rebounds": 38,
+        "threes": 16
+      }
+    }
+  },
+  "401910031": {
+    "away": "ORL",
+    "home": "WAS",
+    "id": "401910031",
+    "retrieved_utc": "2026-11-23T06:36:05.900084+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-23T00:00:00+00:00",
+    "teams": {
+      "ORL": {
+        "assists": 27,
+        "rebounds": 39,
+        "threes": 12
+      },
+      "WAS": {
+        "assists": 31,
+        "rebounds": 45,
+        "threes": 22
+      }
+    }
+  },
+  "401910032": {
+    "away": "DEN",
+    "home": "CHI",
+    "id": "401910032",
+    "retrieved_utc": "2026-11-23T06:36:05.900084+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-23T00:00:00+00:00",
+    "teams": {
+      "CHI": {
+        "assists": 39,
+        "rebounds": 41,
+        "threes": 25
+      },
+      "DEN": {
+        "assists": 33,
+        "rebounds": 47,
+        "threes": 17
+      }
+    }
+  },
+  "401910033": {
+    "away": "DAL",
+    "home": "UTA",
+    "id": "401910033",
+    "retrieved_utc": "2026-11-23T06:36:05.900084+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-23T00:00:00+00:00",
+    "teams": {
+      "DAL": {
+        "assists": 32,
+        "rebounds": 34,
+        "threes": 16
+      },
+      "UTA": {
+        "assists": 31,
+        "rebounds": 50,
+        "threes": 18
+      }
+    }
+  },
+  "401910034": {
+    "away": "IND",
+    "home": "NYK",
+    "id": "401910034",
+    "retrieved_utc": "2026-11-23T06:36:05.900084+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-23T01:00:00+00:00",
+    "teams": {
+      "IND": {
+        "assists": 20,
+        "rebounds": 42,
+        "threes": 6
+      },
+      "NYK": {
+        "assists": 30,
+        "rebounds": 50,
+        "threes": 15
+      }
+    }
+  },
+  "401910035": {
+    "away": "BOS",
+    "home": "GSW",
+    "id": "401910035",
+    "retrieved_utc": "2026-11-23T06:36:05.900084+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-23T01:30:00+00:00",
+    "teams": {
+      "BOS": {
+        "assists": 26,
+        "rebounds": 41,
+        "threes": 14
+      },
+      "GSW": {
+        "assists": 27,
+        "rebounds": 45,
+        "threes": 14
+      }
+    }
   }
 }
