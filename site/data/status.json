@@ -1,7 +1,7 @@
 {
   "advanced_stats_enabled": true,
   "boxscores_archived": 248,
-  "boxscores_new": 6,
+  "boxscores_new": 0,
   "boxscores_unavailable": 0,
   "extras_archived": 16,
   "extras_displayed": 77,
@@ -221,7 +221,7 @@
     }
   },
   "new_extras": 0,
-  "new_settlements": 15,
+  "new_settlements": 0,
   "new_theoretical_extras": 0,
   "new_top3_picks": 0,
   "new_voids": 0,
@@ -245,7 +245,7 @@
   "source_distinct_games_returned": 81,
   "source_failed_days": 0,
   "source_failures": [],
-  "source_requests": 18,
+  "source_requests": 12,
   "source_successful_days": 12,
   "superseded_future_extras": 0,
   "superseded_future_top3": 0,
@@ -304,5 +304,5 @@
   },
   "top3_voided": 0,
   "upcoming": 48,
-  "updated_utc": "2026-11-23T06:36:05.900084+00:00"
+  "updated_utc": "2026-11-23T16:26:48.379708+00:00"
 }
