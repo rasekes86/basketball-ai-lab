@@ -4,16 +4,16 @@
   "boxscores_new": 0,
   "boxscores_unavailable": 0,
   "extras_archived": 16,
-  "extras_displayed": 83,
+  "extras_displayed": 84,
   "extras_evaluated": 15,
-  "extras_theoretical_archived": 67,
-  "extras_theoretical_evaluated": 13,
-  "extras_theoretical_hits": 4,
+  "extras_theoretical_archived": 68,
+  "extras_theoretical_evaluated": 21,
+  "extras_theoretical_hits": 10,
   "extras_unit_profit": -9.24,
   "extras_verified_priced": 15,
   "extras_voided": 1,
   "extras_with_real_price": 16,
-  "final_games": 248,
+  "final_games": 256,
   "forecast_model_version": "NBA_CONTEXT_V3",
   "games": 311,
   "historical_coverage": {
@@ -184,10 +184,10 @@
   "logo_teams": 30,
   "market_metrics": {
     "handicap": {
-      "accuracy": 0.9,
-      "brier": 0.12547,
-      "evaluated": 20,
-      "hits": 18
+      "accuracy": 0.88,
+      "brier": 0.13263,
+      "evaluated": 25,
+      "hits": 22
     },
     "team_assists": {
       "accuracy": 0.8261,
@@ -208,10 +208,10 @@
       "hits": 20
     },
     "total": {
-      "accuracy": 0.7308,
-      "brier": 0.19165,
-      "evaluated": 26,
-      "hits": 19
+      "accuracy": 0.7353,
+      "brier": 0.19008,
+      "evaluated": 34,
+      "hits": 25
     },
     "winner": {
       "accuracy": 0.6667,
@@ -221,21 +221,21 @@
     }
   },
   "new_extras": 0,
-  "new_settlements": 0,
-  "new_theoretical_extras": 6,
-  "new_top3_picks": 18,
+  "new_settlements": 21,
+  "new_theoretical_extras": 1,
+  "new_top3_picks": 3,
   "new_voids": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "Top 3 y cuarta referencia teórica usan cuotas justas matemáticas NO ofrecidas. Solo las adicionales reales tienen bookmaker y precio archivado. Todas las simulaciones son hipotéticas.",
   "odds_calls_month": 24,
-  "odds_quoted_outcomes_this_run": 218,
+  "odds_quoted_outcomes_this_run": 0,
   "odds_recheck_result": null,
-  "odds_status": "OK",
+  "odds_status": "YA_CONSULTADO_HOY",
   "one_time_refresh_applied": false,
-  "pending_postmatch_games": 0,
-  "pending_postmatch_selections": 0,
-  "pending_postmatch_team_stats": 0,
+  "pending_postmatch_games": 8,
+  "pending_postmatch_selections": 11,
+  "pending_postmatch_team_stats": 11,
   "provider": "ESPN (public, undocumented)",
   "quality": "EXPERIMENTAL_NO_CALIBRADO",
   "review_required": {},
@@ -249,20 +249,20 @@
   "source_successful_days": 12,
   "superseded_future_extras": 0,
   "superseded_future_top3": 0,
-  "top3_accuracy": 0.7895,
-  "top3_archived": 276,
-  "top3_brier": 0.16606,
-  "top3_evaluated": 114,
-  "top3_hits": 90,
-  "top3_original_archived": 276,
+  "top3_accuracy": 0.7874,
+  "top3_archived": 279,
+  "top3_brier": 0.16707,
+  "top3_evaluated": 127,
+  "top3_hits": 100,
+  "top3_original_archived": 279,
   "top3_promoted_to_additional": 0,
   "top3_theoretical_balance": {
     "by_market": {
       "handicap": {
-        "hits": 18,
-        "net_eur": 3.581,
-        "roi_pct": 17.9,
-        "settled": 20
+        "hits": 22,
+        "net_eur": 3.922,
+        "roi_pct": 15.69,
+        "settled": 25
       },
       "team_assists": {
         "hits": 19,
@@ -283,10 +283,10 @@
         "settled": 26
       },
       "total": {
-        "hits": 19,
-        "net_eur": -1.735,
-        "roi_pct": -6.67,
-        "settled": 26
+        "hits": 25,
+        "net_eur": -1.677,
+        "roi_pct": -4.93,
+        "settled": 34
       },
       "winner": {
         "hits": 2,
@@ -295,14 +295,14 @@
         "settled": 3
       }
     },
-    "net_eur": 3.074,
+    "net_eur": 3.473,
     "price_basis": "MATHEMATICAL_1_OVER_P_NOT_OFFERED",
-    "roi_pct": 2.7,
-    "settled": 114,
+    "roi_pct": 2.73,
+    "settled": 127,
     "stake_eur": 1.0,
-    "total_staked_eur": 114.0
+    "total_staked_eur": 127.0
   },
   "top3_voided": 0,
-  "upcoming": 46,
-  "updated_utc": "2026-11-24T01:52:53.340971+00:00"
+  "upcoming": 45,
+  "updated_utc": "2026-11-24T04:27:55.249163+00:00"
 }
