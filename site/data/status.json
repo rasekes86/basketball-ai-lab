@@ -1,7 +1,7 @@
 {
   "advanced_stats_enabled": true,
-  "boxscores_archived": 255,
-  "boxscores_new": 7,
+  "boxscores_archived": 258,
+  "boxscores_new": 3,
   "boxscores_unavailable": 0,
   "extras_archived": 16,
   "extras_displayed": 84,
@@ -69,9 +69,9 @@
         "threes": 17
       },
       "HOU": {
-        "assists": 17,
-        "rebounds": 17,
-        "threes": 17
+        "assists": 18,
+        "rebounds": 18,
+        "threes": 18
       },
       "IND": {
         "assists": 18,
@@ -79,14 +79,14 @@
         "threes": 18
       },
       "LAC": {
-        "assists": 15,
-        "rebounds": 15,
-        "threes": 15
+        "assists": 16,
+        "rebounds": 16,
+        "threes": 16
       },
       "LAL": {
-        "assists": 17,
-        "rebounds": 17,
-        "threes": 17
+        "assists": 18,
+        "rebounds": 18,
+        "threes": 18
       },
       "MEM": {
         "assists": 18,
@@ -144,14 +144,14 @@
         "threes": 17
       },
       "SAC": {
-        "assists": 16,
-        "rebounds": 16,
-        "threes": 16
-      },
-      "SAS": {
         "assists": 17,
         "rebounds": 17,
         "threes": 17
+      },
+      "SAS": {
+        "assists": 18,
+        "rebounds": 18,
+        "threes": 18
       },
       "TOR": {
         "assists": 17,
@@ -159,9 +159,9 @@
         "threes": 17
       },
       "UTA": {
-        "assists": 18,
-        "rebounds": 18,
-        "threes": 18
+        "assists": 19,
+        "rebounds": 19,
+        "threes": 19
       },
       "WAS": {
         "assists": 18,
@@ -176,7 +176,7 @@
       "rebounds": 30,
       "threes": 30
     },
-    "verified_games": 255
+    "verified_games": 258
   },
   "history_backfill_mode": "DAILY",
   "history_summary_budget": 35,
@@ -190,22 +190,22 @@
       "hits": 22
     },
     "team_assists": {
-      "accuracy": 0.84,
-      "brier": 0.13992,
-      "evaluated": 25,
-      "hits": 21
+      "accuracy": 0.8519,
+      "brier": 0.13418,
+      "evaluated": 27,
+      "hits": 23
     },
     "team_rebounds": {
-      "accuracy": 0.8,
-      "brier": 0.17146,
-      "evaluated": 20,
-      "hits": 16
+      "accuracy": 0.8261,
+      "brier": 0.15755,
+      "evaluated": 23,
+      "hits": 19
     },
     "team_threes": {
-      "accuracy": 0.7931,
-      "brier": 0.15569,
-      "evaluated": 29,
-      "hits": 23
+      "accuracy": 0.8065,
+      "brier": 0.14973,
+      "evaluated": 31,
+      "hits": 25
     },
     "total": {
       "accuracy": 0.7143,
@@ -221,7 +221,7 @@
     }
   },
   "new_extras": 0,
-  "new_settlements": 12,
+  "new_settlements": 7,
   "new_theoretical_extras": 0,
   "new_top3_picks": 0,
   "new_voids": 0,
@@ -233,9 +233,9 @@
   "odds_recheck_result": null,
   "odds_status": "YA_CONSULTADO_HOY",
   "one_time_refresh_applied": false,
-  "pending_postmatch_games": 3,
-  "pending_postmatch_selections": 7,
-  "pending_postmatch_team_stats": 7,
+  "pending_postmatch_games": 0,
+  "pending_postmatch_selections": 0,
+  "pending_postmatch_team_stats": 0,
   "provider": "ESPN (public, undocumented)",
   "quality": "EXPERIMENTAL_NO_CALIBRADO",
   "review_required": {},
@@ -245,15 +245,15 @@
   "source_distinct_games_returned": 85,
   "source_failed_days": 0,
   "source_failures": [],
-  "source_requests": 19,
+  "source_requests": 15,
   "source_successful_days": 12,
   "superseded_future_extras": 0,
   "superseded_future_top3": 0,
-  "top3_accuracy": 0.7956,
+  "top3_accuracy": 0.8056,
   "top3_archived": 279,
-  "top3_brier": 0.16318,
-  "top3_evaluated": 137,
-  "top3_hits": 109,
+  "top3_brier": 0.15835,
+  "top3_evaluated": 144,
+  "top3_hits": 116,
   "top3_original_archived": 279,
   "top3_promoted_to_additional": 0,
   "top3_theoretical_balance": {
@@ -265,22 +265,22 @@
         "settled": 25
       },
       "team_assists": {
-        "hits": 21,
-        "net_eur": 2.14,
-        "roi_pct": 8.56,
-        "settled": 25
+        "hits": 23,
+        "net_eur": 2.806,
+        "roi_pct": 10.39,
+        "settled": 27
       },
       "team_rebounds": {
-        "hits": 16,
-        "net_eur": 1.375,
-        "roi_pct": 6.87,
-        "settled": 20
+        "hits": 19,
+        "net_eur": 2.399,
+        "roi_pct": 10.43,
+        "settled": 23
       },
       "team_threes": {
-        "hits": 23,
-        "net_eur": 0.863,
-        "roi_pct": 2.98,
-        "settled": 29
+        "hits": 25,
+        "net_eur": 1.536,
+        "roi_pct": 4.95,
+        "settled": 31
       },
       "total": {
         "hits": 25,
@@ -295,14 +295,14 @@
         "settled": 3
       }
     },
-    "net_eur": 5.519,
+    "net_eur": 7.883,
     "price_basis": "MATHEMATICAL_1_OVER_P_NOT_OFFERED",
-    "roi_pct": 4.03,
-    "settled": 137,
+    "roi_pct": 5.47,
+    "settled": 144,
     "stake_eur": 1.0,
-    "total_staked_eur": 137.0
+    "total_staked_eur": 144.0
   },
   "top3_voided": 0,
   "upcoming": 45,
-  "updated_utc": "2026-11-24T06:10:48.788423+00:00"
+  "updated_utc": "2026-11-24T16:20:42.361204+00:00"
 }

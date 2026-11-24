@@ -5751,12 +5751,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "LAC: UNDER 45.5 rebotes del equipo (teórico)",
+    "settled_utc": "2026-11-24T16:20:42.361204+00:00",
     "start_utc": "2026-11-24T01:30:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910043|team_threes": {
     "away": "LAC",
@@ -5780,12 +5781,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "HOU: UNDER 17.5 triples del equipo (teórico)",
+    "settled_utc": "2026-11-24T16:20:42.361204+00:00",
     "start_utc": "2026-11-24T01:30:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910043|total": {
     "away": "LAC",
@@ -5836,12 +5838,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "LAL: OVER 16.5 asistencias del equipo (teórico)",
+    "settled_utc": "2026-11-24T16:20:42.361204+00:00",
     "start_utc": "2026-11-24T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910044|team_rebounds": {
     "away": "UTA",
@@ -5865,12 +5868,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "UTA: UNDER 49.5 rebotes del equipo (teórico)",
+    "settled_utc": "2026-11-24T16:20:42.361204+00:00",
     "start_utc": "2026-11-24T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910044|total": {
     "away": "UTA",
@@ -5921,12 +5925,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "SAS: OVER 22.5 asistencias del equipo (teórico)",
+    "settled_utc": "2026-11-24T16:20:42.361204+00:00",
     "start_utc": "2026-11-24T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910045|team_rebounds": {
     "away": "SAS",
@@ -5950,12 +5955,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "SAS: OVER 37.5 rebotes del equipo (teórico)",
+    "settled_utc": "2026-11-24T16:20:42.361204+00:00",
     "start_utc": "2026-11-24T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910045|team_threes": {
     "away": "SAS",
@@ -5979,12 +5985,13 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "SIN_CUOTA_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "sample_games": 12,
     "selection": "SAC: OVER 9.5 triples del equipo (teórico)",
+    "settled_utc": "2026-11-24T16:20:42.361204+00:00",
     "start_utc": "2026-11-24T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401910046|handicap": {
     "away": "ORL",
