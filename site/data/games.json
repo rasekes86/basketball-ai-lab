@@ -645,9 +645,9 @@
   },
   "401909314": {
     "away": "DET",
-    "away_score": null,
+    "away_score": 104,
     "home": "ORL",
-    "home_score": null,
+    "home_score": 86,
     "id": "401909314",
     "logos": {
       "DET": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/det.png",
@@ -655,7 +655,7 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-25T00:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909315": {
     "away": "BOS",
@@ -4351,6 +4351,132 @@
     },
     "source": "ESPN",
     "start_utc": "2026-12-02T03:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910076": {
+    "away": "MEM",
+    "away_score": null,
+    "home": "DET",
+    "home_score": null,
+    "id": "401910076",
+    "logos": {
+      "DET": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/det.png",
+      "MEM": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mem.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T00:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910077": {
+    "away": "DEN",
+    "away_score": null,
+    "home": "PHI",
+    "home_score": null,
+    "id": "401910077",
+    "logos": {
+      "DEN": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/den.png",
+      "PHI": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/phi.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T00:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910078": {
+    "away": "CHA",
+    "away_score": null,
+    "home": "BOS",
+    "home_score": null,
+    "id": "401910078",
+    "logos": {
+      "BOS": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/bos.png",
+      "CHA": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/cha.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T00:30:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910079": {
+    "away": "ORL",
+    "away_score": null,
+    "home": "DAL",
+    "home_score": null,
+    "id": "401910079",
+    "logos": {
+      "DAL": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/dal.png",
+      "ORL": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/orl.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T01:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910080": {
+    "away": "NYK",
+    "away_score": null,
+    "home": "MIL",
+    "home_score": null,
+    "id": "401910080",
+    "logos": {
+      "MIL": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mil.png",
+      "NYK": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/ny.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T01:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910081": {
+    "away": "LAL",
+    "away_score": null,
+    "home": "NOP",
+    "home_score": null,
+    "id": "401910081",
+    "logos": {
+      "LAL": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/lal.png",
+      "NOP": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/no.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T01:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910082": {
+    "away": "BKN",
+    "away_score": null,
+    "home": "OKC",
+    "home_score": null,
+    "id": "401910082",
+    "logos": {
+      "BKN": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/bkn.png",
+      "OKC": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/okc.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T01:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910083": {
+    "away": "SAC",
+    "away_score": null,
+    "home": "PHX",
+    "home_score": null,
+    "id": "401910083",
+    "logos": {
+      "PHX": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/phx.png",
+      "SAC": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/sac.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T02:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910084": {
+    "away": "MIN",
+    "away_score": null,
+    "home": "LAC",
+    "home_score": null,
+    "id": "401910084",
+    "logos": {
+      "LAC": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/lac.png",
+      "MIN": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/min.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-03T03:30:00+00:00",
     "status": "SCHEDULED"
   }
 }
