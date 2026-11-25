@@ -42,11 +42,12 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "CUOTA_JUSTA_TEORICA_NO_OFRECIDA",
-    "result": null,
+    "result": 0,
     "retrospective": false,
     "selection": "UNDER 230.5 puntos totales (teórico)",
+    "settled_utc": "2026-11-25T16:00:03.411826+00:00",
     "start_utc": "2026-11-25T01:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "FALLO"
   },
   "401909316|extra_teorica": {
     "away": "DAL",
@@ -66,11 +67,12 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "CUOTA_JUSTA_TEORICA_NO_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "selection": "OVER 220.5 puntos totales (teórico)",
+    "settled_utc": "2026-11-25T16:00:03.411826+00:00",
     "start_utc": "2026-11-25T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401909317|extra_teorica": {
     "away": "MIA",
@@ -1797,6 +1799,30 @@
     "retrospective": false,
     "selection": "UNDER 235.5 puntos totales (teórico)",
     "start_utc": "2026-12-02T02:00:00+00:00",
+    "status": "PENDIENTE"
+  },
+  "401910074|extra_teorica": {
+    "away": "MIN",
+    "contract": {
+      "direction": "under",
+      "line": 230.5,
+      "type": "total"
+    },
+    "created_utc": "2026-11-25T16:00:03.411826+00:00",
+    "event_id": "401910074",
+    "fair_odds": 1.604,
+    "home": "POR",
+    "id": "401910074|extra_teorica",
+    "market": "extra_theoretical_total",
+    "model_version": "NBA_CONTEXT_V3_EXTRA_REFERENCIA",
+    "probability": 0.623465,
+    "quality": "EXPERIMENTAL_NO_CALIBRADO",
+    "real_price": null,
+    "real_price_status": "CUOTA_JUSTA_TEORICA_NO_OFRECIDA",
+    "result": null,
+    "retrospective": false,
+    "selection": "UNDER 230.5 puntos totales (teórico)",
+    "start_utc": "2026-12-02T04:00:00+00:00",
     "status": "PENDIENTE"
   },
   "401910075|extra_teorica": {

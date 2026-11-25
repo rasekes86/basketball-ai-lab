@@ -919,6 +919,66 @@
       }
     }
   },
+  "401909314": {
+    "away": "DET",
+    "home": "ORL",
+    "id": "401909314",
+    "retrieved_utc": "2026-11-25T16:00:03.411826+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-25T00:00:00+00:00",
+    "teams": {
+      "DET": {
+        "assists": 27,
+        "rebounds": 42,
+        "threes": 15
+      },
+      "ORL": {
+        "assists": 22,
+        "rebounds": 41,
+        "threes": 12
+      }
+    }
+  },
+  "401909315": {
+    "away": "BOS",
+    "home": "WAS",
+    "id": "401909315",
+    "retrieved_utc": "2026-11-25T16:00:03.411826+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-25T01:00:00+00:00",
+    "teams": {
+      "BOS": {
+        "assists": 30,
+        "rebounds": 46,
+        "threes": 22
+      },
+      "WAS": {
+        "assists": 25,
+        "rebounds": 48,
+        "threes": 12
+      }
+    }
+  },
+  "401909316": {
+    "away": "DAL",
+    "home": "DEN",
+    "id": "401909316",
+    "retrieved_utc": "2026-11-25T16:00:03.411826+00:00",
+    "source": "ESPN summary",
+    "start_utc": "2026-11-25T03:00:00+00:00",
+    "teams": {
+      "DAL": {
+        "assists": 31,
+        "rebounds": 48,
+        "threes": 11
+      },
+      "DEN": {
+        "assists": 22,
+        "rebounds": 41,
+        "threes": 12
+      }
+    }
+  },
   "401909834": {
     "away": "ATL",
     "home": "ORL",

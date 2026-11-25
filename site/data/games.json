@@ -659,9 +659,9 @@
   },
   "401909315": {
     "away": "BOS",
-    "away_score": null,
+    "away_score": 131,
     "home": "WAS",
-    "home_score": null,
+    "home_score": 116,
     "id": "401909315",
     "logos": {
       "BOS": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/bos.png",
@@ -669,13 +669,13 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-25T01:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909316": {
     "away": "DAL",
-    "away_score": null,
+    "away_score": 120,
     "home": "DEN",
-    "home_score": null,
+    "home_score": 101,
     "id": "401909316",
     "logos": {
       "DAL": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/dal.png",
@@ -683,7 +683,7 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-25T03:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909317": {
     "away": "MIA",
