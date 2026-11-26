@@ -4,18 +4,18 @@
   "boxscores_new": 0,
   "boxscores_unavailable": 0,
   "extras_archived": 16,
-  "extras_displayed": 92,
+  "extras_displayed": 100,
   "extras_evaluated": 15,
-  "extras_theoretical_archived": 76,
-  "extras_theoretical_evaluated": 26,
+  "extras_theoretical_archived": 84,
+  "extras_theoretical_evaluated": 28,
   "extras_theoretical_hits": 13,
   "extras_unit_profit": -9.24,
   "extras_verified_priced": 15,
   "extras_voided": 1,
   "extras_with_real_price": 16,
-  "final_games": 261,
+  "final_games": 263,
   "forecast_model_version": "NBA_CONTEXT_V3",
-  "games": 320,
+  "games": 325,
   "historical_coverage": {
     "by_team": {
       "ATL": {
@@ -208,10 +208,10 @@
       "hits": 27
     },
     "total": {
-      "accuracy": 0.6944,
-      "brier": 0.21056,
-      "evaluated": 36,
-      "hits": 25
+      "accuracy": 0.7105,
+      "brier": 0.20302,
+      "evaluated": 38,
+      "hits": 27
     },
     "winner": {
       "accuracy": 0.6667,
@@ -221,40 +221,40 @@
     }
   },
   "new_extras": 0,
-  "new_settlements": 0,
-  "new_theoretical_extras": 0,
-  "new_top3_picks": 0,
+  "new_settlements": 4,
+  "new_theoretical_extras": 8,
+  "new_top3_picks": 24,
   "new_voids": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "Top 3 y cuarta referencia teórica usan cuotas justas matemáticas NO ofrecidas. Solo las adicionales reales tienen bookmaker y precio archivado. Todas las simulaciones son hipotéticas.",
-  "odds_calls_month": 27,
-  "odds_quoted_outcomes_this_run": 0,
+  "odds_calls_month": 30,
+  "odds_quoted_outcomes_this_run": 108,
   "odds_recheck_result": null,
-  "odds_status": "YA_CONSULTADO_HOY",
+  "odds_status": "OK",
   "one_time_refresh_applied": false,
-  "pending_postmatch_games": 0,
-  "pending_postmatch_selections": 0,
-  "pending_postmatch_team_stats": 0,
+  "pending_postmatch_games": 2,
+  "pending_postmatch_selections": 4,
+  "pending_postmatch_team_stats": 4,
   "provider": "ESPN (public, undocumented)",
   "quality": "EXPERIMENTAL_NO_CALIBRADO",
   "review_required": {},
   "review_required_count": 0,
   "sorpresas_detectadas": 1,
   "source_circuit_breaker": null,
-  "source_distinct_games_returned": 85,
+  "source_distinct_games_returned": 84,
   "source_failed_days": 0,
   "source_failures": [],
   "source_requests": 12,
   "source_successful_days": 12,
   "superseded_future_extras": 0,
   "superseded_future_top3": 0,
-  "top3_accuracy": 0.7974,
-  "top3_archived": 303,
-  "top3_brier": 0.16251,
-  "top3_evaluated": 153,
-  "top3_hits": 122,
-  "top3_original_archived": 303,
+  "top3_accuracy": 0.8,
+  "top3_archived": 327,
+  "top3_brier": 0.16128,
+  "top3_evaluated": 155,
+  "top3_hits": 124,
+  "top3_original_archived": 327,
   "top3_promoted_to_additional": 0,
   "top3_theoretical_balance": {
     "by_market": {
@@ -283,10 +283,10 @@
         "settled": 33
       },
       "total": {
-        "hits": 25,
-        "net_eur": -3.677,
-        "roi_pct": -10.21,
-        "settled": 36
+        "hits": 27,
+        "net_eur": -2.976,
+        "roi_pct": -7.83,
+        "settled": 38
       },
       "winner": {
         "hits": 2,
@@ -295,14 +295,14 @@
         "settled": 3
       }
     },
-    "net_eur": 6.891,
+    "net_eur": 7.591,
     "price_basis": "MATHEMATICAL_1_OVER_P_NOT_OFFERED",
-    "roi_pct": 4.5,
-    "settled": 153,
+    "roi_pct": 4.9,
+    "settled": 155,
     "stake_eur": 1.0,
-    "total_staked_eur": 153.0
+    "total_staked_eur": 155.0
   },
   "top3_voided": 0,
-  "upcoming": 49,
-  "updated_utc": "2026-11-25T23:17:38.993892+00:00"
+  "upcoming": 51,
+  "updated_utc": "2026-11-26T02:28:06.826622+00:00"
 }

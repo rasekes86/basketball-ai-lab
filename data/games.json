@@ -687,9 +687,9 @@
   },
   "401909317": {
     "away": "MIA",
-    "away_score": null,
+    "away_score": 104,
     "home": "PHI",
-    "home_score": null,
+    "home_score": 111,
     "id": "401909317",
     "logos": {
       "MIA": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mia.png",
@@ -697,13 +697,13 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-25T22:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909318": {
     "away": "CHI",
-    "away_score": null,
+    "away_score": 107,
     "home": "CHA",
-    "home_score": null,
+    "home_score": 105,
     "id": "401909318",
     "logos": {
       "CHA": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/cha.png",
@@ -711,7 +711,7 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T00:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909319": {
     "away": "CLE",
@@ -4477,6 +4477,76 @@
     },
     "source": "ESPN",
     "start_utc": "2026-12-03T03:30:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910085": {
+    "away": "IND",
+    "away_score": null,
+    "home": "ATL",
+    "home_score": null,
+    "id": "401910085",
+    "logos": {
+      "ATL": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/atl.png",
+      "IND": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/ind.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-04T00:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910086": {
+    "away": "WAS",
+    "away_score": null,
+    "home": "MIA",
+    "home_score": null,
+    "id": "401910086",
+    "logos": {
+      "MIA": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/mia.png",
+      "WAS": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/wsh.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-04T00:30:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910087": {
+    "away": "CLE",
+    "away_score": null,
+    "home": "CHI",
+    "home_score": null,
+    "id": "401910087",
+    "logos": {
+      "CHI": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/chi.png",
+      "CLE": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/cle.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-04T01:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910088": {
+    "away": "TOR",
+    "away_score": null,
+    "home": "SAS",
+    "home_score": null,
+    "id": "401910088",
+    "logos": {
+      "SAS": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/sa.png",
+      "TOR": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/tor.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-04T01:00:00+00:00",
+    "status": "SCHEDULED"
+  },
+  "401910089": {
+    "away": "UTA",
+    "away_score": null,
+    "home": "POR",
+    "home_score": null,
+    "id": "401910089",
+    "logos": {
+      "POR": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/por.png",
+      "UTA": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/utah.png"
+    },
+    "source": "ESPN",
+    "start_utc": "2026-12-04T03:00:00+00:00",
     "status": "SCHEDULED"
   }
 }
