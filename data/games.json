@@ -785,9 +785,9 @@
   },
   "401909324": {
     "away": "SAC",
-    "away_score": null,
+    "away_score": 110,
     "home": "GSW",
-    "home_score": null,
+    "home_score": 129,
     "id": "401909324",
     "logos": {
       "GSW": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/gs.png",
@@ -795,13 +795,13 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T03:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909325": {
     "away": "SAS",
-    "away_score": null,
+    "away_score": 111,
     "home": "POR",
-    "home_score": null,
+    "home_score": 116,
     "id": "401909325",
     "logos": {
       "POR": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/por.png",
@@ -809,7 +809,7 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T03:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909326": {
     "away": "MIA",

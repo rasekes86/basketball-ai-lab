@@ -267,11 +267,12 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "CUOTA_JUSTA_TEORICA_NO_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "selection": "OVER 220.5 puntos totales (teórico)",
+    "settled_utc": "2026-11-26T15:44:10.621131+00:00",
     "start_utc": "2026-11-26T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401909325|extra_teorica": {
     "away": "SAS",
@@ -291,11 +292,12 @@
     "quality": "EXPERIMENTAL_NO_CALIBRADO",
     "real_price": null,
     "real_price_status": "CUOTA_JUSTA_TEORICA_NO_OFRECIDA",
-    "result": null,
+    "result": 1,
     "retrospective": false,
     "selection": "OVER 220.5 puntos totales (teórico)",
+    "settled_utc": "2026-11-26T15:44:10.621131+00:00",
     "start_utc": "2026-11-26T03:00:00+00:00",
-    "status": "PENDIENTE"
+    "status": "ACIERTO"
   },
   "401909326|extra_teorica": {
     "away": "MIA",
