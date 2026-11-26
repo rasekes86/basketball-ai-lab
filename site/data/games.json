@@ -715,9 +715,9 @@
   },
   "401909319": {
     "away": "CLE",
-    "away_score": null,
+    "away_score": 102,
     "home": "NYK",
-    "home_score": null,
+    "home_score": 121,
     "id": "401909319",
     "logos": {
       "CLE": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/cle.png",
@@ -725,13 +725,13 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T00:30:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909320": {
     "away": "MIN",
-    "away_score": null,
+    "away_score": 113,
     "home": "OKC",
-    "home_score": null,
+    "home_score": 106,
     "id": "401909320",
     "logos": {
       "MIN": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/min.png",
@@ -739,13 +739,13 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T00:30:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909321": {
     "away": "LAC",
-    "away_score": null,
+    "away_score": 97,
     "home": "MEM",
-    "home_score": null,
+    "home_score": 115,
     "id": "401909321",
     "logos": {
       "LAC": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/lac.png",
@@ -753,13 +753,13 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T01:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909322": {
     "away": "BKN",
-    "away_score": null,
+    "away_score": 104,
     "home": "MIL",
-    "home_score": null,
+    "home_score": 97,
     "id": "401909322",
     "logos": {
       "BKN": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/bkn.png",
@@ -767,13 +767,13 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T01:00:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909323": {
     "away": "PHX",
-    "away_score": null,
+    "away_score": 104,
     "home": "HOU",
-    "home_score": null,
+    "home_score": 116,
     "id": "401909323",
     "logos": {
       "HOU": "https://a.espncdn.com/i/teamlogos/nba/500/scoreboard/hou.png",
@@ -781,7 +781,7 @@
     },
     "source": "ESPN",
     "start_utc": "2026-11-26T01:30:00+00:00",
-    "status": "SCHEDULED"
+    "status": "FINAL"
   },
   "401909324": {
     "away": "SAC",
