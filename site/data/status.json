@@ -222,8 +222,8 @@
   },
   "new_extras": 0,
   "new_settlements": 0,
-  "new_theoretical_extras": 1,
-  "new_top3_picks": 3,
+  "new_theoretical_extras": 0,
+  "new_top3_picks": 0,
   "new_voids": 0,
   "no_historical_repricing": true,
   "no_top3_reasons": {},
@@ -304,5 +304,5 @@
   },
   "top3_voided": 0,
   "upcoming": 55,
-  "updated_utc": "2026-11-27T15:32:33.090389+00:00"
+  "updated_utc": "2026-11-27T17:26:39.541443+00:00"
 }
