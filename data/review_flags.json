@@ -1,1 +1,14 @@
-{}
+{
+  "401910085": {
+    "code": "FECHA_REPROGRAMADA",
+    "detected_utc": "2026-11-28T14:29:02.952680+00:00",
+    "start_utc_archived": "2026-12-04T00:00:00+00:00",
+    "start_utc_provider": "2026-12-03T01:00:00+00:00"
+  },
+  "401910088": {
+    "code": "FECHA_REPROGRAMADA",
+    "detected_utc": "2026-11-28T14:29:02.952680+00:00",
+    "start_utc_archived": "2026-12-04T01:00:00+00:00",
+    "start_utc_provider": "2026-12-03T01:00:00+00:00"
+  }
+}
