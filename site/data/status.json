@@ -228,10 +228,10 @@
   "no_historical_repricing": true,
   "no_top3_reasons": {},
   "notice": "Top 3 y cuarta referencia teórica usan cuotas justas matemáticas NO ofrecidas. Solo las adicionales reales tienen bookmaker y precio archivado. Todas las simulaciones son hipotéticas.",
-  "odds_calls_month": 33,
-  "odds_quoted_outcomes_this_run": 0,
+  "odds_calls_month": 36,
+  "odds_quoted_outcomes_this_run": 314,
   "odds_recheck_result": null,
-  "odds_status": "YA_CONSULTADO_HOY",
+  "odds_status": "OK",
   "one_time_refresh_applied": false,
   "pending_postmatch_games": 0,
   "pending_postmatch_selections": 0,
@@ -242,7 +242,7 @@
   "review_required_count": 0,
   "sorpresas_detectadas": 1,
   "source_circuit_breaker": null,
-  "source_distinct_games_returned": 77,
+  "source_distinct_games_returned": 67,
   "source_failed_days": 0,
   "source_failures": [],
   "source_requests": 12,
@@ -303,6 +303,6 @@
     "total_staked_eur": 180.0
   },
   "top3_voided": 0,
-  "upcoming": 55,
-  "updated_utc": "2026-11-27T22:55:51.977408+00:00"
+  "upcoming": 48,
+  "updated_utc": "2026-11-28T02:11:59.487380+00:00"
 }
